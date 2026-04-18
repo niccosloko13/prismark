@@ -1,0 +1,141 @@
+[
+  {
+    "id": "PRM-24031",
+    "createdAt": "2026-04-11T13:12:00.000Z",
+    "updatedAt": "2026-04-13T09:20:00.000Z",
+    "clientId": "usr_101",
+    "clientName": "Felipe Araújo",
+    "clientEmail": "felipe@novaobra.com.br",
+    "productSlug": "banner",
+    "productName": "Banner",
+    "measures": {
+      "width": 300,
+      "height": 120,
+      "area": 3.6,
+      "quantity": 2
+    },
+    "material": "Lona blackout 440g",
+    "finishing": "Ilhós reforçado",
+    "deadline": "Expresso · 2 dias",
+    "value": 1309.68,
+    "status": "produção",
+    "notes": "Aplicação em estande para congresso de engenharia.",
+    "file": {
+      "originalName": "briefing-banner.svg",
+      "storedName": "briefing-banner.svg",
+      "url": "/api/files/briefing-banner.svg",
+      "size": 1710,
+      "mimeType": "image/svg+xml"
+    }
+  },
+  {
+    "id": "PRM-24032",
+    "createdAt": "2026-04-10T15:40:00.000Z",
+    "updatedAt": "2026-04-12T14:15:00.000Z",
+    "clientId": "usr_101",
+    "clientName": "Felipe Araújo",
+    "clientEmail": "felipe@novaobra.com.br",
+    "productSlug": "adesivo",
+    "productName": "Adesivo",
+    "measures": {
+      "width": 220,
+      "height": 180,
+      "area": 3.96,
+      "quantity": 1
+    },
+    "material": "Vinil fosco",
+    "finishing": "Laminação fosca",
+    "deadline": "Standard · 4 dias",
+    "value": 516.92,
+    "status": "em análise",
+    "notes": "Vitrine frontal com ajuste fino de corte.",
+    "file": {
+      "originalName": "vitrine-adesivo.svg",
+      "storedName": "vitrine-adesivo.svg",
+      "url": "/api/files/vitrine-adesivo.svg",
+      "size": 1604,
+      "mimeType": "image/svg+xml"
+    }
+  },
+  {
+    "id": "PRM-24033",
+    "createdAt": "2026-04-09T11:20:00.000Z",
+    "updatedAt": "2026-04-09T11:20:00.000Z",
+    "clientId": "usr_102",
+    "clientName": "Camila Rocha",
+    "clientEmail": "camila@studioalto.com.br",
+    "productSlug": "placa-acm",
+    "productName": "Placa ACM",
+    "measures": {
+      "width": 180,
+      "height": 90,
+      "area": 1.62,
+      "quantity": 1
+    },
+    "material": "ACM 3mm",
+    "finishing": "Corte CNC",
+    "deadline": "Planejado · 7 dias",
+    "value": 597.24,
+    "status": "aguardando arte",
+    "notes": "Fachada para recepção com instalação em espaçadores.",
+    "file": {
+      "originalName": "fachada-acm.svg",
+      "storedName": "fachada-acm.svg",
+      "url": "/api/files/fachada-acm.svg",
+      "size": 1652,
+      "mimeType": "image/svg+xml"
+    }
+  },
+  {
+    "id": "PRM-24034",
+    "createdAt": "2026-04-07T17:18:00.000Z",
+    "updatedAt": "2026-04-10T10:02:00.000Z",
+    "clientId": "usr_102",
+    "clientName": "Camila Rocha",
+    "clientEmail": "camila@studioalto.com.br",
+    "productSlug": "cartao",
+    "productName": "Cartão",
+    "measures": {
+      "width": 9,
+      "height": 5,
+      "area": 0.045,
+      "quantity": 500
+    },
+    "material": "Couchê 300g",
+    "finishing": "Verniz local UV",
+    "deadline": "Expresso · 2 dias",
+    "value": 459.9,
+    "status": "finalizado",
+    "notes": "Cartão de visita institucional para equipe comercial.",
+    "file": null
+  },
+  {
+    "id": "PRM-24035",
+    "createdAt": "2026-04-05T09:45:00.000Z",
+    "updatedAt": "2026-04-08T16:30:00.000Z",
+    "clientId": "usr_101",
+    "clientName": "Felipe Araújo",
+    "clientEmail": "felipe@novaobra.com.br",
+    "productSlug": "wind-banner",
+    "productName": "Wind Banner",
+    "measures": {
+      "width": 75,
+      "height": 200,
+      "area": 1.5,
+      "quantity": 2
+    },
+    "material": "Tecido flag",
+    "finishing": "Estrutura + costura",
+    "deadline": "Standard · 5 dias",
+    "value": 834,
+    "status": "entregue",
+    "notes": "Kit completo para evento de lançamento.",
+    "file": {
+      "originalName": "wind-banner.svg",
+      "storedName": "wind-banner.svg",
+      "url": "/api/files/wind-banner.svg",
+      "size": 1717,
+      "mimeType": "image/svg+xml"
+    }
+  }
+]

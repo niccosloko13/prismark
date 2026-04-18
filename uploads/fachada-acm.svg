@@ -1,0 +1,13 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#ffffff"/>
+  <rect x="90" y="90" width="1220" height="720" rx="40" fill="#eceff2"/>
+  <rect x="170" y="168" width="1060" height="564" rx="32" fill="#0f0f0f"/>
+  <rect x="248" y="250" width="904" height="112" rx="16" fill="#ffffff"/>
+  <rect x="248" y="404" width="418" height="230" rx="16" fill="#00B5FF"/>
+  <rect x="734" y="404" width="418" height="230" rx="16" fill="#FF2EBF"/>
+  <text x="308" y="324" fill="#0f0f0f" font-size="58" font-family="Segoe UI, Arial, sans-serif" font-weight="700">STUDIO ALTO</text>
+  <text x="306" y="490" fill="#0f0f0f" font-size="34" font-family="Segoe UI, Arial, sans-serif">placa ACM</text>
+  <text x="306" y="542" fill="#0f0f0f" font-size="26" font-family="Segoe UI, Arial, sans-serif">180 x 90 cm</text>
+  <text x="786" y="490" fill="#ffffff" font-size="34" font-family="Segoe UI, Arial, sans-serif">corte CNC</text>
+  <text x="786" y="542" fill="#ffffff" font-size="26" font-family="Segoe UI, Arial, sans-serif">mock de fachada</text>
+</svg>

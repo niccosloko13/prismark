@@ -349,6 +349,7 @@ export function OrderBuilder({
   ].filter(Boolean).length;
   const missingFieldCount = Math.max(requiredFieldCount - completedFieldCount, 0);
   const hasCheckoutErrors = Object.keys(checkoutErrors).length > 0;
+  const isReadyToSubmit = !hasCheckoutErrors;
   const completionLabel =
     missingFieldCount === 0
       ? "Tudo pronto para concluir"
@@ -387,7 +388,25 @@ export function OrderBuilder({
     }
   }, [deliveryMode]);
 
-  const primaryActionLabel = session ? "Finalizar pedido agora" : "Entrar para continuar";
+  const normalizedCheckout = {
+    customerName: customerName.trim(),
+    customerEmail: customerEmail.trim(),
+    customerPhone: customerPhone.trim(),
+    cep: cep.trim(),
+    address: address.trim(),
+  };
+
+  const primaryActionLabel = !session
+    ? "Entrar para continuar"
+    : isPending
+      ? file
+        ? "Finalizando pedido..."
+        : "Preparando pagamento..."
+      : !isReadyToSubmit
+        ? "Preencha os dados para concluir"
+        : file
+          ? "Finalizar pedido com arte"
+          : "Finalizar pedido agora";
   const primaryActionHelper = !session
     ? "Seus dados e configuracoes ficam salvos ao entrar."
     : isPending
@@ -426,11 +445,11 @@ export function OrderBuilder({
     orderParams.set("finishing", finishing);
     orderParams.set("deadline", deadline);
     orderParams.set("notes", notes);
-    if (customerName.trim()) orderParams.set("customerName", customerName.trim());
-    if (customerEmail.trim()) orderParams.set("customerEmail", customerEmail.trim());
-    if (customerPhone.trim()) orderParams.set("customerPhone", customerPhone.trim());
-    if (cep.trim()) orderParams.set("cep", cep.trim());
-    if (address.trim()) orderParams.set("address", address.trim());
+    if (normalizedCheckout.customerName) orderParams.set("customerName", normalizedCheckout.customerName);
+    if (normalizedCheckout.customerEmail) orderParams.set("customerEmail", normalizedCheckout.customerEmail);
+    if (normalizedCheckout.customerPhone) orderParams.set("customerPhone", normalizedCheckout.customerPhone);
+    if (normalizedCheckout.cep) orderParams.set("cep", normalizedCheckout.cep);
+    if (normalizedCheckout.address) orderParams.set("address", normalizedCheckout.address);
     orderParams.set("deliveryMode", deliveryMode);
     orderParams.set("paymentMethod", paymentMethod);
 
@@ -525,12 +544,12 @@ export function OrderBuilder({
             deadline,
             notes: buildCheckoutNotes({
               baseNotes: notes,
-              customerName,
-              customerEmail,
-              customerPhone,
+              customerName: normalizedCheckout.customerName,
+              customerEmail: normalizedCheckout.customerEmail,
+              customerPhone: normalizedCheckout.customerPhone,
               deliveryMode,
-              cep,
-              address,
+              cep: normalizedCheckout.cep,
+              address: normalizedCheckout.address,
               paymentMethod,
             }),
             fileId: uploadedFile?.id ?? null,
@@ -582,12 +601,12 @@ export function OrderBuilder({
       image: experience.gallery[0]?.src,
       notes: buildCheckoutNotes({
         baseNotes: notes,
-        customerName,
-        customerEmail,
-        customerPhone,
+        customerName: normalizedCheckout.customerName,
+        customerEmail: normalizedCheckout.customerEmail,
+        customerPhone: normalizedCheckout.customerPhone,
         deliveryMode,
-        cep,
-        address,
+        cep: normalizedCheckout.cep,
+        address: normalizedCheckout.address,
         paymentMethod,
       }),
     });
@@ -1000,7 +1019,7 @@ export function OrderBuilder({
               disabled={isPending}
               className="focus-ring inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-6 text-base font-semibold text-white shadow-[0_22px_46px_rgba(0,103,255,0.28)] transition duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isPending ? (file ? "Finalizando pedido..." : "Preparando pagamento...") : primaryActionLabel}
+              {primaryActionLabel}
               <ArrowRight />
             </button>
             <button

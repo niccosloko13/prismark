@@ -1,0 +1,32 @@
+[
+  {
+    "id": "usr_admin",
+    "name": "Mariana Lopes",
+    "email": "admin@prismarq.com.br",
+    "company": "Prismarq Comunicação Visual",
+    "phone": "(11) 99876-5432",
+    "role": "admin",
+    "passwordHash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+    "createdAt": "2026-03-01T10:00:00.000Z"
+  },
+  {
+    "id": "usr_101",
+    "name": "Felipe Araújo",
+    "email": "felipe@novaobra.com.br",
+    "company": "Nova Obra Engenharia",
+    "phone": "(11) 99114-3278",
+    "role": "client",
+    "passwordHash": "09a31a7001e261ab1e056182a71d3cf57f582ca9a29cff5eb83be0f0549730a9",
+    "createdAt": "2026-03-12T09:10:00.000Z"
+  },
+  {
+    "id": "usr_102",
+    "name": "Camila Rocha",
+    "email": "camila@studioalto.com.br",
+    "company": "Studio Alto Arquitetura",
+    "phone": "(11) 99485-1207",
+    "role": "client",
+    "passwordHash": "8d0cb54601bfecce6840eff8c2b0a4fb2d5e52cfc7754997d2902eb2306fc275",
+    "createdAt": "2026-03-19T15:30:00.000Z"
+  }
+]

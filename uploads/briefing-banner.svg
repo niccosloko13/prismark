@@ -1,0 +1,14 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#ffffff"/>
+  <rect x="84" y="84" width="1232" height="732" rx="36" fill="#0f0f0f"/>
+  <rect x="116" y="116" width="580" height="668" rx="28" fill="#00B5FF"/>
+  <rect x="720" y="116" width="564" height="312" rx="28" fill="#FF2EBF"/>
+  <rect x="720" y="472" width="564" height="312" rx="28" fill="#FFD300"/>
+  <text x="170" y="250" fill="#0f0f0f" font-size="92" font-family="Segoe UI, Arial, sans-serif" font-weight="700">PRISMARQ</text>
+  <text x="170" y="350" fill="#0f0f0f" font-size="48" font-family="Segoe UI, Arial, sans-serif">banner para congresso</text>
+  <text x="170" y="430" fill="#0f0f0f" font-size="36" font-family="Segoe UI, Arial, sans-serif">300 x 120 cm · lona blackout · ilhós</text>
+  <text x="780" y="250" fill="#ffffff" font-size="38" font-family="Segoe UI, Arial, sans-serif">Feira técnica</text>
+  <text x="780" y="310" fill="#ffffff" font-size="28" font-family="Segoe UI, Arial, sans-serif">layout aprovado para produção</text>
+  <text x="780" y="610" fill="#0f0f0f" font-size="38" font-family="Segoe UI, Arial, sans-serif">Acentos CMYK</text>
+  <text x="780" y="668" fill="#0f0f0f" font-size="28" font-family="Segoe UI, Arial, sans-serif">arte de referência mockada</text>
+</svg>
