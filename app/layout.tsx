@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CartProvider } from "@/components/cart/cart-provider";
+import { CookieConsent } from "@/components/cookies/cookie-consent";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
@@ -38,6 +39,7 @@ export default async function RootLayout({
             </main>
             <SiteFooter />
           </div>
+          <CookieConsent />
           <WhatsAppFloat />
         </CartProvider>
       </body>

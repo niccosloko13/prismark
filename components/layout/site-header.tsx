@@ -60,7 +60,7 @@ function DrawerLink({
   href: string;
   children: ReactNode;
   highlighted?: boolean;
-  onNavigate: () => void;
+  onNavigate?: () => void;
 }) {
   return (
     <Link
@@ -94,18 +94,18 @@ function HeaderBrand({
       onClick={onClick}
       aria-label="Ir para a home da Prismarq"
       className={cn(
-        "focus-ring flex shrink-0 items-center rounded-[26px] border border-black/8 bg-white/98 shadow-[0_16px_32px_rgba(15,15,15,0.06)] transition hover:border-black/14 hover:shadow-[0_18px_40px_rgba(15,15,15,0.08)]",
-        mobile ? "max-w-[190px] px-2.5 py-2 sm:max-w-[208px]" : "px-3 py-2 xl:px-3.5 xl:py-2.5",
+        "focus-ring flex shrink-0 items-center rounded-[24px] border border-[#E5E7EB] bg-[#ECEBED] transition hover:border-black/12",
+        mobile ? "max-w-[196px] px-2 py-1.5 sm:max-w-[212px]" : "px-2.5 py-1.5 xl:px-3.5 xl:py-2",
       )}
     >
       <Image
         src={headerLogoImage}
         alt="Prismarq Comunicacao Visual"
         priority={priority}
-        sizes={mobile ? "(max-width: 640px) 164px, 188px" : "(max-width: 1280px) 220px, 236px"}
+        sizes={mobile ? "(max-width: 640px) 188px, 204px" : "(max-width: 1280px) 236px, 268px"}
         className={cn(
           "h-auto w-full object-contain",
-          mobile ? "max-w-[164px] sm:max-w-[180px]" : "w-[232px] xl:w-[246px]",
+          mobile ? "max-w-[180px] sm:max-w-[196px]" : "w-[228px] xl:w-[248px] 2xl:w-[264px]",
         )}
       />
     </Link>
@@ -137,11 +137,8 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
 
   return (
     <>
-      <header className="relative z-40">
-        <div className="panel relative overflow-hidden px-3.5 py-3.5 sm:px-6 sm:py-4 lg:px-7">
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan via-magenta to-yellow" />
-          <div className="pointer-events-none absolute -right-10 top-0 h-24 w-24 rounded-full bg-cyan/10 blur-3xl sm:h-28 sm:w-28" />
-          <div className="pointer-events-none absolute -left-10 bottom-0 h-20 w-20 rounded-full bg-magenta/8 blur-3xl sm:h-24 sm:w-24" />
+      <header className="relative z-40 border-b border-[#E5E7EB]">
+        <div className="relative overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-[#ECEBED] px-3.5 py-3 sm:px-6 sm:py-3.5 lg:px-7">
 
           <div className="relative lg:hidden">
             <div className="flex items-center justify-between gap-3">
@@ -155,7 +152,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   aria-controls="mobile-drawer"
                   aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
                   onClick={() => setIsMobileMenuOpen((current) => !current)}
-                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-ink shadow-[0_12px_28px_rgba(15,15,15,0.06)] transition hover:bg-black/[0.03]"
+                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F3F4F6] text-ink transition hover:bg-white"
                 >
                   {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
                 </button>
@@ -189,13 +186,13 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                 <p className="text-[0.72rem] font-medium text-black/46">Impressao profissional com pedido online mais direto.</p>
               </div>
 
-              <div className="surface-card flex min-w-0 flex-wrap items-center justify-between gap-3 p-1.5">
+              <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-[24px] border border-[#E5E7EB] bg-[#ECEBED] p-1.5">
                 <nav className="flex min-w-0 flex-wrap items-center gap-1.5">
                   <HeaderNavLink href="/">Home</HeaderNavLink>
                   <HeaderNavLink href="/products">Produtos</HeaderNavLink>
                   <HeaderNavLink
                     href="/order"
-                    className="border border-cyan/14 bg-cyan/[0.07] text-ink hover:border-cyan/24 hover:bg-cyan/[0.1]"
+                    className="border border-cyan/20 bg-cyan/[0.14] text-ink shadow-[0_10px_24px_rgba(0,181,255,0.12)] hover:border-cyan/26 hover:bg-cyan/[0.18]"
                   >
                     Pedido online
                   </HeaderNavLink>
@@ -214,9 +211,14 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                       <LogoutButton />
                     </>
                   ) : (
-                    <Link href="/login" className="btn btn-primary focus-ring px-4 py-2.5">
-                      Login / Cadastro
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link href="/login" className="btn btn-secondary focus-ring px-4 py-2.5">
+                        Login
+                      </Link>
+                      <Link href="/order" className="btn btn-primary focus-ring px-4 py-2.5">
+                        Pedir agora
+                      </Link>
+                    </div>
                   )}
                 </div>
               </div>
@@ -262,21 +264,30 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
           <HeaderSearch mobile className="mt-5" onNavigate={() => setIsMobileMenuOpen(false)} />
 
           <div className="mt-5 flex flex-col gap-3">
-            <DrawerLink href="/" onNavigate={() => setIsMobileMenuOpen(false)}>
+            <DrawerLink href="/">
               Home
             </DrawerLink>
-            <DrawerLink href="/products" onNavigate={() => setIsMobileMenuOpen(false)}>
+            <DrawerLink href="/products">
               Produtos
             </DrawerLink>
-            <DrawerLink href="/order" onNavigate={() => setIsMobileMenuOpen(false)}>
+            <DrawerLink href="/order">
               Pedido online
             </DrawerLink>
-            <DrawerLink href="/contact" onNavigate={() => setIsMobileMenuOpen(false)}>
+            <DrawerLink href="/contact">
               Contato
             </DrawerLink>
-            <DrawerLink href={session ? accountHref : "/login"} highlighted onNavigate={() => setIsMobileMenuOpen(false)}>
+            <DrawerLink href={session ? accountHref : "/login"} highlighted>
               {accountLabel}
             </DrawerLink>
+            {!session ? (
+              <Link
+                href="/order"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="btn btn-primary focus-ring mt-1 w-full justify-center"
+              >
+                Comecar pedido agora
+              </Link>
+            ) : null}
           </div>
 
           <div className="mt-5 rounded-[24px] border border-black/10 bg-black/[0.02] p-4">
