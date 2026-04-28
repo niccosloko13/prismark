@@ -52,7 +52,7 @@ export function ProductAddonStrip({
               className={cn(
                 "focus-ring flex min-h-[2.85rem] items-center gap-2.5 rounded-[14px] border px-3 py-2 text-left transition duration-200 sm:min-h-[2.65rem] sm:rounded-[16px]",
                 selected
-                  ? "border-cyan/32 bg-[linear-gradient(180deg,rgba(0,181,255,0.09),rgba(255,255,255,0.98))] shadow-[0_8px_20px_rgba(0,181,255,0.08)]"
+                  ? "scale-[1.01] border-cyan/40 bg-[linear-gradient(180deg,rgba(0,181,255,0.12),rgba(255,255,255,0.98))] shadow-[0_10px_24px_rgba(0,181,255,0.12)]"
                   : "border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(248,249,250,0.94))] hover:border-black/16",
               )}
             >

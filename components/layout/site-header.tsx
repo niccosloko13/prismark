@@ -134,8 +134,9 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
     };
   }, [isMobileMenuOpen]);
 
-  const accountHref = session?.role === "admin" ? "/admin" : "/dashboard";
-  const accountLabel = session?.role === "admin" ? "Painel admin" : session ? "Minha conta" : "Login / Cadastro";
+  const isAdmin = session?.role === "admin";
+  const accountHref = "/dashboard";
+  const accountLabel = session ? "Minha conta" : "Login / Cadastro";
 
   return (
     <>
@@ -209,9 +210,11 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   <CartNavLink />
                   {session ? (
                     <>
-                      <Link href={accountHref} className="btn btn-primary focus-ring px-4 py-2.5">
-                        {accountLabel}
-                      </Link>
+                      {!isAdmin ? (
+                        <Link href={accountHref} className="btn btn-primary focus-ring px-4 py-2.5">
+                          {accountLabel}
+                        </Link>
+                      ) : null}
                       <LogoutButton />
                     </>
                   ) : (
@@ -280,9 +283,15 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
             <DrawerLink href="/contact">
               Contato
             </DrawerLink>
-            <DrawerLink href={session ? accountHref : "/login"} highlighted>
-              {accountLabel}
-            </DrawerLink>
+            {session && !isAdmin ? (
+              <DrawerLink href={accountHref} highlighted>
+                {accountLabel}
+              </DrawerLink>
+            ) : !session ? (
+              <DrawerLink href="/login" highlighted>
+                {accountLabel}
+              </DrawerLink>
+            ) : null}
             {!session ? (
               <Link
                 href="/order"

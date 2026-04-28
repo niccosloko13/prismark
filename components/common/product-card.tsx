@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Badge } from "@/components/common/badge";
+import { ProductRasterPicture } from "@/components/common/product-raster-picture";
 import { getProductPrimaryImagePath } from "@/lib/product-images";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import type { Product } from "@/types";
@@ -86,7 +87,7 @@ function CatalogProductCard({ product }: { product: Product }) {
       >
         <div className="relative aspect-[1/1] w-full max-h-[260px] sm:aspect-[1/1] sm:max-h-[280px]">
           {imageSrc ? (
-            <Image
+            <ProductRasterPicture
               src={imageSrc}
               alt={product.name}
               fill
@@ -234,7 +235,7 @@ export function ProductCard({
 
             <div className={cn("relative overflow-hidden", isCompactRelated ? "aspect-[16/10]" : "aspect-[4/3]")}>
               {imageSrc ? (
-                <Image
+                <ProductRasterPicture
                   src={imageSrc}
                   alt={product.name}
                   fill

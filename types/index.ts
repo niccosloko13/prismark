@@ -41,6 +41,8 @@ export interface ProductGalleryImage {
   tags?: string[];
   accent: "cyan" | "magenta" | "yellow";
   src: string;
+  /** Preferência WebP + fallback; omitir para apenas `src` (ex.: SVG inline). */
+  srcCandidates?: string[];
 }
 
 export interface ProductConfiguratorModelOption {

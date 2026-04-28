@@ -7,7 +7,7 @@ import type {
   ProductTechnicalSpec,
 } from "@/types";
 import { getDefaultMeasuresForProduct, getPreferredDeadlineLabel } from "@/lib/order-presets";
-import { getProductImagePaths } from "@/lib/product-images";
+import { getProductImagePaths, getPublicImageSrcCandidates } from "@/lib/product-images";
 import { roundTo } from "@/lib/utils";
 
 type ProductKind = "large" | "adhesive" | "card" | "rigid" | "vertical";
@@ -326,6 +326,12 @@ function buildFormats(product: Product) {
         { id: "padrao", label: "3000 x 2500 mm", description: "Formato comercial para estande, palco e patrocinadores.", width: 300, height: 250, recommended: true },
         { id: "impacto", label: "3000 x 3000 mm", description: "Cobertura maior para painéis de fundo e coletivas.", width: 300, height: 300 },
       ];
+    case "backdrop-tecido":
+      return [
+        { id: "compacto", label: "2000 x 2000 mm", description: "Cenario compacto com tecido leve e boa leitura.", width: 200, height: 200 },
+        { id: "padrao", label: "3000 x 2500 mm", description: "Formato principal para palco, estande e coletiva.", width: 300, height: 250, recommended: true },
+        { id: "impacto", label: "3000 x 3000 mm", description: "Mais area util para patrocinadores e foto em grupo.", width: 300, height: 300 },
+      ];
     case "banner-tecido":
       return [
         { id: "compacto", label: "700 x 1000 mm", description: "Peça leve para balcão, recepção e exposição rápida.", width: 70, height: 100 },
@@ -439,6 +445,7 @@ function buildColors(product: Product, palette: readonly string[]) {
 function buildEnhancements(product: Product, kind: ProductKind) {
   switch (product.slug) {
     case "banner-tecido":
+    case "backdrop-tecido":
       return [
         { id: "sublimacao", label: "Impressão sublimática", description: "Transferência principal para tecido leve e vibrante.", priceLabel: "Incluso" },
         { id: "ultra-hd", label: "Ultra HD sublimática", description: "Melhora nitidez para cenografia, foto e marca.", priceLabel: "sob consulta" },
@@ -502,6 +509,12 @@ function buildModelBlueprints(product: Product) {
         { label: "Display leve", description: "Banner mais leve para balcão, loja e ação sazonal.", formatIndex: 0, materialIndex: 0, finishingIndex: 0, colorIndex: 0, enhancementIndex: 0 },
         { label: "Evento interno", description: "Formato principal para feiras, recepções e cenografia.", formatIndex: 1, materialIndex: 1, finishingIndex: 1, colorIndex: 0, enhancementIndex: 1, recommended: true },
         { label: "Cenário premium", description: "Mais área e tecido com mais corpo para palco e fundo visual.", formatIndex: 2, materialIndex: 2, finishingIndex: 2, colorIndex: 2, enhancementIndex: 2 },
+      ];
+    case "backdrop-tecido":
+      return [
+        { label: "Cenario em tecido", description: "Fundo leve para foto, palco e estande com boa leitura.", formatIndex: 0, materialIndex: 0, finishingIndex: 0, colorIndex: 0, enhancementIndex: 0 },
+        { label: "Palco e coletiva", description: "Formato principal para patrocinadores e comunicacao de marca.", formatIndex: 1, materialIndex: 1, finishingIndex: 1, colorIndex: 0, enhancementIndex: 1, recommended: true },
+        { label: "Backdrop amplo", description: "Mais cobertura visual para eventos maiores e grupos.", formatIndex: 2, materialIndex: 2, finishingIndex: 2, colorIndex: 2, enhancementIndex: 2 },
       ];
     case "folheto":
       return [
@@ -610,6 +623,13 @@ function buildServices(product: Product): ProductAdditionalService[] {
       priceLabel: "a partir de R$ 24",
       feeBrl: 24,
     },
+    "backdrop-tecido": {
+      id: "embalagem",
+      label: "Embalagem para transporte",
+      description: "Protecao para dobra e reutilizacao do backdrop em tecido.",
+      priceLabel: "a partir de R$ 28",
+      feeBrl: 28,
+    },
     folheto: {
       id: "serrilha",
       label: "Cupom serrilhado",
@@ -692,6 +712,10 @@ function buildTechnicalSpecs(product: Product): ProductTechnicalSpec[] {
       { label: "Técnica principal", value: "Sublimação em tecido poliéster" },
       { label: "Perfil de uso", value: "Cenografia leve, evento e vitrine" },
     ],
+    "backdrop-tecido": [
+      { label: "Técnica principal", value: "Sublimação em tecido para grande formato" },
+      { label: "Perfil de uso", value: "Palco, coletiva, estande e photo opportunity" },
+    ],
     folheto: [
       { label: "Tiragem comercial", value: "Alta escala com foco em distribuição" },
       { label: "Fechamento", value: "Refile, serrilha e acabamentos promocionais" },
@@ -743,15 +767,20 @@ export function buildProductConfiguration(product: Product): ProductConfiguratio
   const galleryCount = Math.max(4, imagePaths.length, galleryCopyByKind[kind].length);
   const galleryCopies = buildGalleryCopies(product, kind, galleryCount);
 
-  const images: ProductGalleryImage[] = galleryCopies.map((copy, index) => ({
-    id: `${product.slug}-${index}`,
-    title: copy.title,
-    subtitle: copy.subtitle,
-    caption: copy.caption,
-    tags: copy.tags,
-    accent: palette[index % palette.length],
-    src: index < Math.min(imagePaths.length, Math.max(galleryCount - 1, 1)) ? imagePaths[index] : createArtworkSvg(product, index),
-  }));
+  const images: ProductGalleryImage[] = galleryCopies.map((copy, index) => {
+    const src =
+      index < Math.min(imagePaths.length, Math.max(galleryCount - 1, 1)) ? imagePaths[index] : createArtworkSvg(product, index);
+    return {
+      id: `${product.slug}-${index}`,
+      title: copy.title,
+      subtitle: copy.subtitle,
+      caption: copy.caption,
+      tags: copy.tags,
+      accent: palette[index % palette.length],
+      src,
+      srcCandidates: getPublicImageSrcCandidates(src),
+    };
+  });
 
   return {
     categories: buildCategories(product),

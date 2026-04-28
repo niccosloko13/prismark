@@ -3,7 +3,7 @@ import type { MainCarouselSlide } from "@/components/home/MainCarousel";
 export const homeSlides: MainCarouselSlide[] = [
   {
     id: "wind-banner",
-    image: "/images/products/wind-banner/wind-banner-01.jpg",
+    image: "/images/products/wind-banner/windbanner.png",
     title: "Wind banner para posto, evento e fachada com alta visibilidade.",
     subtitle: "Formato pronto para campanha de rua, entrada de loja e ponto promocional.",
     href: "/products/wind-banner",
@@ -15,7 +15,7 @@ export const homeSlides: MainCarouselSlide[] = [
   },
   {
     id: "banner-lona",
-    image: "/images/products/banner/banner-01.jpg",
+    image: "/images/products/banner/banner1.png",
     title: "Banner em lona com producao agil para campanha e PDV.",
     subtitle: "Pecas comerciais para loja, promocao sazonal e comunicacao de alto giro.",
     href: "/products/banner",
@@ -27,7 +27,7 @@ export const homeSlides: MainCarouselSlide[] = [
   },
   {
     id: "backdrop",
-    image: "/images/products/backdrop/backdrop-01.jpg",
+    image: "/images/products/backdrop/backdrop1.png",
     title: "Backdrop em lona para palco, estande e cenario de marca.",
     subtitle: "Grande formato para evento, foto, video e presenca visual profissional.",
     href: "/products/backdrop",

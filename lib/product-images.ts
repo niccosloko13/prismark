@@ -1,9 +1,11 @@
+import webpManifest from "./product-webp-manifest.json";
+
 const productImagePathsBySlug: Record<string, string[]> = {
   banner: [
-    "/images/products/banner/banner-01.jpg",
-    "/images/products/banner/banner-02.jpg",
-    "/images/products/banner/banner-03.jpg",
-    "/images/products/banner/banner-04.jpg",
+    "/images/products/banner/banner1.png",
+    "/images/products/banner/banner2.webp",
+    "/images/products/banner/banner3.png",
+    "/images/products/banner/banner4.png",
   ],
   faixa: [
     "/images/products/faixa/faixa-01.jpg",
@@ -26,10 +28,10 @@ const productImagePathsBySlug: Record<string, string[]> = {
     "/images/products/lona/lona-03.jpg",
   ],
   "wind-banner": [
-    "/images/products/wind-banner/wind-banner-01.jpg",
-    "/images/products/wind-banner/wind-banner-02.jpg",
-    "/images/products/wind-banner/wind-banner-03.png",
-    "/images/products/wind-banner/wind-banner-04.jpg",
+    "/images/products/wind-banner/windbanner.png",
+    "/images/products/wind-banner/windbanner2.png",
+    "/images/products/wind-banner/basewindbanner.webp",
+    "/images/products/wind-banner/hastewindbanner.webp",
   ],
   "placa-pvc": [
     "/images/products/placa-pvc/placa-pvc-01.jpg",
@@ -41,16 +43,9 @@ const productImagePathsBySlug: Record<string, string[]> = {
     "/images/products/placa-acm/placa-acm-02.jpg",
     "/images/products/placa-acm/placa-acm-03.jpg",
   ],
-  backdrop: [
-    "/images/products/backdrop/backdrop-01.jpg",
-    "/images/products/backdrop/backdrop-02.jpg",
-    "/images/products/backdrop/backdrop-03.jpg",
-  ],
-  "banner-tecido": [
-    "/images/products/banner-em-tecido/banner-em-tecido-01.jpg",
-    "/images/products/banner-em-tecido/banner-em-tecido-02.jpg",
-    "/images/products/banner-em-tecido/banner-em-tecido-03.jpg",
-  ],
+  backdrop: ["/images/products/backdrop/backdrop1.png"],
+  "backdrop-tecido": ["/images/products/bakdropemtecido/backdroptecido1.png"],
+  "banner-tecido": ["/images/products/banner-em-tecido/backdroptecido1.png"],
   folheto: [
     "/images/products/folheto/folheto-01.jpg",
     "/images/products/folheto/folheto-02.jpg",
@@ -84,4 +79,35 @@ export function getProductImagePaths(slug: string) {
 
 export function getProductPrimaryImagePath(slug: string) {
   return getProductImagePaths(slug)[0] ?? null;
+}
+
+/**
+ * URLs na ordem de preferência do navegador: WebP (mesmo stem) e depois o arquivo catalogado (jpg/jpeg/png).
+ * Data URLs e SVG não são alterados.
+ */
+export function getPublicImageSrcCandidates(canonicalPath: string): string[] {
+  if (!canonicalPath) {
+    return [];
+  }
+  if (canonicalPath.startsWith("data:")) {
+    return [canonicalPath];
+  }
+  const lower = canonicalPath.toLowerCase();
+  if (lower.endsWith(".svg")) {
+    return [canonicalPath];
+  }
+  const match = canonicalPath.match(/^(.*)\.([^.]+)$/);
+  if (!match) {
+    return [canonicalPath];
+  }
+  const stem = match[1];
+  const ext = match[2].toLowerCase();
+  if (ext === "webp") {
+    return [canonicalPath];
+  }
+  const webpPath = `${stem}.webp`;
+  if (Object.prototype.hasOwnProperty.call(webpManifest, webpPath)) {
+    return [webpPath, canonicalPath];
+  }
+  return [canonicalPath];
 }

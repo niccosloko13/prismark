@@ -498,6 +498,59 @@ export const products: Product[] = [
     featured: true,
   },
   {
+    slug: "backdrop-tecido",
+    name: "Backdrop de tecido",
+    category: "Grande Formato",
+    badge: "Palco e foto",
+    description:
+      "Backdrop em tecido para palco, coletiva, estande e cenarios com visual leve, dobra compacta e impressao em sublimacao.",
+    lead: "Ideal para eventos que precisam de fundo de marca com transporte mais facil e acabamento costurado.",
+    basePriceM2: 46,
+    minimumArea: 3,
+    minQuantity: 1,
+    materials: [
+      {
+        label: "Tecido poliéster 98g",
+        multiplier: 1,
+        description: "Base leve e versatil para sublimacao com boa leitura de cor.",
+      },
+      {
+        label: "Tecido premium",
+        multiplier: 1.12,
+        description: "Trama mais fechada para palco interno e foto profissional.",
+      },
+      {
+        label: "Tecido blackout",
+        multiplier: 1.22,
+        description: "Mais opacidade para luz de palco e fundo sem transparencia.",
+      },
+    ],
+    finishings: [
+      {
+        label: "Bainha com túnel",
+        fee: 18,
+        type: "perOrder",
+        description: "Encaixe limpo para tubo ou estrutura de fundo.",
+      },
+      {
+        label: "Ilhós reforçados",
+        fee: 28,
+        type: "perOrder",
+        description: "Fixacao em grid metalico ou corda de tensionamento.",
+      },
+      {
+        label: "Bolso superior e inferior",
+        fee: 48,
+        type: "perOrder",
+        description: "Montagem tipo banner com tubo superior e inferior.",
+      },
+    ],
+    deadlines: fastLane,
+    applications: ["Eventos", "Feiras", "Foto e video"],
+    deliveryNote: "Tecido dobrado com protecao leve para transporte e reutilizacao.",
+    featured: true,
+  },
+  {
     slug: "banner-tecido",
     name: "Banner em tecido",
     category: "Grande Formato",

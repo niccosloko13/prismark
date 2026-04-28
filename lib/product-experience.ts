@@ -13,6 +13,7 @@ export interface ProductGalleryItem {
   tags?: string[];
   accent: ProductAccent;
   src: string;
+  srcCandidates?: string[];
 }
 
 export interface ProductModelOption {

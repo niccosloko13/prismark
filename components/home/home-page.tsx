@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ProductCard } from "@/components/common/product-card";
+import { ProductRasterPicture } from "@/components/common/product-raster-picture";
 import { SectionShell } from "@/components/common/section-shell";
+import { HomeFeaturedProductsCarousel } from "@/components/home/home-featured-products-carousel";
 import { products } from "@/lib/catalog";
 import { getProductPrimaryImagePath } from "@/lib/product-images";
 import { formatCurrencyBRL } from "@/lib/utils";
@@ -153,7 +155,6 @@ export function HomePage() {
     .filter((product): product is NonNullable<(typeof products)[number]> => Boolean(product));
 
   const featuredProducts = products.filter((product) => product.featured).slice(0, 4);
-  const heroProducts = quickProducts.slice(0, 3);
 
   return (
     <div className="space-y-4 sm:space-y-8 lg:space-y-10">
@@ -163,7 +164,7 @@ export function HomePage() {
         <div className="pointer-events-none absolute -right-16 top-8 h-40 w-40 rounded-full bg-magenta/10 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 left-1/2 h-32 w-32 -translate-x-1/2 rounded-full bg-yellow/20 blur-3xl" />
 
-        <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[1.12fr_0.88fr] lg:items-end lg:gap-8">
+        <div className="relative grid gap-5 sm:gap-6 lg:items-start">
           <div className="min-w-0">
             <Link
               href="/"
@@ -221,60 +222,10 @@ export function HomePage() {
               </div>
             </div>
           </div>
-
-          <div className="surface-card p-4 sm:p-5">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-              <p className="label-kicker text-center sm:text-left">Produtos em destaque</p>
-              <Link
-                href="/products"
-                className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-black/48 transition hover:text-ink sm:text-right"
-              >
-                Ver catalogo
-              </Link>
-            </div>
-            <div className="mt-4 space-y-2.5">
-              {heroProducts.map((product) => {
-                const image = getProductPrimaryImagePath(product.slug) ?? "/criativo1.png";
-                const pixPrice = product.basePriceM2 * 0.85;
-
-                return (
-                  <Link
-                    key={product.slug}
-                    href={`/products/${product.slug}`}
-                    className="group flex items-center gap-3 rounded-[22px] border border-black/10 bg-white p-3 transition hover:-translate-y-0.5 hover:border-black/18 hover:shadow-[0_14px_36px_rgba(15,15,15,0.08)]"
-                  >
-                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-black/10 bg-black/[0.02]">
-                      <Image src={image} alt={product.name} fill sizes="64px" className="object-cover transition duration-300 group-hover:scale-105" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/44">{product.category}</p>
-                      <p className="mt-1 truncate text-sm font-semibold text-ink">{product.name}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-black/42">Pix</p>
-                      <p className="mt-1 text-sm font-semibold text-ink">{formatCurrencyBRL(pixPrice)}</p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-[#F3F4F6] p-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-black/48">Confianca na compra</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.68rem] font-semibold text-black/62">Pagamento seguro</span>
-                <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.68rem] font-semibold text-black/62">Revisao comercial</span>
-                <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.68rem] font-semibold text-black/62">Suporte pos-venda</span>
-              </div>
-            </div>
-            <Link href="/order" className="btn btn-primary focus-ring mt-4 w-full justify-center">
-              Configurar e enviar arte
-            </Link>
-            <p className="mt-2 text-center text-[0.74rem] leading-snug text-black/46 sm:text-left">
-              *Consulte disponibilidade por produto e horario de fechamento.
-            </p>
-          </div>
         </div>
       </section>
+
+      <HomeFeaturedProductsCarousel />
 
       <section className="panel p-4 sm:p-5 lg:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -304,7 +255,7 @@ export function HomePage() {
                 className="group relative w-[min(82vw,260px)] shrink-0 snap-start overflow-hidden rounded-[22px] border border-black/10 bg-white transition duration-300 first:ml-0.5 last:mr-0.5 hover:-translate-y-1 hover:border-black/18 hover:shadow-[0_24px_56px_rgba(15,15,15,0.08)] sm:w-[min(72vw,280px)] lg:ml-0 lg:mr-0 lg:w-auto lg:max-w-none lg:rounded-[30px] lg:first:ml-0 lg:last:mr-0"
               >
                 <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(180deg,rgba(250,250,251,0.94),rgba(244,245,247,0.86))]">
-                  <Image
+                  <ProductRasterPicture
                     src={image}
                     alt={product.name}
                     fill

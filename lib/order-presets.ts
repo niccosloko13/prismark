@@ -20,6 +20,7 @@ export const defaultMeasuresByProduct = {
   "placa-pvc": { width: 60, height: 40 },
   "placa-acm": { width: 100, height: 60 },
   backdrop: { width: 300, height: 300 },
+  "backdrop-tecido": { width: 300, height: 250 },
   "banner-tecido": { width: 100, height: 150 },
   folheto: { width: 10, height: 14 },
   "adesivo-perfurado": { width: 100, height: 100 },

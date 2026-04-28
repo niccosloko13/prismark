@@ -63,6 +63,7 @@ export function ProductSummaryPanel({
   experience,
   selection,
   quote,
+  selectedAddonsState,
   editingCartItemId,
   cartNotes,
 }: {
@@ -70,6 +71,7 @@ export function ProductSummaryPanel({
   experience: ProductExperience;
   selection: ProductSelectionState;
   quote: PriceBreakdown;
+  selectedAddonsState: Array<{ id: string; label: string; price: number; selected: boolean }>;
   editingCartItemId?: string | null;
   cartNotes?: string;
 }) {
@@ -79,6 +81,7 @@ export function ProductSummaryPanel({
   const [pricePulse, setPricePulse] = useState(false);
 
   const selectedAddons = experience.addons.filter((item) => selection.selectedAddonIds.includes(item.id));
+  const selectedAddonsForSummary = selectedAddonsState.filter((item) => item.selected);
   const color = experience.colors.find((item) => item.id === selection.colorId) ?? experience.colors[0];
   const pixTotal = quote.total * 0.85;
   const unitAverage = quote.total / Math.max(selection.quantity, 1);
@@ -244,6 +247,22 @@ export function ProductSummaryPanel({
                 </div>
               </>
             ) : null}
+          </div>
+
+          <div className="mt-3 rounded-[16px] border border-cyan/18 bg-cyan/[0.06] px-3 py-2.5">
+            <p className="text-[0.7rem] font-semibold text-cyan-900">Serviços adicionais incluídos no total</p>
+            {selectedAddonsForSummary.length > 0 ? (
+              <ul className="mt-1.5 space-y-1 text-[0.75rem] font-medium text-black/68 sm:text-[0.8rem]">
+                {selectedAddonsForSummary.map((addon) => (
+                  <li key={addon.id} className="flex items-center justify-between gap-2">
+                    <span className="truncate">{addon.label}</span>
+                    <span className="shrink-0 font-semibold text-cyan-800">+ {formatCurrencyBRL(addon.price)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-1.5 text-[0.75rem] text-black/58 sm:text-[0.8rem]">Nenhum serviço adicional selecionado.</p>
+            )}
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">

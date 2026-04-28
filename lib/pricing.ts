@@ -53,5 +53,6 @@ export function calculateQuote(input: QuoteInput): PriceBreakdown {
     material: input.material,
     finishing: input.finishing,
     deadline: input.deadline,
+    addonsTotal: input.addonsTotal,
   });
 }

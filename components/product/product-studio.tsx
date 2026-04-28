@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ProductCard } from "@/components/common/product-card";
 import { products } from "@/lib/catalog";
@@ -62,6 +62,26 @@ export function ProductStudio({
     deadline: selection.deadline,
     addonsTotal: getAddonsFeeTotalBrl(experience, selection),
   });
+  const selectedAddons = useMemo(
+    () =>
+      experience.addons.map((addon) => ({
+        id: addon.id,
+        label: addon.label,
+        price: addon.feeBrl,
+        selected: selection.selectedAddonIds.includes(addon.id),
+      })),
+    [experience.addons, selection.selectedAddonIds],
+  );
+
+  useEffect(() => {
+    const addonsTotal = selectedAddons.filter((item) => item.selected).reduce((sum, item) => sum + item.price, 0);
+    const basePrice = quote.total - addonsTotal;
+    console.log({
+      basePrice,
+      addonsTotal,
+      total: quote.total,
+    });
+  }, [quote.total, selectedAddons]);
 
   const relatedProducts = products
     .filter((item) => item.slug !== product.slug && (item.category === product.category || item.featured))
@@ -142,6 +162,7 @@ export function ProductStudio({
             experience={experience}
             selection={selection}
             quote={quote}
+            selectedAddonsState={selectedAddons}
             editingCartItemId={editingCartItemId ?? null}
             cartNotes={cartNotes}
           />

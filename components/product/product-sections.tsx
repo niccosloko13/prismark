@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 import { Badge } from "@/components/common/badge";
+import { ProductRasterPicture } from "@/components/common/product-raster-picture";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { companyProfile } from "@/lib/company";
 import type { ProductDownloadAsset, ProductGalleryItem } from "@/lib/product-experience";
@@ -61,8 +61,9 @@ export function ProductGallery({
           </div>
 
           <div className="relative aspect-[4/3] min-h-[200px] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),rgba(244,246,248,0.95))] sm:aspect-[5/4] sm:min-h-[280px] lg:min-h-[320px]">
-            <Image
+            <ProductRasterPicture
               src={active.src}
+              srcCandidates={active.srcCandidates}
               alt={active.title}
               fill
               priority
@@ -105,8 +106,9 @@ export function ProductGallery({
               }
             >
               <div className="relative aspect-square bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),rgba(244,246,248,0.94))]">
-                <Image
+                <ProductRasterPicture
                   src={item.src}
+                  srcCandidates={item.srcCandidates}
                   alt={item.title}
                   fill
                   unoptimized
