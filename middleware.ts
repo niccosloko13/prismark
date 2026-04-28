@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 const protectedClientPrefixes = ["/dashboard"];
 const protectedAdminPrefixes = ["/admin"];
+const publicAdminPaths = ["/admin/login"];
 
 function setSecurityHeaders(response: NextResponse) {
   response.headers.set("X-Frame-Options", "DENY");
@@ -36,15 +37,16 @@ export async function middleware(request: NextRequest) {
 
   const requiresClient = protectedClientPrefixes.some((prefix) => pathname.startsWith(prefix));
   const requiresAdmin = protectedAdminPrefixes.some((prefix) => pathname.startsWith(prefix));
+  const isPublicAdminPath = publicAdminPaths.some((publicPath) => pathname === publicPath);
 
-  if (!requiresClient && !requiresAdmin) {
+  if ((!requiresClient && !requiresAdmin) || isPublicAdminPath) {
     return response;
   }
 
   const payload = await readSessionPayload(request);
 
   if (!payload?.sub) {
-    const loginUrl = new URL("/login", request.url);
+    const loginUrl = new URL(requiresAdmin ? "/admin/login" : "/login", request.url);
     loginUrl.searchParams.set("returnTo", pathname);
     return setSecurityHeaders(NextResponse.redirect(loginUrl));
   }

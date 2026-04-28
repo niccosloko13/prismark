@@ -11,6 +11,7 @@ const statuses: OrderStatus[] = [...ORDER_STATUSES];
 export function AdminOrdersBoard({ orders }: { orders: OrderRecord[] }) {
   const [list, setList] = useState(orders);
   const [statusFilter, setStatusFilter] = useState<"todos" | OrderStatus>("todos");
+  const [search, setSearch] = useState("");
   const [drafts, setDrafts] = useState<Record<string, OrderStatus>>(
     Object.fromEntries(orders.map((order) => [order.id, order.status])),
   );
@@ -18,8 +19,12 @@ export function AdminOrdersBoard({ orders }: { orders: OrderRecord[] }) {
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const filteredOrders =
-    statusFilter === "todos" ? list : list.filter((order) => order.status === statusFilter);
+  const filteredOrders = list.filter((order) => {
+    const byStatus = statusFilter === "todos" || order.status === statusFilter;
+    const haystack = `${order.id} ${order.clientName} ${order.clientEmail} ${order.clientPhone ?? ""}`.toLowerCase();
+    const bySearch = search.trim().length === 0 || haystack.includes(search.trim().toLowerCase());
+    return byStatus && bySearch;
+  });
 
   function updateStatus(orderId: string) {
     setError("");
@@ -57,6 +62,12 @@ export function AdminOrdersBoard({ orders }: { orders: OrderRecord[] }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-2">
+        <input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Buscar pedido, cliente, e-mail ou telefone"
+          className="field min-w-[18rem] max-w-full"
+        />
         <button
           type="button"
           onClick={() => setStatusFilter("todos")}

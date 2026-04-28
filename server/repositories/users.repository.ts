@@ -8,6 +8,7 @@ import type { AppUser, AuthProvider } from "@/types";
 
 interface UserRow extends QueryResultRow {
   id: string;
+  username: string | null;
   name: string;
   email: string;
   company: string;
@@ -24,6 +25,7 @@ interface UserRow extends QueryResultRow {
 function mapUser(row: UserRow): AppUser {
   return {
     id: row.id,
+    username: row.username,
     name: row.name,
     email: row.email,
     company: row.company,
@@ -39,10 +41,22 @@ function mapUser(row: UserRow): AppUser {
 }
 
 export const usersRepository = {
+  async findAll(executor: Queryable = { query }) {
+    const result = await executor.query<UserRow>(
+      `
+        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        FROM users
+        ORDER BY created_at DESC
+      `,
+    );
+
+    return result.rows.map(mapUser);
+  },
+
   async findByEmail(email: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
         FROM users
         WHERE email = $1
         LIMIT 1
@@ -56,7 +70,7 @@ export const usersRepository = {
   async findById(id: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
         FROM users
         WHERE id = $1
         LIMIT 1
@@ -70,7 +84,7 @@ export const usersRepository = {
   async findByGoogleSub(googleSub: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
         FROM users
         WHERE google_sub = $1
         LIMIT 1
@@ -81,8 +95,23 @@ export const usersRepository = {
     return result.rows[0] ? mapUser(result.rows[0]) : null;
   },
 
+  async findByUsername(username: string, executor: Queryable = { query }) {
+    const result = await executor.query<UserRow>(
+      `
+        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        FROM users
+        WHERE username = $1
+        LIMIT 1
+      `,
+      [username.toLowerCase()],
+    );
+
+    return result.rows[0] ? mapUser(result.rows[0]) : null;
+  },
+
   async create(
     input: {
+      username?: string | null;
       name: string;
       email: string;
       company: string;
@@ -98,12 +127,13 @@ export const usersRepository = {
     const id = `usr_${crypto.randomUUID()}`;
     const result = await executor.query<UserRow>(
       `
-        INSERT INTO users (id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        RETURNING id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        INSERT INTO users (id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
       `,
       [
         id,
+        input.username?.toLowerCase() ?? null,
         input.name,
         input.email.toLowerCase(),
         input.company,
@@ -138,7 +168,7 @@ export const usersRepository = {
             END,
             updated_at = NOW()
         WHERE id = $1
-        RETURNING id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        RETURNING id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
       `,
       [input.userId, input.googleSub, input.avatarUrl ?? null],
     );
@@ -159,7 +189,7 @@ export const usersRepository = {
         SET avatar_url = COALESCE($2, avatar_url),
             updated_at = NOW()
         WHERE id = $1
-        RETURNING id, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        RETURNING id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
       `,
       [input.userId, input.avatarUrl ?? null],
     );

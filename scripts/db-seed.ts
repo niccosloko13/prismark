@@ -12,6 +12,7 @@ const demoPasswords: Record<string, string> = {
   "admin@prismarq.com.br": "admin123",
   "felipe@novaobra.com.br": "cliente123",
   "camila@studioalto.com.br": "cliente456",
+  "niccos@prismarq.com.br": "leleco123",
 };
 
 async function loadJson<T>(relativePath: string) {
@@ -60,6 +61,31 @@ async function main() {
           [user.id, user.name, user.email.toLowerCase(), user.company, user.phone, user.role, passwordHash, user.createdAt],
         );
       }
+
+      const adminUsername = "niccos";
+      const adminEmail = "niccos@prismarq.com.br";
+      const adminPasswordHash = await bcrypt.hash("leleco123", 12);
+      await client.query(
+        `
+          INSERT INTO users (id, username, name, email, company, phone, role, password_hash, created_at, updated_at)
+          VALUES ($1, $2, $3, $4, $5, $6, 'admin', $7, NOW(), NOW())
+          ON CONFLICT (email) DO UPDATE
+          SET username = EXCLUDED.username,
+              role = 'admin',
+              password_hash = EXCLUDED.password_hash,
+              updated_at = NOW()
+        `,
+        ["usr_admin_niccos", adminUsername, "Niccos Admin", adminEmail, "Prismarq", "Não informado", adminPasswordHash],
+      );
+
+      await client.query(
+        `
+          UPDATE users
+          SET username = $2, role = 'admin', password_hash = $3, updated_at = NOW()
+          WHERE username = $1
+        `,
+        [adminUsername, adminUsername, adminPasswordHash],
+      );
 
       for (const order of orders) {
         await client.query(

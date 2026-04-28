@@ -1,5 +1,8 @@
 export const ORDER_STATUSES = [
   "novo",
+  "aguardando pagamento",
+  "confirmado",
+  "cancelado",
   "aguardando arte",
   "em análise",
   "produção",
@@ -243,6 +246,7 @@ export interface OrderRecord {
   clientId: string;
   clientName: string;
   clientEmail: string;
+  clientPhone?: string | null;
   productSlug: string;
   productName: string;
   measures: OrderMeasures;
@@ -259,6 +263,7 @@ export interface OrderRecord {
 
 export interface AppUser {
   id: string;
+  username?: string | null;
   name: string;
   email: string;
   company: string;
@@ -274,6 +279,7 @@ export interface AppUser {
 
 export interface SessionUser {
   id: string;
+  username?: string | null;
   name: string;
   email: string;
   company: string;
@@ -305,6 +311,59 @@ export interface CreateOrderInput {
   selectedAddonIds?: string[];
   notes?: string;
   fileId?: string | null;
+}
+
+export const PIX_KEY_TYPES = ["CPF", "CNPJ", "EMAIL", "PHONE", "RANDOM"] as const;
+export type PixKeyType = (typeof PIX_KEY_TYPES)[number];
+
+export const PAYMENT_METHODS = ["PIX_MANUAL"] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
+export const PAYMENT_STATUSES = ["PENDING", "CONFIRMED", "CANCELLED"] as const;
+export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
+
+export interface PaymentSettingsRecord {
+  id: string;
+  pixEnabled: boolean;
+  pixKey: string | null;
+  pixKeyType: PixKeyType | null;
+  pixReceiverName: string | null;
+  pixReceiverCity: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaymentRecord {
+  id: string;
+  orderId: string;
+  amount: number;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  txid: string;
+  pixCopyPaste: string | null;
+  proofUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+  confirmedAt: string | null;
+  cancelledAt: string | null;
+}
+
+export interface PaymentWithOrderRecord extends PaymentRecord {
+  order: Pick<
+    OrderRecord,
+    | "id"
+    | "clientName"
+    | "clientEmail"
+    | "clientPhone"
+    | "status"
+    | "productName"
+    | "measures"
+    | "value"
+    | "createdAt"
+    | "deadline"
+    | "material"
+    | "finishing"
+  >;
 }
 
 export interface UpdateOrderStatusInput {

@@ -11,6 +11,7 @@ import { passwordService } from "@/server/services/password.service";
 export function toSessionUser(user: AppUser): SessionUser {
   return {
     id: user.id,
+    username: user.username ?? null,
     name: user.name,
     email: user.email,
     company: user.company,
@@ -30,6 +31,27 @@ export const authService = {
 
     const matches = await passwordService.verify(input.password, user.passwordHash);
 
+    if (!matches) {
+      throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
+    }
+
+    return user;
+  },
+
+  async authenticateAdmin(rawInput: { username: string; password: string }) {
+    const username = rawInput.username.trim().toLowerCase();
+    const password = rawInput.password;
+
+    if (!username || !password) {
+      throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
+    }
+
+    const user = await usersRepository.findByUsername(username);
+    if (!user || user.role !== "admin") {
+      throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
+    }
+
+    const matches = await passwordService.verify(password, user.passwordHash);
     if (!matches) {
       throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
     }

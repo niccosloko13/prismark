@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
+  username TEXT UNIQUE,
   name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
   company TEXT NOT NULL,
@@ -14,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider TEXT NOT NULL DEFAULT 'credentials';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS username TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS google_sub TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
@@ -78,7 +80,100 @@ CREATE TABLE IF NOT EXISTS order_events (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS payment_settings (
+  id TEXT PRIMARY KEY,
+  pix_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+  pix_key TEXT,
+  pix_key_type TEXT CHECK (pix_key_type IN ('CPF', 'CNPJ', 'EMAIL', 'PHONE', 'RANDOM')),
+  pix_receiver_name TEXT,
+  pix_receiver_city TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+  id TEXT PRIMARY KEY,
+  order_id TEXT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  amount NUMERIC(12, 2) NOT NULL,
+  method TEXT NOT NULL CHECK (method IN ('PIX_MANUAL')),
+  status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'CONFIRMED', 'CANCELLED')),
+  txid TEXT NOT NULL UNIQUE,
+  pix_copy_paste TEXT,
+  proof_url TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  confirmed_at TIMESTAMPTZ,
+  cancelled_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_payments_order_id ON payments(order_id);
+CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
+CREATE INDEX IF NOT EXISTS idx_payments_method ON payments(method);
+
+DO $$
+DECLARE
+  constraint_name TEXT;
+BEGIN
+  FOR constraint_name IN
+    SELECT c.conname
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = c.connamespace
+    JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(c.conkey)
+    WHERE c.contype = 'c' AND n.nspname = 'public' AND t.relname = 'orders' AND a.attname = 'status'
+  LOOP
+    EXECUTE format('ALTER TABLE orders DROP CONSTRAINT %I', constraint_name);
+  END LOOP;
+END $$;
+
+ALTER TABLE orders
+  ADD CONSTRAINT orders_status_check CHECK (
+    status IN (
+      'novo',
+      'aguardando pagamento',
+      'confirmado',
+      'cancelado',
+      'aguardando arte',
+      'em análise',
+      'produção',
+      'finalizado',
+      'entregue'
+    )
+  );
+
+DO $$
+DECLARE
+  constraint_name TEXT;
+BEGIN
+  FOR constraint_name IN
+    SELECT c.conname
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = c.connamespace
+    JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(c.conkey)
+    WHERE c.contype = 'c' AND n.nspname = 'public' AND t.relname = 'order_status_history' AND a.attname = 'to_status'
+  LOOP
+    EXECUTE format('ALTER TABLE order_status_history DROP CONSTRAINT %I', constraint_name);
+  END LOOP;
+END $$;
+
+ALTER TABLE order_status_history
+  ADD CONSTRAINT order_status_history_to_status_check CHECK (
+    to_status IN (
+      'novo',
+      'aguardando pagamento',
+      'confirmado',
+      'cancelado',
+      'aguardando arte',
+      'em análise',
+      'produção',
+      'finalizado',
+      'entregue'
+    )
+  );
+
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username) WHERE username IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_google_sub ON users(google_sub) WHERE google_sub IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_orders_client_id ON orders(client_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);

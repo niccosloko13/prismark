@@ -1,10 +1,12 @@
 
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import QRCode from "qrcode";
 
 import { useCart } from "@/components/cart/cart-provider";
 import { Badge } from "@/components/common/badge";
@@ -13,8 +15,8 @@ import { getProductBySlug, products } from "@/lib/catalog";
 import { getDefaultSelection, getProductExperience } from "@/lib/product-experience";
 import { resolveOrderDraft, type OrderDraftValues } from "@/lib/order-presets";
 import { calculateQuote } from "@/lib/pricing";
-import { cn, formatCurrencyBRL } from "@/lib/utils";
-import type { SessionUser, StoredFile } from "@/types";
+import { cn, formatCurrencyBRL, formatDateBR } from "@/lib/utils";
+import type { OrderRecord, PaymentRecord, SessionUser, StoredFile } from "@/types";
 
 type CheckoutField = "customerName" | "customerEmail" | "customerPhone" | "cep" | "address";
 type CheckoutErrors = Partial<Record<CheckoutField, string>>;
@@ -269,6 +271,33 @@ function buildCheckoutNotes({
 
   return blocks.join("\n");
 }
+
+function extractAdditionalServices(notes?: string | null) {
+  const source = notes ?? "";
+  const match = source.match(/Serviços adicionais:\s*(.+)/i);
+  if (!match?.[1]) {
+    return [];
+  }
+
+  return match[1]
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+type PixCheckoutState =
+  | {
+      available: true;
+      order: OrderRecord;
+      payment: PaymentRecord;
+    }
+  | {
+      available: false;
+      orderId: string;
+      customerName: string;
+      amount: number;
+    };
+
 export function OrderBuilder({
   session,
   initialProductSlug,
@@ -315,6 +344,9 @@ export function OrderBuilder({
   const [touchedFields, setTouchedFields] = useState<Partial<Record<CheckoutField, boolean>>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [pixCheckout, setPixCheckout] = useState<PixCheckoutState | null>(null);
+  const [pixQrCodeUrl, setPixQrCodeUrl] = useState("");
+  const [pixCopied, setPixCopied] = useState(false);
   const initializedRef = useRef(false);
   const fieldRefs = useRef<Partial<Record<CheckoutField, HTMLInputElement | null>>>({});
   const { upsertItem } = useCart();
@@ -387,6 +419,34 @@ export function OrderBuilder({
       });
     }
   }, [deliveryMode]);
+
+  useEffect(() => {
+    if (!pixCheckout?.available || !pixCheckout.payment.pixCopyPaste) {
+      setPixQrCodeUrl("");
+      return;
+    }
+
+    let active = true;
+    QRCode.toDataURL(pixCheckout.payment.pixCopyPaste, {
+      width: 232,
+      margin: 1,
+      color: { dark: "#111111", light: "#FFFFFFFF" },
+    })
+      .then((dataUrl) => {
+        if (active) {
+          setPixQrCodeUrl(dataUrl);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setPixQrCodeUrl("");
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [pixCheckout]);
 
   const normalizedCheckout = {
     customerName: customerName.trim(),
@@ -490,6 +550,9 @@ export function OrderBuilder({
   function handleSubmit() {
     setError("");
     setMessage("");
+    setPixCheckout(null);
+    setPixQrCodeUrl("");
+    setPixCopied(false);
     setSubmitAttempted(true);
 
     if (!session) {
@@ -566,6 +629,48 @@ export function OrderBuilder({
           throw new Error(data.message ?? "Nao foi possivel finalizar o pedido.");
         }
 
+        if (paymentMethod === "pix") {
+          const pixResponse = await fetch("/api/payments/pix", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: data.order.id,
+            }),
+          });
+
+          const pixPayload = (await pixResponse.json()) as {
+            available?: boolean;
+            payment?: PaymentRecord;
+            order?: OrderRecord;
+            message?: string;
+          };
+
+          if (!pixResponse.ok) {
+            throw new Error(pixPayload.message ?? "Nao foi possivel preparar o pagamento Pix.");
+          }
+
+          if (pixPayload.available && pixPayload.payment && pixPayload.order) {
+            setPixCheckout({
+              available: true,
+              order: pixPayload.order,
+              payment: pixPayload.payment,
+            });
+            setMessage(`Pedido #${pixPayload.order.id} criado. Aguardando pagamento.`);
+          } else {
+            setPixCheckout({
+              available: false,
+              orderId: data.order.id,
+              customerName: normalizedCheckout.customerName,
+              amount: quote.total,
+            });
+            setMessage(`Pedido #${data.order.id} criado.`);
+          }
+
+          return;
+        }
+
         setMessage(`Pedido ${data.order.id} confirmado com sucesso.`);
         router.push(`/dashboard?created=${data.order.id}`);
         router.refresh();
@@ -613,6 +718,20 @@ export function OrderBuilder({
 
     upsertItem(cartItem);
     router.push("/cart");
+  }
+
+  async function handleCopyPixCode() {
+    if (!pixCheckout?.available || !pixCheckout.payment.pixCopyPaste) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(pixCheckout.payment.pixCopyPaste);
+      setPixCopied(true);
+      window.setTimeout(() => setPixCopied(false), 1800);
+    } catch {
+      setError("Nao foi possivel copiar o codigo Pix automaticamente.");
+    }
   }
 
   return (
@@ -1032,6 +1151,135 @@ export function OrderBuilder({
           </div>
           <p className="mt-3 text-center text-sm font-medium text-black/58">{primaryActionHelper}</p>
         </div>
+
+        {pixCheckout ? (
+          pixCheckout.available ? (
+            <section className="mt-6 rounded-[32px] border border-cyan/24 bg-[linear-gradient(180deg,rgba(0,181,255,0.08),rgba(255,255,255,0.98))] p-5 shadow-[0_22px_44px_rgba(0,181,255,0.1)] sm:p-6">
+              <p className="label-kicker">Pagamento via Pix</p>
+              <h3 className="display-title mt-2 text-[1.4rem] font-semibold tracking-tight text-ink sm:text-[1.55rem]">
+                Pagamento via Pix
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-black/66">
+                Para finalizar seu pedido, realize o pagamento via Pix utilizando o QR Code ou o código abaixo. Assim
+                que o pagamento for identificado, seu pedido será confirmado em instantes.
+              </p>
+
+              <div className="mt-4 rounded-[22px] border border-black/10 bg-white p-4 shadow-[0_14px_30px_rgba(15,15,15,0.05)]">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/44">Resumo do pedido</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <div className="surface-muted px-4 py-3">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Produto principal</p>
+                    <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.productName}</strong>
+                  </div>
+                  <div className="surface-muted px-4 py-3">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Quantidade</p>
+                    <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.measures.quantity} un.</strong>
+                  </div>
+                  <div className="surface-muted px-4 py-3">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Configuração principal</p>
+                    <strong className="mt-1 block text-sm font-semibold text-ink">
+                      {pixCheckout.order.measures.width} x {pixCheckout.order.measures.height} cm · {pixCheckout.order.material}
+                    </strong>
+                    <p className="mt-1 text-xs text-black/54">Acabamento: {pixCheckout.order.finishing}</p>
+                  </div>
+                  <div className="surface-muted px-4 py-3">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Prazo escolhido</p>
+                    <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.deadline}</strong>
+                  </div>
+                  <div className="surface-muted px-4 py-3 sm:col-span-2">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Serviços adicionais</p>
+                    <strong className="mt-1 block text-sm font-semibold text-ink">
+                      {extractAdditionalServices(pixCheckout.order.notes).length > 0
+                        ? extractAdditionalServices(pixCheckout.order.notes).join(" · ")
+                        : "Nenhum serviço adicional"}
+                    </strong>
+                  </div>
+                  <div className="surface-muted px-4 py-3 sm:col-span-2">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Total do pedido</p>
+                    <strong className="mt-1 block text-lg font-semibold text-ink">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <div className="surface-muted px-4 py-3">
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Pedido</p>
+                  <strong className="mt-1 block text-sm font-semibold text-ink">#{pixCheckout.order.id}</strong>
+                </div>
+                <div className="surface-muted px-4 py-3">
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Código Pix / txid</p>
+                  <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.payment.txid}</strong>
+                </div>
+                <div className="surface-muted px-4 py-3">
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Cliente</p>
+                  <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.clientName}</strong>
+                </div>
+                <div className="surface-muted px-4 py-3">
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Data de criação do pedido</p>
+                  <strong className="mt-1 block text-sm font-semibold text-ink">{formatDateBR(pixCheckout.order.createdAt)}</strong>
+                </div>
+                <div className="surface-muted px-4 py-3 sm:col-span-2">
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Status</p>
+                  <strong className="mt-1 block text-sm font-semibold text-amber-800">Aguardando pagamento</strong>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
+                <div className="rounded-[22px] border border-black/10 bg-white p-3 shadow-[0_14px_32px_rgba(15,15,15,0.06)]">
+                  {pixQrCodeUrl ? (
+                    <Image
+                      src={pixQrCodeUrl}
+                      alt="QR Code Pix do pedido"
+                      width={232}
+                      height={232}
+                      unoptimized
+                      className="h-full w-full rounded-[14px]"
+                    />
+                  ) : (
+                    <div className="flex aspect-square items-center justify-center rounded-[14px] bg-black/[0.03] text-sm text-black/56">
+                      Gerando QR Code...
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-[22px] border border-black/10 bg-white p-4 shadow-[0_14px_32px_rgba(15,15,15,0.06)]">
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-black/44">Código Pix copia-e-cola</p>
+                  <textarea
+                    readOnly
+                    value={pixCheckout.payment.pixCopyPaste ?? ""}
+                    className="field mt-2 min-h-[122px] rounded-[18px] text-[0.76rem] leading-5"
+                  />
+                  <button type="button" onClick={handleCopyPixCode} className="btn btn-primary focus-ring mt-3">
+                    {pixCopied ? "Codigo copiado!" : "Copiar codigo Pix"}
+                  </button>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm leading-6 text-black/62">
+                O valor do Pix já está vinculado a este pedido. Após a identificação do pagamento, iniciaremos a
+                próxima etapa de produção.
+              </p>
+              <p className="mt-2 text-sm leading-6 text-black/62">
+                Caso deseje agilizar o processo, você pode enviar o comprovante de pagamento. Isso nos ajuda a
+                localizar sua transação mais rapidamente.
+              </p>
+              <p className="mt-2 text-sm font-medium text-ink/80">
+                Ambiente seguro — seu pedido só é confirmado após a identificação do pagamento.
+              </p>
+              <p className="mt-2 text-sm font-medium text-ink/80">
+                Após realizar o pagamento, acompanhe o status do seu pedido pelo painel ou aguarde a atualização da
+                equipe Prismarq.
+              </p>
+            </section>
+          ) : (
+            <section className="mt-6 rounded-[30px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,248,249,0.95))] p-5 shadow-[0_16px_34px_rgba(15,15,15,0.05)] sm:p-6">
+              <h3 className="display-title text-[1.3rem] font-semibold tracking-tight text-ink">Pix indisponível no momento.</h3>
+              <p className="mt-2 text-sm leading-6 text-black/62">
+                Escolha outro método de pagamento ou entre em contato com a Prismarq.
+              </p>
+            </section>
+          )
+        ) : null}
       </div>
 
       <aside className="panel h-fit p-6 sm:p-8 lg:sticky lg:top-8">

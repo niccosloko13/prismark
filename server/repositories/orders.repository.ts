@@ -17,6 +17,7 @@ interface OrderRow extends QueryResultRow {
   client_id: string;
   client_name: string;
   client_email: string;
+  client_phone: string | null;
   product_slug: string;
   product_name: string;
   width_cm: string | number;
@@ -87,6 +88,7 @@ function mapOrder(row: OrderRow): OrderRecord {
     clientId: row.client_id,
     clientName: row.client_name,
     clientEmail: row.client_email,
+    clientPhone: row.client_phone,
     productSlug: row.product_slug,
     productName: row.product_name,
     measures: {
@@ -138,6 +140,7 @@ async function fetchOrders(whereSql: string, params: unknown[], executor: Querya
         o.client_id,
         u.name AS client_name,
         u.email AS client_email,
+        u.phone AS client_phone,
         o.product_slug,
         o.product_name,
         o.width_cm,
