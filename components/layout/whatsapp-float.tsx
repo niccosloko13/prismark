@@ -1,19 +1,44 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { companyLinks } from "@/lib/company";
+import { cn } from "@/lib/utils";
+
+/** Altura aproximada das barras fixas de CTA no mobile (produto / carrinho / checkout). */
+function useMobileFabBottomOffset() {
+  const pathname = usePathname() ?? "";
+  if (/^\/products\/[^/]+$/.test(pathname)) {
+    return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+14.25rem)]";
+  }
+  if (pathname === "/cart" || pathname === "/order") {
+    return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+11.5rem)]";
+  }
+  return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+5.75rem)]";
+}
 
 export function WhatsAppFloat() {
+  const bottomOffset = useMobileFabBottomOffset();
+
   return (
     <Link
       href={companyLinks.whatsapp}
       target="_blank"
       rel="noreferrer"
-      className="btn btn-primary focus-ring fixed bottom-24 right-3 z-50 max-w-[min(100%,calc(100vw-1.75rem))] gap-2 px-3 py-2.5 shadow-[0_18px_42px_rgba(15,15,15,0.2)] sm:bottom-5 sm:right-5 sm:max-w-[calc(100vw-2rem)] sm:px-5 sm:py-3"
+      aria-label="Falar com a Prismarq no WhatsApp"
+      className={cn(
+        "focus-ring fixed right-3 z-[35] flex items-center justify-center shadow-[0_12px_32px_rgba(15,15,15,0.2)] transition duration-200 hover:brightness-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:brightness-100 motion-reduce:active:scale-100",
+        bottomOffset,
+        "h-11 w-11 rounded-full border border-white/22 bg-[#25D366] text-white lg:h-auto lg:w-auto lg:min-h-[44px] lg:rounded-full lg:border-0 lg:bg-gradient-to-b lg:from-[#171717] lg:to-[#0a0a0a] lg:px-5 lg:py-3 lg:text-white lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_38px_rgba(15,15,15,0.18)]",
+        "lg:bottom-8 lg:right-5 lg:max-w-[calc(100vw-2rem)] lg:gap-2",
+        "max-lg:p-0 lg:gap-2",
+      )}
     >
-      <span className="grid h-7 w-7 place-items-center rounded-full bg-emerald-500 text-[0.7rem] font-black text-white sm:h-8 sm:w-8 sm:text-xs">
+      <span className="grid h-8 w-8 place-items-center rounded-full bg-white/18 text-[0.65rem] font-black text-white lg:bg-emerald-500 lg:text-[0.7rem]">
         WA
       </span>
-      <span className="truncate text-sm sm:text-[0.95rem]">WhatsApp</span>
+      <span className="max-lg:sr-only truncate text-sm font-semibold lg:text-[0.95rem]">WhatsApp</span>
     </Link>
   );
 }

@@ -156,9 +156,9 @@ export function HomePage() {
   const heroProducts = quickProducts.slice(0, 3);
 
   return (
-    <div className="space-y-5 sm:space-y-8 lg:space-y-10">
+    <div className="space-y-4 sm:space-y-8 lg:space-y-10">
       {/* Inspirado em: https://www.360imprimir.com.br/ */}
-      <section className="panel relative overflow-hidden p-4 sm:p-7 lg:p-8">
+      <section className="panel relative overflow-hidden p-3.5 sm:p-7 lg:p-8">
         <div className="pointer-events-none absolute -left-16 -top-16 h-44 w-44 rounded-full bg-cyan/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-16 top-8 h-40 w-40 rounded-full bg-magenta/10 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 left-1/2 h-32 w-32 -translate-x-1/2 rounded-full bg-yellow/20 blur-3xl" />
@@ -168,7 +168,7 @@ export function HomePage() {
             <Link
               href="/"
               aria-label="Prismarq Comunicacao Visual"
-              className="focus-ring mb-3 flex w-full justify-center rounded-2xl sm:mb-5 sm:inline-flex sm:w-auto sm:justify-start"
+              className="focus-ring mb-3 inline-flex w-full justify-center transition hover:opacity-90 sm:mb-5 sm:w-auto sm:justify-start"
             >
               <Image
                 src={heroLogoImage}

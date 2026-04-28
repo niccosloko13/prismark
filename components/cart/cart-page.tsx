@@ -269,8 +269,8 @@ export function CartPage({ session }: { session: SessionUser | null }) {
   }
 
   return (
-    <div className="space-y-6">
-      <section className="panel relative overflow-hidden p-6 sm:p-8 lg:p-10">
+    <div className="space-y-4 pb-[7.5rem] sm:space-y-6 lg:pb-0">
+      <section className="panel relative overflow-hidden p-4 sm:p-8 lg:p-10">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(0,181,255,0.12),_transparent_34%),radial-gradient(circle_at_bottom_left,_rgba(255,46,191,0.09),_transparent_34%)]" />
         <div className="relative grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] xl:items-end">
           <div className="space-y-4">
@@ -509,7 +509,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
             </div>
           ) : null}
 
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-6 hidden flex-col gap-3 lg:flex">
             {session ? (
               <button
                 type="button"
@@ -538,6 +538,40 @@ export function CartPage({ session }: { session: SessionUser | null }) {
             </button>
           </div>
         </aside>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-black/10 bg-white/97 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(15,15,15,0.12)] backdrop-blur-md sm:px-4 lg:hidden">
+        <div className="mx-auto flex w-full max-w-[1600px] items-end gap-3">
+          <div className="min-w-0 shrink">
+            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-black/42">Total</p>
+            <strong className="block text-base font-semibold tabular-nums text-ink">{formatCurrencyBRL(subtotal)}</strong>
+            <p className="text-[0.72rem] font-medium text-cyan-800">{formatCurrencyBRL(pixSubtotal)} no Pix</p>
+          </div>
+          <div className="min-w-0 flex-1">
+            {session ? (
+              <button
+                type="button"
+                onClick={handleFinalize}
+                disabled={isPending}
+                className="focus-ring flex min-h-[52px] w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)] transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-65"
+              >
+                {isPending ? "Finalizando..." : "Finalizar carrinho"}
+              </button>
+            ) : (
+              <Link
+                href="/login?returnTo=/cart"
+                className="focus-ring flex min-h-[52px] w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)]"
+              >
+                Entrar para finalizar
+              </Link>
+            )}
+          </div>
+        </div>
+        <div className="mx-auto mt-2 flex max-w-[1600px] justify-center gap-3 text-[0.72rem] font-semibold">
+          <Link href="/products" className="text-black/55 underline-offset-2 hover:text-ink hover:underline">
+            Continuar comprando
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -114,7 +114,7 @@ export function ProductSummaryPanel({
 
   return (
     <>
-      <section className="panel p-4 sm:p-5" id="resumo-pedido">
+      <section className="panel p-3.5 sm:p-5" id="resumo-pedido">
         <div className="rounded-[22px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(246,247,249,0.94))] p-4 shadow-[0_20px_44px_rgba(15,15,15,0.07),inset_0_1px_0_rgba(255,255,255,0.86)] sm:rounded-[26px] sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-2 border-b border-black/8 pb-3">
             <div className="min-w-0">
@@ -155,7 +155,7 @@ export function ProductSummaryPanel({
               </div>
             </div>
 
-            <div className="grid w-full gap-2">
+            <div className="hidden w-full gap-2 lg:grid">
               <button
                 type="button"
                 onClick={handleCartAction}
@@ -269,24 +269,24 @@ export function ProductSummaryPanel({
         </div>
       </section>
 
-      <div className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.85rem)] z-40 sm:inset-x-4 lg:hidden">
-        <div className="rounded-[24px] border border-black/10 bg-white/96 p-3 pb-[calc(env(safe-area-inset-bottom)+0.45rem)] shadow-[0_24px_48px_rgba(15,15,15,0.16)] backdrop-blur">
-          <div className="flex items-start justify-between gap-3">
+      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-black/10 bg-white/97 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(15,15,15,0.12)] backdrop-blur-md sm:px-4 lg:hidden">
+        <div className="mx-auto w-full max-w-[1600px]">
+          <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-ink">{product.name}</p>
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-[0.72rem] text-black/54">
+              <p className="truncate text-[0.8125rem] font-semibold leading-tight text-ink">{product.name}</p>
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0 text-[0.68rem] text-black/52">
                 <span>{selection.deadline}</span>
-                <span className="h-1 w-1 rounded-full bg-black/18" />
+                <span className="text-black/28">·</span>
                 <span>{selection.quantity} un.</span>
-                <span className="h-1 w-1 rounded-full bg-black/18" />
-                <span>15% OFF no Pix</span>
+                <span className="text-black/28">·</span>
+                <span>Pix -15%</span>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/42">Total</p>
+            <div className="shrink-0 text-right">
+              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-black/42">Total</p>
               <strong
                 className={cn(
-                  "mt-1 block text-lg font-semibold text-ink transition duration-300 motion-safe:transform-gpu",
+                  "mt-0.5 block text-base font-semibold tabular-nums text-ink transition duration-300 motion-safe:transform-gpu",
                   pricePulse ? "scale-[1.03]" : "scale-100",
                 )}
               >
@@ -294,28 +294,30 @@ export function ProductSummaryPanel({
               </strong>
             </div>
           </div>
-          <div className="mt-2 rounded-full bg-black/[0.03] px-3 py-2 text-center text-sm font-medium text-ink">
-            {formatCurrencyBRL(pixTotal)} no Pix
-          </div>
-          <div className="mt-3 grid gap-2">
-            <button
-              type="button"
-              onClick={handleCartAction}
-              disabled={isPending}
-              className="focus-ring inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-white shadow-[0_24px_44px_rgba(15,15,15,0.18)] transition duration-200 hover:bg-black disabled:cursor-wait disabled:opacity-80"
-            >
-              {isPending ? "Adicionando..." : editingCartItemId ? "Salvar no carrinho" : "Adicionar ao carrinho"}
-              <ArrowRight />
-            </button>
+          <p className="mt-1.5 text-center text-[0.78rem] font-semibold tabular-nums text-cyan-800">{formatCurrencyBRL(pixTotal)} no Pix</p>
+          <div className="mt-2.5 grid w-full gap-2">
             {!editingCartItemId ? (
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="btn btn-secondary focus-ring min-h-12 w-full justify-center"
+                className="focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.32)] transition duration-200 hover:brightness-[1.03] active:scale-[0.99] motion-reduce:transform-none"
               >
                 Comprar agora
+                <ArrowRight />
               </button>
             ) : null}
+            <button
+              type="button"
+              onClick={handleCartAction}
+              disabled={isPending}
+              className={cn(
+                "focus-ring flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full border border-black/12 bg-white px-4 text-sm font-semibold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_26px_rgba(15,15,15,0.08)] transition hover:bg-black/[0.02] disabled:cursor-wait disabled:opacity-75",
+                !editingCartItemId ? "" : "min-h-[52px] bg-ink text-white shadow-[0_20px_40px_rgba(15,15,15,0.18)] hover:bg-black",
+              )}
+            >
+              {isPending ? "Adicionando..." : editingCartItemId ? "Salvar no carrinho" : "Adicionar ao carrinho"}
+              <ArrowRight />
+            </button>
           </div>
         </div>
       </div>

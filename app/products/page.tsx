@@ -77,7 +77,7 @@ export default async function ProductsPage({
         </div>
 
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-7">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard key={product.slug} product={product} variant="catalog" />
             ))}

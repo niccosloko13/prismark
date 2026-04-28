@@ -68,7 +68,7 @@ export function AdminShell({
         </button>
       </aside>
 
-      <main className="space-y-4">
+      <main className="space-y-4 pb-24 lg:pb-0">
         <header className="panel p-4 sm:p-6">
           <div className="flex items-start justify-between gap-3">
             <div>

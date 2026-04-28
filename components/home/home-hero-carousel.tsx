@@ -59,14 +59,14 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
     <section className="panel relative overflow-hidden p-0">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_14%,rgba(0,181,255,0.06),transparent_24%),radial-gradient(circle_at_88%_18%,rgba(255,46,191,0.05),transparent_20%),radial-gradient(circle_at_76%_84%,rgba(255,211,0,0.07),transparent_16%)]" />
       <div className="relative grid min-h-[420px] lg:grid-cols-[0.88fr_1.12fr]">
-        <div className="flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12">
-          <div>
+        <div className="flex min-w-0 flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12">
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <p className="label-kicker">{activeSlide.eyebrow}</p>
               {activeSlide.badge ? <Badge tone={activeSlide.tone ?? "cyan"}>{activeSlide.badge}</Badge> : null}
             </div>
 
-            <h1 className="display-title mt-5 max-w-2xl text-[clamp(2.7rem,4vw,4.9rem)] font-semibold leading-[0.93] tracking-tight text-balance text-ink">
+            <h1 className="display-title mt-5 max-w-2xl break-words text-[clamp(2.2rem,6.8vw,4.9rem)] font-semibold leading-[1.03] tracking-tight text-balance text-ink">
               {activeSlide.title}
             </h1>
             <p className="mt-5 max-w-xl text-[0.97rem] leading-7 text-black/64 sm:text-[1.02rem]">

@@ -60,11 +60,11 @@ function FieldGroup({
 }) {
   return (
     <section className={className}>
-      <div className="mb-4">
-        <h3 className="display-title text-[1.2rem] font-semibold tracking-tight text-ink">{title}</h3>
-        <p className="mt-2 text-sm leading-6 text-black/60">{description}</p>
+      <div className="mb-3 sm:mb-4">
+        <h3 className="display-title text-[1.05rem] font-semibold tracking-tight text-ink sm:text-[1.2rem]">{title}</h3>
+        <p className="mt-1.5 text-sm leading-6 text-black/60 sm:mt-2">{description}</p>
       </div>
-      <div className="surface-card p-5 shadow-[0_18px_38px_rgba(15,15,15,0.05)] sm:p-6">{children}</div>
+      <div className="surface-card p-4 shadow-[0_18px_38px_rgba(15,15,15,0.05)] sm:p-6">{children}</div>
     </section>
   );
 }
@@ -735,9 +735,10 @@ export function OrderBuilder({
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_390px]">
-      <div className="panel p-6 sm:p-8 lg:p-10">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-black/8 pb-7">
+    <>
+    <div className="grid gap-4 pb-[8.5rem] sm:gap-5 sm:pb-28 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-6 lg:pb-6">
+      <div className="panel p-4 sm:p-8 lg:p-10">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/8 pb-5 sm:gap-4 sm:pb-7">
           <div className="max-w-3xl">
             <p className="label-kicker">Checkout Prismarq</p>
             <h2 className="display-title mt-3 text-[clamp(2rem,3vw,3.2rem)] font-semibold leading-[0.98] tracking-tight text-balance">
@@ -765,7 +766,7 @@ export function OrderBuilder({
           )}
         </div>
 
-        <div className="mt-6 grid gap-6">
+        <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6">
           <FieldGroup
             title="Detalhes do pedido"
             description="Revise produto, medidas, material, acabamento, prazo e arte antes de seguir para o pagamento."
@@ -1131,7 +1132,7 @@ export function OrderBuilder({
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-[1.12fr_0.88fr]">
+          <div className="mt-5 hidden gap-3 lg:grid lg:grid-cols-[1.12fr_0.88fr]">
             <button
               type="button"
               onClick={handleSubmit}
@@ -1370,5 +1371,52 @@ export function OrderBuilder({
         </div>
       </aside>
     </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-black/10 bg-white/97 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(15,15,15,0.12)] backdrop-blur-md sm:px-4 lg:hidden">
+        <div className="mx-auto w-full max-w-[1600px]">
+          {pixCheckout?.available ? (
+            <>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-black/45">Pagamento Pix</p>
+                <strong className="text-sm font-semibold tabular-nums text-ink">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyPixCode}
+                className="focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)]"
+              >
+                {pixCopied ? "Codigo copiado!" : "Copiar codigo Pix"}
+              </button>
+            </>
+          ) : !pixCheckout ? (
+            <>
+              <div className="flex items-end justify-between gap-3">
+                <div className="min-w-0 shrink">
+                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-black/42">Total</p>
+                  <strong className="mt-0.5 block text-base font-semibold tabular-nums text-ink">{formatCurrencyBRL(quote.total)}</strong>
+                  <p className="text-[0.72rem] font-medium text-cyan-800">{formatCurrencyBRL(pixTotal)} no Pix</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isPending}
+                className="focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)] transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {primaryActionLabel}
+                <ArrowRight />
+              </button>
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="focus-ring mt-2 flex min-h-[44px] w-full items-center justify-center rounded-full border border-black/12 bg-white text-sm font-semibold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+              >
+                Adicionar ao carrinho
+              </button>
+            </>
+          ) : null}
+        </div>
+      </div>
+    </>
   );
 }

@@ -94,10 +94,10 @@ function HeaderBrand({
       onClick={onClick}
       aria-label="Ir para a home da Prismarq"
       className={cn(
-        "focus-ring flex max-w-full items-center rounded-[20px] border border-[#E5E7EB] bg-[#F3F4F6] transition hover:border-black/12",
+        "focus-ring inline-flex max-w-full shrink-0 items-center rounded-md transition hover:opacity-90",
         mobile
-          ? "w-full max-w-[min(248px,calc(100vw-6.75rem))] px-2.5 py-2 sm:max-w-[260px]"
-          : "px-3 py-2 xl:px-3.5 xl:py-2.5",
+          ? "max-w-[min(248px,calc(100vw-6.75rem))] py-1 sm:max-w-[260px]"
+          : "py-1",
       )}
     >
       <Image
@@ -107,7 +107,7 @@ function HeaderBrand({
         sizes={mobile ? "(max-width: 640px) 248px, 260px" : "(max-width: 1280px) 252px, 288px"}
         className={cn(
           "h-auto w-full object-contain object-left",
-          mobile ? "w-full" : "w-[252px] xl:w-[276px] 2xl:w-[296px]",
+          mobile ? "max-h-8 w-auto max-w-[min(200px,calc(100vw-7rem))] sm:max-h-none sm:max-w-none" : "w-[252px] xl:w-[276px] 2xl:w-[296px]",
         )}
       />
     </Link>
@@ -140,15 +140,15 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
   return (
     <>
       <header className="relative z-40 border-b border-[#E5E7EB]">
-        <div className="relative overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-[#ECEBED] px-3 py-2.5 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7">
+        <div className="relative overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-[#ECEBED] px-2.5 py-1.5 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7">
 
           <div className="relative lg:hidden">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 items-center">
                 <HeaderBrand mobile priority />
               </div>
 
-              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 self-center">
                 <CartNavLink compact className="shrink-0" />
                 <button
                   type="button"
@@ -156,7 +156,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   aria-controls="mobile-drawer"
                   aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
                   onClick={() => setIsMobileMenuOpen((current) => !current)}
-                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F3F4F6] text-ink transition hover:bg-white"
+                  className="focus-ring inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F3F4F6] text-ink transition hover:bg-white sm:h-11 sm:w-11"
                 >
                   {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
                 </button>

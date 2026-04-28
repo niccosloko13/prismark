@@ -32,9 +32,9 @@ export default async function RootLayout({
           Pular para o conteudo
         </a>
         <CartProvider>
-          <div className="mx-auto min-h-screen min-w-0 max-w-[1600px] overflow-x-clip px-3.5 pb-24 pt-2.5 sm:px-5 sm:pb-10 sm:pt-4 lg:px-8">
+          <div className="mx-auto min-h-screen min-w-0 max-w-[1600px] overflow-x-clip px-3.5 pb-32 pt-2.5 sm:px-5 sm:pb-10 sm:pt-4 lg:px-8">
             <SiteHeader session={session} />
-            <main id="main" className="mt-4 sm:mt-6">
+            <main id="main" className="mt-3 sm:mt-6">
               {children}
             </main>
             <SiteFooter />

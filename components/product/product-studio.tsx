@@ -68,9 +68,9 @@ export function ProductStudio({
     .slice(0, 4);
 
   return (
-    <div className="space-y-4 pb-[9.5rem] sm:space-y-5 sm:pb-32 xl:space-y-6 xl:pb-0">
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(380px,0.92fr)] xl:items-start xl:gap-6">
-        <div className="order-1 space-y-4 xl:order-2 xl:sticky xl:top-[5.25rem] xl:z-10 xl:self-start xl:space-y-5">
+    <div className="space-y-3 pb-[11.5rem] sm:space-y-4 sm:pb-32 xl:space-y-6 xl:pb-0">
+      <div className="grid gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(380px,0.92fr)] xl:items-start xl:gap-6">
+        <div className="order-1 space-y-3 sm:space-y-4 xl:order-2 xl:sticky xl:top-[5.25rem] xl:z-10 xl:self-start xl:space-y-5">
           <ProductPurchasePanel
             product={product}
             experience={experience}
@@ -147,7 +147,7 @@ export function ProductStudio({
           />
         </div>
 
-        <div className="order-2 space-y-3 xl:order-1 xl:space-y-4">
+        <div className="order-2 space-y-2.5 sm:space-y-3 xl:order-1 xl:space-y-4">
           <div className="flex flex-col gap-0">
             <ProductGallery
               product={product}

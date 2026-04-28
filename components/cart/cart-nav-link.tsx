@@ -37,7 +37,7 @@ export function CartNavLink({
       href="/cart"
       className={cn(
         "focus-ring inline-flex min-h-[44px] items-center gap-2 rounded-full border text-sm font-semibold transition duration-200",
-        compact ? "px-2.5 py-2" : "px-3.5 py-2",
+        compact ? "max-lg:min-h-10 max-lg:px-2 max-lg:py-1.5 px-2.5 py-2" : "px-3.5 py-2",
         hasItems
           ? "border-ink/12 bg-ink text-white shadow-[0_14px_36px_rgba(15,15,15,0.16)] hover:-translate-y-0.5 hover:bg-ink"
           : "border-black/10 bg-white text-ink hover:-translate-y-0.5 hover:border-black/16 hover:shadow-[0_12px_28px_rgba(15,15,15,0.08)]",
