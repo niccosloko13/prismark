@@ -81,10 +81,10 @@ function CatalogProductCard({ product }: { product: Product }) {
     >
       <Link
         href={detailHref}
-        className="focus-ring relative mx-4 mt-4 block overflow-hidden rounded-[22px] bg-[#F3F4F6] ring-1 ring-black/[0.06] transition group-hover:ring-black/10"
+        className="focus-ring relative mx-3 mt-3 block overflow-hidden rounded-[18px] bg-[#F3F4F6] ring-1 ring-black/[0.06] transition group-hover:ring-black/10 sm:mx-4 sm:mt-4 sm:rounded-[22px]"
         aria-label={`Ver ${product.name}`}
       >
-        <div className="relative aspect-[4/5] w-full sm:aspect-[1/1] sm:max-h-[280px]">
+        <div className="relative aspect-[1/1] w-full max-h-[260px] sm:aspect-[1/1] sm:max-h-[280px]">
           {imageSrc ? (
             <Image
               src={imageSrc}
@@ -101,13 +101,13 @@ function CatalogProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col p-4 pt-5 sm:p-5 sm:pt-6">
-        <div className="min-h-0 flex-1 space-y-3">
-          <h3 className="display-title text-balance text-[1.35rem] font-semibold leading-[1.08] tracking-tight text-ink sm:text-[1.55rem]">
+      <div className="flex flex-1 flex-col p-3.5 pt-4 sm:p-5 sm:pt-6">
+        <div className="min-h-0 flex-1 space-y-2.5 sm:space-y-3">
+          <h3 className="display-title text-balance text-[1.28rem] font-semibold leading-[1.08] tracking-tight text-ink sm:text-[1.55rem]">
             {product.name}
           </h3>
           <p
-            className="text-[0.95rem] font-medium leading-relaxed text-black/65 sm:text-[1rem]"
+            className="text-balance text-[0.9375rem] font-medium leading-relaxed text-black/65 sm:text-[1rem]"
             style={{
               display: "-webkit-box",
               WebkitBoxOrient: "vertical",
@@ -129,43 +129,45 @@ function CatalogProductCard({ product }: { product: Product }) {
           </ul>
         </div>
 
-        <div className="mt-5 rounded-[20px] border border-black/[0.08] bg-[linear-gradient(180deg,#FAFAFB,#F3F4F6)] p-4 sm:p-5">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div className="min-w-0">
+        <div className="mt-4 rounded-[18px] border border-black/[0.08] bg-[linear-gradient(180deg,#FAFAFB,#F3F4F6)] p-3.5 sm:mt-5 sm:rounded-[20px] sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+            <div className="min-w-0 flex-1">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/50">A partir de (Pix)</p>
-              <p className="display-title mt-1 text-[1.85rem] font-semibold tracking-tight text-ink sm:text-[2.1rem]">
+              <p className="display-title mt-1 text-[1.72rem] font-semibold tracking-tight text-ink sm:text-[2.1rem]">
                 {formatCurrencyBRL(pixPrice)}
               </p>
-              <p className="mt-0.5 text-sm font-medium text-black/55">por m² · 15% de desconto no Pix</p>
+              <p className="mt-0.5 text-[0.8125rem] font-medium leading-snug text-black/55 sm:text-sm">
+                por m² · 15% de desconto no Pix
+              </p>
             </div>
-            <span className="shrink-0 rounded-full bg-ink px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-white">
+            <span className="inline-flex w-fit shrink-0 self-start rounded-full bg-ink px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-white sm:self-end">
               Oferta Pix
             </span>
           </div>
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-black/[0.08] pt-3 text-sm font-medium text-black/58">
+          <div className="mt-3 flex flex-col gap-1.5 border-t border-black/[0.08] pt-3 text-[0.8125rem] font-medium leading-snug text-black/58 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:text-sm">
             <span className="min-w-0 break-words">Cartão: {formatCurrencyBRL(product.basePriceM2)}/m²</span>
-            <span className="shrink-0 text-black/52">{secondaryInfo}</span>
+            <span className="text-black/52">{secondaryInfo}</span>
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:items-stretch">
+        <div className="mt-3.5 flex flex-col gap-2.5 sm:mt-4 sm:flex-row sm:items-stretch">
           <Link
             href={detailHref}
-            className="btn btn-primary focus-ring min-h-[48px] flex-1 justify-center gap-2 px-4 text-[0.95rem] sm:min-h-[52px] sm:text-base"
+            className="btn btn-primary focus-ring min-h-[48px] w-full flex-1 justify-center gap-2 px-4 text-[0.9375rem] sm:min-h-[52px] sm:w-auto sm:text-base"
           >
             Personalizar agora
             <ArrowIcon />
           </Link>
           <Link
             href={`/order?product=${product.slug}`}
-            className="btn btn-secondary focus-ring min-h-[48px] justify-center px-4 text-[0.9rem] font-semibold whitespace-nowrap text-black/80 sm:min-h-[52px] sm:min-w-[10.5rem] sm:shrink-0 sm:text-[0.95rem]"
+            className="btn btn-secondary focus-ring min-h-[48px] w-full justify-center px-4 text-center text-[0.9rem] font-semibold text-black/80 sm:min-h-[52px] sm:w-auto sm:min-w-[10.5rem] sm:shrink-0 sm:text-[0.95rem]"
           >
             Fazer pedido
           </Link>
         </div>
         <Link
           href={detailHref}
-          className="focus-ring mt-3 block text-center text-sm font-semibold text-black/45 underline-offset-4 transition hover:text-ink hover:underline sm:text-left"
+          className="focus-ring mt-2.5 block text-center text-sm font-semibold text-black/45 underline-offset-4 transition hover:text-ink hover:underline sm:mt-3 sm:text-left"
         >
           Ver detalhes do produto
         </Link>

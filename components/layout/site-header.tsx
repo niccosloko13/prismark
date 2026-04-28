@@ -94,18 +94,18 @@ function HeaderBrand({
       onClick={onClick}
       aria-label="Ir para a home da Prismarq"
       className={cn(
-        "focus-ring flex shrink-0 items-center rounded-[24px] border border-[#E5E7EB] bg-[#ECEBED] transition hover:border-black/12",
-        mobile ? "max-w-[196px] px-2 py-1.5 sm:max-w-[212px]" : "px-2.5 py-1.5 xl:px-3.5 xl:py-2",
+        "focus-ring flex max-w-full items-center rounded-[20px] border border-[#E5E7EB] bg-[#F3F4F6] transition hover:border-black/12",
+        mobile ? "w-full max-w-[min(220px,calc(100vw-7.25rem))] px-2 py-2 sm:max-w-[228px]" : "px-2.5 py-1.5 xl:px-3.5 xl:py-2",
       )}
     >
       <Image
         src={headerLogoImage}
         alt="Prismarq Comunicacao Visual"
         priority={priority}
-        sizes={mobile ? "(max-width: 640px) 188px, 204px" : "(max-width: 1280px) 236px, 268px"}
+        sizes={mobile ? "(max-width: 640px) 220px, 228px" : "(max-width: 1280px) 236px, 268px"}
         className={cn(
-          "h-auto w-full object-contain",
-          mobile ? "max-w-[180px] sm:max-w-[196px]" : "w-[228px] xl:w-[248px] 2xl:w-[264px]",
+          "h-auto w-full object-contain object-left",
+          mobile ? "w-full" : "w-[228px] xl:w-[248px] 2xl:w-[264px]",
         )}
       />
     </Link>
@@ -138,13 +138,15 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
   return (
     <>
       <header className="relative z-40 border-b border-[#E5E7EB]">
-        <div className="relative overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-[#ECEBED] px-3.5 py-3 sm:px-6 sm:py-3.5 lg:px-7">
+        <div className="relative overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-[#ECEBED] px-3 py-2.5 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7">
 
           <div className="relative lg:hidden">
-            <div className="flex items-center justify-between gap-3">
-              <HeaderBrand mobile priority />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="min-w-0 flex-1">
+                <HeaderBrand mobile priority />
+              </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
                 <CartNavLink compact className="shrink-0" />
                 <button
                   type="button"
@@ -244,7 +246,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
         <aside
           id="mobile-drawer"
           className={cn(
-            "absolute inset-y-0 right-0 flex w-full max-w-[22rem] flex-col bg-white px-5 pb-6 pt-5 shadow-[0_26px_72px_rgba(15,15,15,0.18)] transition-transform duration-300 ease-out",
+            "absolute inset-y-0 right-0 flex w-full max-w-[22rem] flex-col bg-white px-4 pb-6 pt-4 shadow-[0_26px_72px_rgba(15,15,15,0.18)] transition-transform duration-300 ease-out sm:px-5 sm:pt-5",
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full",
           )}
           aria-hidden={!isMobileMenuOpen}

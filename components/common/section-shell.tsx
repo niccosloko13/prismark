@@ -16,13 +16,17 @@ export function SectionShell({
   children: ReactNode;
 }) {
   return (
-    <section className={cn("panel p-5 sm:p-8 lg:p-10 xl:p-11", className)}>
-      <div className="mb-7 max-w-4xl sm:mb-9">
+    <section className={cn("panel p-4 sm:p-8 lg:p-10 xl:p-11", className)}>
+      <div className="mb-6 max-w-4xl sm:mb-9">
         <p className="label-kicker">{eyebrow}</p>
-        <h2 className="display-title mt-3 max-w-3xl text-[clamp(1.7rem,4.8vw,3.35rem)] font-semibold leading-[1] tracking-tight text-balance">
+        <h2 className="display-title mt-2 max-w-3xl text-balance text-[clamp(1.45rem,5vw,3.35rem)] font-semibold leading-[1.05] tracking-tight sm:mt-3 sm:leading-[1]">
           {title}
         </h2>
-        {description ? <p className="mt-4 max-w-2xl text-sm leading-6 text-black/62 sm:text-base sm:leading-7">{description}</p> : null}
+        {description ? (
+          <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-black/62 sm:mt-4 sm:text-base sm:leading-7">
+            {description}
+          </p>
+        ) : null}
       </div>
       {children}
     </section>

@@ -22,8 +22,8 @@ const sizeMap = {
     sizes: "(max-width: 640px) 160px, (max-width: 1024px) 192px, 232px",
   },
   xl: {
-    imageClassName: "h-16 sm:h-20 lg:h-24",
-    sizes: "(max-width: 640px) 200px, (max-width: 1024px) 240px, 288px",
+    imageClassName: "h-[3.35rem] sm:h-20 lg:h-24",
+    sizes: "(max-width: 640px) 240px, (max-width: 1024px) 260px, 300px",
   },
 } as const;
 

@@ -79,17 +79,25 @@ body::before {
 
 @layer components {
   .panel {
-    @apply rounded-[28px] border border-black/10 backdrop-blur-xl sm:rounded-[34px];
+    @apply rounded-[22px] border border-black/10 backdrop-blur-xl sm:rounded-[28px] xl:rounded-[34px];
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.985), rgba(251, 252, 253, 0.94)),
       linear-gradient(135deg, rgba(0, 181, 255, 0.014), rgba(255, 46, 191, 0.01));
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.82),
-      0 16px 40px rgba(15, 15, 15, 0.055);
+      0 12px 32px rgba(15, 15, 15, 0.045);
+  }
+
+  @media (min-width: 640px) {
+    .panel {
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.82),
+        0 16px 40px rgba(15, 15, 15, 0.055);
+    }
   }
 
   .panel-dark {
-    @apply rounded-[28px] border border-black/10 text-white sm:rounded-[34px];
+    @apply rounded-[22px] border border-black/10 text-white sm:rounded-[28px] xl:rounded-[34px];
     background: linear-gradient(180deg, #161616 0%, #0b0b0b 100%);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.06),

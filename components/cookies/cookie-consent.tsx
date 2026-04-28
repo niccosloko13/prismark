@@ -214,11 +214,11 @@ export function CookieConsent() {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-                  <button type="button" onClick={() => setIsModalOpen(true)} className="btn btn-secondary focus-ring">
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:justify-end">
+                  <button type="button" onClick={() => setIsModalOpen(true)} className="btn btn-secondary focus-ring w-full sm:w-auto">
                     Configurar
                   </button>
-                  <button type="button" onClick={handleAcceptAll} className="btn btn-primary focus-ring">
+                  <button type="button" onClick={handleAcceptAll} className="btn btn-primary focus-ring w-full sm:w-auto">
                     Aceitar
                   </button>
                 </div>
@@ -230,7 +230,7 @@ export function CookieConsent() {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="focus-ring fixed bottom-4 left-4 z-[60] rounded-full border border-black/10 bg-white/95 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black/58 shadow-[0_12px_28px_rgba(15,15,15,0.08)] transition hover:-translate-y-0.5 hover:text-ink"
+          className="focus-ring fixed bottom-24 left-3 z-[60] rounded-full border border-black/10 bg-white/95 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black/58 shadow-[0_12px_28px_rgba(15,15,15,0.08)] transition hover:-translate-y-0.5 hover:text-ink sm:bottom-4 sm:left-4 sm:px-4"
         >
           Cookies
         </button>
@@ -315,11 +315,11 @@ export function CookieConsent() {
                   <p className="text-sm leading-6 text-black/62">
                     Selecao atual: <span className="font-semibold text-ink">{consentSummary}</span>.
                   </p>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-                    <button type="button" onClick={handleAcceptAll} className="btn btn-secondary focus-ring">
+                  <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:justify-end">
+                    <button type="button" onClick={handleAcceptAll} className="btn btn-secondary focus-ring w-full sm:w-auto">
                       Aceitar todos
                     </button>
-                    <button type="button" onClick={() => saveConsent(preferences)} className="btn btn-primary focus-ring">
+                    <button type="button" onClick={() => saveConsent(preferences)} className="btn btn-primary focus-ring w-full sm:w-auto">
                       Salvar preferencias
                     </button>
                   </div>

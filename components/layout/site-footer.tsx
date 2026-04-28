@@ -29,20 +29,24 @@ const footerContacts = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-10 pb-8">
-      <div className="panel p-6 sm:p-8 lg:p-10">
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr_0.55fr]">
-          <div>
-            <BrandLogo size="xl" className="focus-ring rounded-[30px]" />
+    <footer className="mt-8 pb-6 sm:mt-10 sm:pb-8">
+      <div className="panel p-4 sm:p-8 lg:p-10">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1.05fr_0.95fr_0.55fr]">
+          <div className="min-w-0">
+            <BrandLogo size="xl" className="focus-ring rounded-[24px] sm:rounded-[30px]" />
             <p className="label-kicker mt-5">Comunicação visual</p>
-            <h2 className="display-title mt-3 max-w-xl text-[1.8rem] font-semibold tracking-tight text-balance sm:text-[2.15rem]">
+            <h2 className="display-title mt-3 max-w-xl text-balance text-[1.55rem] font-semibold leading-tight tracking-tight sm:text-[1.85rem] lg:text-[2.15rem]">
               {companyProfile.legalName}
             </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-black/64">{companyProfile.shortTrustLine}</p>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-black/56">{companyProfile.supportLine}</p>
+            <p className="mt-3 max-w-xl text-[0.9375rem] leading-relaxed text-black/64 sm:mt-4 sm:text-sm sm:leading-7">
+              {companyProfile.shortTrustLine}
+            </p>
+            <p className="mt-2 max-w-xl text-[0.9375rem] leading-relaxed text-black/56 sm:mt-3 sm:text-sm sm:leading-7">
+              {companyProfile.supportLine}
+            </p>
           </div>
 
-          <div>
+          <div className="min-w-0">
             <p className="label-kicker">Contato</p>
             <div className="mt-4 space-y-3">
               {footerContacts.map((item) => (
@@ -61,7 +65,7 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div>
+          <div className="min-w-0">
             <p className="label-kicker">Links úteis</p>
             <div className="mt-4 space-y-2">
               {companyFooterLinks.map((item) => (
@@ -78,7 +82,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-3 border-t border-black/8 pt-5 text-sm text-black/54 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-6 flex flex-col gap-2 border-t border-black/8 pt-4 text-center text-[0.8125rem] leading-relaxed text-black/54 sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-5 sm:text-left sm:text-sm">
           <p>© {new Date().getFullYear()} {companyProfile.legalName}. Todos os direitos reservados.</p>
           <p>
             {companyProfile.cityState} • CEP {companyProfile.postalCode}
