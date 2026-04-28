@@ -14,7 +14,7 @@ export default function Icon() {
   const baseUrl =
     process.env.APP_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  const logoUrl = new URL("/logo.png", baseUrl).href;
+  const logoUrl = new URL("/logo%20header.png", baseUrl).href;
 
   return new ImageResponse(
     (
@@ -33,10 +33,11 @@ export default function Icon() {
       >
         <img
           src={logoUrl}
-          alt="Prismarq Comunicação Visual"
+          alt="Prismarq Comunicacao Visual"
           style={{
-            width: "52px",
-            height: "34px",
+            width: "54px",
+            height: "auto",
+            maxHeight: "46px",
             objectFit: "contain",
           }}
         />

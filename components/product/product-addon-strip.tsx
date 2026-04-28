@@ -1,22 +1,19 @@
 "use client";
 
-import { Badge } from "@/components/common/badge";
 import { cn } from "@/lib/utils";
 import type { ProductAddonService } from "@/lib/product-experience";
 
-function SparkIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
-      <path d="M12 4l1.7 4.3L18 10l-4.3 1.7L12 16l-1.7-4.3L6 10l4.3-1.7L12 4Z" strokeLinejoin="round" />
-    </svg>
-  );
+/** Curto e legível: "a partir de R$ X" → "+ R$ X" (reutilizado no resumo) */
+export function formatAddonPriceHint(priceLabel: string) {
+  const t = priceLabel.trim();
+  if (!t) return "";
+  return t.replace(/^a partir de\s+/i, "+ ");
 }
 
-function ShieldIcon() {
+function CheckIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
-      <path d="M12 3 5 6v5c0 4.6 2.7 8 7 10 4.3-2 7-5.4 7-10V6l-7-3Z" strokeLinejoin="round" />
-      <path d="m9.5 11.5 1.8 1.8 3.5-3.8" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className={className} aria-hidden="true">
+      <path d="M5 13 10 18 19 7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -35,89 +32,51 @@ export function ProductAddonStrip({
   }
 
   return (
-    <section className="panel p-5 sm:p-6">
-      <div className="flex flex-col gap-3 border-b border-black/8 pb-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="label-kicker">Servicos opcionais</p>
-          <h2 className="display-title mt-2 text-[1.32rem] font-semibold tracking-[-0.03em] text-ink">
-            Inclua apoio criativo e tecnico sem sair do fluxo de compra.
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-black/56">
-            Extras com valor percebido real para melhorar arte, conferencia e acabamento final.
-          </p>
-        </div>
-        <Badge tone="cyan">Opcionais</Badge>
-      </div>
+    <section className="panel p-2.5 sm:p-3" aria-label="Servicos opcionais">
+      <p className="label-kicker text-[0.58rem] tracking-[0.2em]">Servicos opcionais</p>
+      <p className="mt-0.5 text-[0.72rem] leading-snug text-black/52">Marque abaixo — soma no total.</p>
 
-      <div className="mt-4 grid gap-3 xl:grid-cols-3">
+      <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
         {addons.map((addon) => {
           const selected = selectedAddonIds.includes(addon.id);
+          const priceHint = formatAddonPriceHint(addon.priceLabel);
 
           return (
             <button
               key={addon.id}
               type="button"
               aria-pressed={selected}
+              aria-label={`${addon.label}${priceHint ? `, ${priceHint}` : ""}`}
+              title={addon.description}
               onClick={() => onToggle(addon.id)}
               className={cn(
-                "focus-ring flex h-full flex-col rounded-[26px] border p-4 text-left transition duration-200",
+                "focus-ring flex min-h-[2.85rem] items-center gap-2.5 rounded-[14px] border px-3 py-2 text-left transition duration-200 sm:min-h-[2.65rem] sm:rounded-[16px]",
                 selected
-                  ? "border-cyan/26 bg-[linear-gradient(180deg,rgba(0,181,255,0.1),rgba(255,255,255,0.98))] text-ink shadow-[0_24px_44px_rgba(0,181,255,0.12)]"
-                  : "border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.995),rgba(247,248,249,0.94))] shadow-[0_18px_36px_rgba(15,15,15,0.05),inset_0_1px_0_rgba(255,255,255,0.8)] hover:-translate-y-0.5 hover:border-black/18 hover:shadow-[0_22px_44px_rgba(15,15,15,0.08)]",
+                  ? "border-cyan/32 bg-[linear-gradient(180deg,rgba(0,181,255,0.09),rgba(255,255,255,0.98))] shadow-[0_8px_20px_rgba(0,181,255,0.08)]"
+                  : "border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(248,249,250,0.94))] hover:border-black/16",
               )}
             >
-              <div className="flex items-start justify-between gap-3">
-                <span
-                  className={cn(
-                    "inline-flex h-11 w-11 items-center justify-center rounded-[18px]",
-                    selected
-                      ? "bg-white text-ink shadow-[0_10px_22px_rgba(15,15,15,0.06)]"
-                      : addon.highlighted
-                        ? "bg-yellow/18 text-ink"
-                        : "bg-black/[0.04] text-ink",
-                  )}
-                >
-                  {addon.highlighted ? <SparkIcon /> : <ShieldIcon />}
-                </span>
-
-                <div className="flex flex-wrap justify-end gap-2">
-                  {addon.highlighted ? <Badge tone="yellow">Recomendado</Badge> : null}
-                  <span
-                    className={cn(
-                      "rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em]",
-                      selected ? "bg-ink text-white" : "border border-current/12 text-black/62",
-                    )}
-                  >
-                    {addon.priceLabel}
+              <span
+                className={cn(
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition sm:h-5 sm:w-5",
+                  selected ? "border-ink bg-ink text-white" : "border-black/18 bg-white text-transparent",
+                )}
+                aria-hidden="true"
+              >
+                <CheckIcon className="h-3 w-3" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+                  <span className="min-w-0 flex-1 text-[clamp(0.72rem,3.4vw,0.875rem)] font-semibold leading-tight text-ink sm:flex-none">
+                    {addon.label}
                   </span>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <strong className="block text-[1.05rem] font-semibold tracking-[-0.02em]">{addon.label}</strong>
-                <p className="mt-2 text-sm leading-6 text-black/66">{addon.description}</p>
-              </div>
-
-              <div className="mt-5 flex items-center justify-between border-t border-black/8 pt-4">
-                <div>
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/50">
-                    {selected ? "Servico incluido" : "Adicionar ao pedido"}
-                  </p>
-                  <p className="mt-1 text-sm text-black/60">
-                    {selected ? "Voce pode remover quando quiser." : "Inclua com um toque."}
-                  </p>
-                </div>
-                <span
-                  className={cn(
-                    "inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold transition",
-                    selected
-                      ? "bg-ink text-white shadow-[0_12px_24px_rgba(15,15,15,0.12)]"
-                      : "border border-black/10 bg-white text-ink shadow-[0_12px_24px_rgba(15,15,15,0.04)]",
-                  )}
-                >
-                  {selected ? "Incluido" : "Incluir"}
+                  {priceHint ? (
+                    <span className="shrink-0 text-[clamp(0.62rem,2.9vw,0.72rem)] font-semibold tabular-nums tracking-tight text-cyan-800">
+                      {priceHint}
+                    </span>
+                  ) : null}
                 </span>
-              </div>
+              </span>
             </button>
           );
         })}

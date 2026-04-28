@@ -34,6 +34,7 @@ export async function createOrderController(request: NextRequest) {
       material?: string;
       finishing?: string;
       deadline?: string;
+      selectedAddonIds?: string[];
       notes?: string;
       fileId?: string | null;
       file?: StoredFile | null;
@@ -48,6 +49,7 @@ export async function createOrderController(request: NextRequest) {
         material: body.material ?? "",
         finishing: body.finishing ?? "",
         deadline: body.deadline ?? "",
+        selectedAddonIds: Array.isArray(body.selectedAddonIds) ? body.selectedAddonIds : undefined,
         notes: body.notes,
         fileId: body.fileId ?? body.file?.id ?? null,
       },

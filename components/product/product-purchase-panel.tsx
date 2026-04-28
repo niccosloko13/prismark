@@ -8,39 +8,6 @@ import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 import type { ProductExperience, ProductSelectionState } from "@/lib/product-experience";
 
-function StarIcon({ active }: { active: boolean }) {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" className={cn("h-3.5 w-3.5", active ? "text-yellow-500" : "text-black/16")}>
-      <path
-        d="m10 2.2 2.42 4.9 5.4.79-3.91 3.81.92 5.38L10 14.54l-4.83 2.54.92-5.38L2.18 7.89l5.4-.79L10 2.2Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-function StarGlyphs({ value }: { value: number }) {
-  const rounded = Math.round(value);
-
-  return (
-    <div className="inline-flex items-center gap-1" aria-label={`${value.toFixed(1)} de 5 estrelas`}>
-      {Array.from({ length: 5 }, (_, index) => (
-        <StarIcon key={index} active={index < rounded} />
-      ))}
-    </div>
-  );
-}
-
-function socialStats(rating?: ProductExperience["rating"]) {
-  const reviews = rating?.reviews ?? 96;
-
-  return {
-    reviews,
-    orders: Math.max(reviews * 12, 1080),
-    onTimeRate: rating?.value && rating.value >= 4.9 ? "98%" : "97%",
-  };
-}
-
 function ChevronDown() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
@@ -114,10 +81,10 @@ function ControlCard({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.995),rgba(247,248,249,0.95))] p-4 shadow-[0_18px_40px_rgba(15,15,15,0.04),inset_0_1px_0_rgba(255,255,255,0.82)]">
-      <div className="mb-3">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-black/42">{title}</p>
-        {description ? <p className="mt-1 text-sm leading-6 text-black/56">{description}</p> : null}
+    <div className="rounded-[18px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.995),rgba(247,248,249,0.95))] p-3 shadow-[0_10px_24px_rgba(15,15,15,0.035),inset_0_1px_0_rgba(255,255,255,0.82)] sm:rounded-[20px] sm:p-3.5">
+      <div className="mb-2 sm:mb-2.5">
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-black/42">{title}</p>
+        {description ? <p className="mt-1 text-[0.8125rem] leading-snug text-black/54 sm:text-sm sm:leading-6">{description}</p> : null}
       </div>
       {children}
     </div>
@@ -143,7 +110,7 @@ function QuantityControl({
   return (
     <ControlCard
       title="Quantidade"
-      description={min <= 10 ? "Ajuste rapido para pequenas tiragens e use 10+ para lotes maiores." : `Pedido minimo de ${min} unidades.`}
+      description={min <= 10 ? "Atalhos para tiragens curtas." : `Minimo ${min} un.`}
     >
       <div className="flex items-center gap-2">
         <button
@@ -215,8 +182,6 @@ export function ProductPurchasePanel({
   onDeadlineChange: (deadline: string) => void;
   onQuantityChange: (quantity: number) => void;
 }) {
-  const rating = experience.rating;
-  const stats = socialStats(rating);
   const selectedModel = experience.models.find((item) => item.id === selection.modelId) ?? experience.models[0];
   const selectedFormat = experience.formats.find((item) => item.id === selection.formatId) ?? experience.formats[0];
   const selectedColor = experience.colors.find((item) => item.id === selection.colorId) ?? experience.colors[0];
@@ -224,97 +189,50 @@ export function ProductPurchasePanel({
   const selectedFinishing = product.finishings.find((item) => item.label === selection.finishing) ?? product.finishings[0];
 
   return (
-    <div className="space-y-4">
-      <section className="panel relative overflow-hidden p-5 sm:p-6">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(0,181,255,0),rgba(0,181,255,0.42),rgba(255,46,191,0.44),rgba(255,211,0,0.38),rgba(255,211,0,0))]" />
+    <div className="space-y-3 sm:space-y-4">
+      <div className="flex flex-wrap items-center gap-2 px-0.5 text-sm text-black/44">
+        <Link href="/" className="transition hover:text-ink">
+          Home
+        </Link>
+        <span>/</span>
+        <Link href="/products" className="transition hover:text-ink">
+          Produtos
+        </Link>
+        <span>/</span>
+        <span className="font-medium text-ink">{product.name}</span>
+      </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-sm text-black/44">
-          <Link href="/" className="transition hover:text-ink">
-            Home
-          </Link>
-          <span>/</span>
-          <Link href="/products" className="transition hover:text-ink">
-            Produtos
-          </Link>
-          <span>/</span>
-          <span className="font-medium text-ink">{product.name}</span>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge tone="cyan">{product.badge}</Badge>
-          <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/56">
-            {product.category}
-          </span>
-          <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/56">
-            Producao propria
-          </span>
-          {rating ? (
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-black/66">
-              <StarGlyphs value={rating.value} />
-              {rating.value.toFixed(1)} • {rating.reviews} avaliacoes
-            </span>
-          ) : null}
-        </div>
-
-        <h1 className="display-title mt-4 max-w-3xl text-[clamp(2.2rem,3.6vw,3.6rem)] font-semibold leading-[0.93] tracking-[-0.04em] text-balance text-ink">
-          {product.name}
-        </h1>
-        <p className="mt-3 max-w-3xl text-[1rem] font-medium leading-7 text-ink/90 sm:text-[1.06rem]">{product.lead}</p>
-        <p className="mt-2 max-w-3xl text-sm leading-7 text-black/58 sm:text-[0.96rem]">{product.description}</p>
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,247,248,0.92))] px-4 py-4 shadow-[0_16px_32px_rgba(15,15,15,0.04)]">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/42">Avaliacao</p>
-            <div className="mt-2 flex items-center gap-2">
-              <StarGlyphs value={rating?.value ?? 4.8} />
-              <strong className="text-base font-semibold text-ink">{(rating?.value ?? 4.8).toFixed(1)}/5</strong>
-            </div>
-            <p className="mt-2 text-sm text-black/56">{stats.reviews} avaliacoes verificadas</p>
-          </div>
-          <div className="rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,247,248,0.92))] px-4 py-4 shadow-[0_16px_32px_rgba(15,15,15,0.04)]">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/42">Pedidos produzidos</p>
-            <strong className="mt-2 block text-[1.55rem] font-semibold tracking-[-0.03em] text-ink">
-              +{new Intl.NumberFormat("pt-BR").format(stats.orders)}
-            </strong>
-            <p className="mt-2 text-sm text-black/56">mesma familia comercial ja produzida</p>
-          </div>
-          <div className="rounded-[24px] border border-cyan/18 bg-[linear-gradient(180deg,rgba(0,181,255,0.09),rgba(255,255,255,0.96))] px-4 py-4 shadow-[0_18px_34px_rgba(0,181,255,0.08)]">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/42">No prazo</p>
-            <strong className="mt-2 block text-[1.32rem] font-semibold tracking-[-0.03em] text-ink">{stats.onTimeRate}</strong>
-            <p className="mt-2 text-sm text-black/56">dos pedidos entregues dentro da janela comercial</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="configurador" className="panel p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/8 pb-4">
-          <div>
-            <p className="label-kicker">Configurador</p>
-            <h2 className="display-title mt-2 text-[1.34rem] font-semibold tracking-[-0.03em] text-ink">
-              Configure rapido e siga para inclusao dos extras
+      <section id="configurador" className="panel p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-2 border-b border-black/8 pb-3 sm:gap-3 sm:pb-4">
+          <div className="min-w-0">
+            <p className="label-kicker text-[0.64rem]">Configurador</p>
+            <h2 className="display-title mt-1 text-base font-semibold tracking-tight text-ink sm:mt-1.5 sm:text-[1.2rem]">
+              Opcoes do pedido
             </h2>
           </div>
-          <Badge tone="yellow">{selectedModel?.label ?? "Modelo padrao"}</Badge>
+          <Badge tone="yellow" className="shrink-0 px-2.5 py-1 text-[0.62rem]">
+            {selectedModel?.label ?? "Modelo padrao"}
+          </Badge>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="surface-muted px-4 py-3.5">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/42">Selecao atual</p>
-            <p className="mt-2 break-words text-sm font-medium text-ink">
-              {selectedFormat?.label ?? "-"} • {selection.width} x {selection.height} cm • {selection.material}
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+          <div className="surface-muted px-3 py-2.5 sm:px-3.5 sm:py-3">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-black/42">Formato e material</p>
+            <p className="mt-1 break-words text-[0.8125rem] font-medium leading-snug text-ink sm:text-sm">
+              {selectedFormat?.label ?? "-"} · {selection.width}×{selection.height} cm · {selection.material}
             </p>
           </div>
-          <div className="surface-muted px-4 py-3.5">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/42">Acabamento</p>
-            <p className="mt-2 break-words text-sm font-medium text-ink">
-              {selectedColor?.label ?? "-"} • {selectedEnhancement?.label ?? "-"} • {selectedFinishing?.label ?? "-"}
+          <div className="surface-muted px-3 py-2.5 sm:px-3.5 sm:py-3">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-black/42">Acabamento</p>
+            <p className="mt-1 break-words text-[0.8125rem] font-medium leading-snug text-ink sm:text-sm">
+              {selectedColor?.label ?? "-"} · {selectedEnhancement?.label ?? "-"} · {selectedFinishing?.label ?? "-"}
             </p>
           </div>
         </div>
 
         {experience.models.length > 1 ? (
-          <div className="mt-3">
-            <ControlCard title="Modelo" description="Escolha a estrutura comercial que melhor representa o produto.">
+          <div className="mt-2.5 sm:mt-3">
+            <ControlCard title="Modelo">
               <div className="flex flex-wrap gap-2">
                 {experience.models.map((item) => (
                   <PillButton key={item.id} active={selection.modelId === item.id} onClick={() => onModelChange(item.id)}>
@@ -326,7 +244,7 @@ export function ProductPurchasePanel({
           </div>
         ) : null}
 
-        <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <div className="mt-2.5 grid gap-2 md:grid-cols-2 md:gap-2.5">
           <ControlCard title="Material">
             <SelectField label="Material" value={selection.material} onChange={onMaterialChange}>
               {product.materials.map((item) => (
@@ -348,11 +266,11 @@ export function ProductPurchasePanel({
           </ControlCard>
         </div>
 
-        <div className="mt-3">
+        <div className="mt-2.5 sm:mt-3">
           <QuantityControl product={product} quantity={selection.quantity} onChange={onQuantityChange} />
         </div>
 
-        <div className="mt-3 grid gap-3">
+        <div className="mt-2.5 grid gap-2 sm:mt-3 sm:gap-2.5">
           <ControlCard title="Cor">
             <div className="flex flex-wrap gap-2">
               {experience.colors.map((item) => (
@@ -384,7 +302,7 @@ export function ProductPurchasePanel({
             </div>
           </ControlCard>
 
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-2 md:grid-cols-2 md:gap-2.5">
             <ControlCard title="Acabamento">
               <div className="flex flex-wrap gap-2">
                 {product.finishings.map((item) => (
@@ -406,6 +324,15 @@ export function ProductPurchasePanel({
             </ControlCard>
           </div>
         </div>
+
+        <p className="mt-3 text-center">
+          <a
+            href="#resumo-pedido"
+            className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-cyan-700 underline-offset-2 transition hover:text-cyan-600 hover:underline"
+          >
+            Ver total e fechar
+          </a>
+        </p>
       </section>
     </div>
   );

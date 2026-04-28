@@ -33,7 +33,9 @@ export function SiteFooter() {
       <div className="panel p-4 sm:p-8 lg:p-10">
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1.05fr_0.95fr_0.55fr]">
           <div className="min-w-0">
-            <BrandLogo size="xl" className="focus-ring rounded-[24px] sm:rounded-[30px]" />
+            <div className="inline-flex max-w-full rounded-[22px] border border-[#E5E7EB] bg-[#F3F4F6] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] sm:rounded-[26px] sm:px-5 sm:py-4">
+              <BrandLogo size="xl" className="focus-ring" />
+            </div>
             <p className="label-kicker mt-5">Comunicação visual</p>
             <h2 className="display-title mt-3 max-w-xl text-balance text-[1.55rem] font-semibold leading-tight tracking-tight sm:text-[1.85rem] lg:text-[2.15rem]">
               {companyProfile.legalName}

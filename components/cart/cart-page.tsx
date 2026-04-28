@@ -11,6 +11,7 @@ import { SectionShell } from "@/components/common/section-shell";
 import { buildCartEditUrl, buildCartOrderNotes } from "@/lib/cart";
 import { getProductBySlug } from "@/lib/catalog";
 import { calculateQuote } from "@/lib/pricing";
+import { buildProductExperience, getAddonsFeeTotalBrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL, roundTo } from "@/lib/utils";
 import type { SessionUser } from "@/types";
 
@@ -87,6 +88,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
     const nextQuantity = Math.max(Math.round(quantity || 0), product.minQuantity);
     const nextSelection = { ...item.selection, quantity: nextQuantity };
 
+    const experience = buildProductExperience(product);
     const nextQuote = calculateQuote({
       productSlug: item.productSlug,
       width: nextSelection.width,
@@ -95,6 +97,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
       material: nextSelection.material,
       finishing: nextSelection.finishing,
       deadline: nextSelection.deadline,
+      addonsTotal: getAddonsFeeTotalBrl(experience, nextSelection),
     });
 
     upsertItem(
@@ -147,6 +150,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               material: item.selection.material,
               finishing: item.selection.finishing,
               deadline: item.selection.deadline,
+              selectedAddonIds: item.selection.selectedAddonIds,
               notes: buildCartOrderNotes(item),
             }),
           });

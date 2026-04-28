@@ -1,5 +1,5 @@
 import { getProductBySlug, getProductConfiguration } from "@/lib/catalog";
-import { formatCurrencyBRL } from "@/lib/utils";
+import { formatCurrencyBRL, roundTo } from "@/lib/utils";
 import { getDefaultMeasuresForProduct, getPreferredDeadlineLabel } from "@/lib/order-presets";
 import type { Product } from "@/types";
 
@@ -55,6 +55,7 @@ export interface ProductAddonService {
   label: string;
   description: string;
   priceLabel: string;
+  feeBrl: number;
   highlighted?: boolean;
 }
 
@@ -440,6 +441,7 @@ function buildAddons() {
       label: "Criação de arte",
       description: "Layout profissional desenvolvido pela equipe Prismarq.",
       priceLabel: "a partir de R$ 95",
+      feeBrl: 95,
       highlighted: true,
     },
     {
@@ -447,8 +449,24 @@ function buildAddons() {
       label: "Checagem de arquivo",
       description: "Ajuste técnico de sangria, margem e formato final.",
       priceLabel: "a partir de R$ 35",
+      feeBrl: 35,
     },
   ];
+}
+
+export function getAddonsFeeTotalByIds(experience: ProductExperience, addonIds: string[]): number {
+  if (addonIds.length === 0) {
+    return 0;
+  }
+
+  return roundTo(
+    experience.addons.filter((item) => addonIds.includes(item.id)).reduce((sum, item) => sum + item.feeBrl, 0),
+    2,
+  );
+}
+
+export function getAddonsFeeTotalBrl(experience: ProductExperience, selection: ProductSelectionState): number {
+  return getAddonsFeeTotalByIds(experience, selection.selectedAddonIds);
 }
 
 function buildSpecs(product: Product) {

@@ -589,15 +589,69 @@ function buildConfigurator(product: Product) {
 
 function buildServices(product: Product): ProductAdditionalService[] {
   const productSpecificService = {
-    banner: { id: "bastao", label: "Montagem com bastão", description: "Preparação completa para pendurar assim que chegar.", priceLabel: "a partir de R$ 38" },
-    backdrop: { id: "estrutura", label: "Apoio de montagem", description: "Orientação e checklist para instalar o backdrop com mais segurança.", priceLabel: "a partir de R$ 69" },
-    "banner-tecido": { id: "embalagem", label: "Embalagem para transporte", description: "Proteção pensada para tecido com uso recorrente em eventos.", priceLabel: "a partir de R$ 24" },
-    folheto: { id: "serrilha", label: "Cupom serrilhado", description: "Transforma o folheto em peça promocional destacável.", priceLabel: "a partir de R$ 43" },
-    folder: { id: "vinco", label: "Dobras calibradas", description: "Ajuste de dobra para leitura e fechamento mais limpos.", priceLabel: "a partir de R$ 24" },
-    "adesivo-perfurado": { id: "aplicacao", label: "Aplicação assistida", description: "Checagem e preparação para aplicação em vidro com menos risco.", priceLabel: "a partir de R$ 84" },
-    totem: { id: "montagem", label: "Pré-montagem", description: "Peça preparada para ganhar tempo na ativação ou evento.", priceLabel: "a partir de R$ 58" },
-    "faixa-impressa": { id: "reforco", label: "Reforço de borda", description: "Mais segurança para fixação em áreas de vento ou rua.", priceLabel: "a partir de R$ 28" },
-    "wind-banner": { id: "base", label: "Estrutura completa", description: "Kit com base e haste para entrar em operação mais rápido.", priceLabel: "a partir de R$ 148" },
+    banner: {
+      id: "bastao",
+      label: "Montagem com bastão",
+      description: "Preparação completa para pendurar assim que chegar.",
+      priceLabel: "a partir de R$ 38",
+      feeBrl: 38,
+    },
+    backdrop: {
+      id: "estrutura",
+      label: "Apoio de montagem",
+      description: "Orientação e checklist para instalar o backdrop com mais segurança.",
+      priceLabel: "a partir de R$ 69",
+      feeBrl: 69,
+    },
+    "banner-tecido": {
+      id: "embalagem",
+      label: "Embalagem para transporte",
+      description: "Proteção pensada para tecido com uso recorrente em eventos.",
+      priceLabel: "a partir de R$ 24",
+      feeBrl: 24,
+    },
+    folheto: {
+      id: "serrilha",
+      label: "Cupom serrilhado",
+      description: "Transforma o folheto em peça promocional destacável.",
+      priceLabel: "a partir de R$ 43",
+      feeBrl: 43,
+    },
+    folder: {
+      id: "vinco",
+      label: "Dobras calibradas",
+      description: "Ajuste de dobra para leitura e fechamento mais limpos.",
+      priceLabel: "a partir de R$ 24",
+      feeBrl: 24,
+    },
+    "adesivo-perfurado": {
+      id: "aplicacao",
+      label: "Aplicação assistida",
+      description: "Checagem e preparação para aplicação em vidro com menos risco.",
+      priceLabel: "a partir de R$ 84",
+      feeBrl: 84,
+    },
+    totem: {
+      id: "montagem",
+      label: "Pré-montagem",
+      description: "Peça preparada para ganhar tempo na ativação ou evento.",
+      priceLabel: "a partir de R$ 58",
+      feeBrl: 58,
+    },
+    "faixa-impressa": {
+      id: "reforco",
+      label: "Reforço de borda",
+      description: "Mais segurança para fixação em áreas de vento ou rua.",
+      priceLabel: "a partir de R$ 28",
+      feeBrl: 28,
+    },
+    "wind-banner": {
+      id: "base",
+      label: "Estrutura completa",
+      description: "Kit com base e haste para entrar em operação mais rápido.",
+      priceLabel: "a partir de R$ 148",
+      feeBrl: 148,
+    },
   }[product.slug];
 
   return [
@@ -606,6 +660,7 @@ function buildServices(product: Product): ProductAdditionalService[] {
       label: "Criação de arte",
       description: "Layout profissional desenvolvido pela equipe Prismarq.",
       priceLabel: "a partir de R$ 95",
+      feeBrl: 95,
       highlighted: true,
     },
     {
@@ -613,12 +668,14 @@ function buildServices(product: Product): ProductAdditionalService[] {
       label: "Checagem de arquivo",
       description: "Revisão técnica de sangria, margem, resolução e fechamento.",
       priceLabel: "a partir de R$ 35",
+      feeBrl: 35,
     },
     productSpecificService ?? {
       id: "acabamento",
       label: "Acabamento extra",
       description: "Ajuste final para elevar a aplicação e a apresentação da peça.",
       priceLabel: "sob consulta",
+      feeBrl: 0,
     },
   ];
 }

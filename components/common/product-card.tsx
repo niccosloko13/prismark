@@ -194,57 +194,90 @@ export function ProductCard({
   const pixPrice = product.basePriceM2 * 0.85;
   const secondaryInfo =
     product.minQuantity > 1 ? `Pedido min. ${product.minQuantity}` : `Area min. ${product.minimumArea.toFixed(2)} m2`;
+  const isCompactRelated = compact && !isHomeVariant;
 
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-[34px] border border-black/10 bg-white/98 transition duration-300",
-        "hover:-translate-y-1 hover:border-black/16 hover:shadow-[0_30px_72px_rgba(15,15,15,0.12)]",
+        "group relative flex h-full flex-col overflow-hidden border border-black/10 bg-white/98 transition duration-300",
+        isCompactRelated
+          ? "rounded-[20px] hover:-translate-y-0.5 hover:border-black/14 hover:shadow-[0_14px_36px_rgba(15,15,15,0.08)]"
+          : "rounded-[34px] hover:-translate-y-1 hover:border-black/16 hover:shadow-[0_30px_72px_rgba(15,15,15,0.12)]",
       )}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan via-magenta to-yellow opacity-95" />
-      <div className="pointer-events-none absolute -right-14 -top-16 h-28 w-28 rounded-full bg-cyan/10 blur-2xl transition duration-500 group-hover:bg-cyan/14" />
-      <div className="pointer-events-none absolute -bottom-16 -left-12 h-24 w-24 rounded-full bg-magenta/10 blur-2xl transition duration-500 group-hover:bg-magenta/14" />
+      {!isCompactRelated ? (
+        <>
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan via-magenta to-yellow opacity-95" />
+          <div className="pointer-events-none absolute -right-14 -top-16 h-28 w-28 rounded-full bg-cyan/10 blur-2xl transition duration-500 group-hover:bg-cyan/14" />
+          <div className="pointer-events-none absolute -bottom-16 -left-12 h-24 w-24 rounded-full bg-magenta/10 blur-2xl transition duration-500 group-hover:bg-magenta/14" />
+        </>
+      ) : null}
 
-      <div className={cn("relative flex h-full flex-col justify-between p-5", compact ? "sm:p-5" : "sm:p-6")}>
-        <div className="space-y-4">
-          <div className="relative overflow-hidden rounded-[30px] border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.96),rgba(244,245,247,0.88))]">
-            <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 p-4">
-              <Badge tone="cyan" className="shadow-[0_10px_24px_rgba(0,181,255,0.08)]">
-                {product.badge}
-              </Badge>
-              <span className="rounded-full border border-black/10 bg-white/88 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/52">
-                {isHomeVariant ? "15% Pix" : product.category}
-              </span>
-            </div>
+      <div className={cn("relative flex h-full flex-col justify-between", isCompactRelated ? "p-3.5 sm:p-4" : "p-5 sm:p-6")}>
+        <div className={cn("space-y-4", isCompactRelated && "space-y-2.5")}>
+          <div
+            className={cn(
+              "relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.96),rgba(244,245,247,0.88))]",
+              isCompactRelated ? "rounded-[14px]" : "rounded-[30px]",
+            )}
+          >
+            {!isCompactRelated ? (
+              <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 p-4">
+                <Badge tone="cyan" className="shadow-[0_10px_24px_rgba(0,181,255,0.08)]">
+                  {product.badge}
+                </Badge>
+                <span className="rounded-full border border-black/10 bg-white/88 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/52">
+                  {isHomeVariant ? "15% Pix" : product.category}
+                </span>
+              </div>
+            ) : null}
 
-            <div className="relative aspect-[4/3] overflow-hidden">
+            <div className={cn("relative overflow-hidden", isCompactRelated ? "aspect-[16/10]" : "aspect-[4/3]")}>
               {imageSrc ? (
                 <Image
                   src={imageSrc}
                   alt={product.name}
                   fill
-                  className="object-cover transition duration-500 group-hover:scale-[1.045]"
+                  className={cn("object-cover transition duration-500", isCompactRelated ? "object-center" : "group-hover:scale-[1.045]")}
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
                 />
               ) : null}
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0)_28%,rgba(15,15,15,0.16))]" />
+              {!isCompactRelated ? (
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0)_28%,rgba(15,15,15,0.16))]" />
+              ) : null}
             </div>
           </div>
 
-          <div className={cn("space-y-3", isHomeVariant && "space-y-2.5")}>
+          <div className={cn("space-y-3", isHomeVariant && "space-y-2.5", isCompactRelated && "space-y-1.5")}>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/44">{product.category}</p>
-              <span className="rounded-full border border-black/10 bg-black/[0.03] px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-black/56">
-                Alta procura
-              </span>
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-black/44 sm:text-[0.68rem]">
+                {product.category}
+              </p>
+              {!isCompactRelated ? (
+                <span className="rounded-full border border-black/10 bg-black/[0.03] px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-black/56">
+                  Alta procura
+                </span>
+              ) : (
+                <span className="rounded-full border border-black/10 bg-black/[0.03] px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-black/52">
+                  15% Pix
+                </span>
+              )}
             </div>
-            <h3 className="display-title text-[1.52rem] font-semibold leading-[0.98] tracking-tight text-balance text-ink sm:text-[1.72rem]">
+            <h3
+              className={cn(
+                "display-title font-semibold tracking-tight text-balance text-ink",
+                isCompactRelated ? "text-[1.08rem] leading-tight sm:text-[1.2rem]" : "text-[1.52rem] leading-[0.98] sm:text-[1.72rem]",
+              )}
+            >
               {product.name}
             </h3>
 
             <p
-              className={cn("max-w-[34ch] text-sm leading-6 text-black/62", isHomeVariant && "text-black/56")}
+              className={cn(
+                "max-w-[34ch] text-sm leading-6 text-black/62",
+                isHomeVariant && "text-black/56",
+                isCompactRelated && "text-[0.8125rem] leading-snug text-black/58",
+              )}
               style={{
                 display: "-webkit-box",
                 WebkitBoxOrient: "vertical",
@@ -256,7 +289,7 @@ export function ProductCard({
             </p>
           </div>
 
-          {!isHomeVariant ? (
+          {!isHomeVariant && !isCompactRelated ? (
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="surface-muted px-4 py-3">
                 <p className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-black/42">Material base</p>
@@ -270,35 +303,63 @@ export function ProductCard({
           ) : null}
         </div>
 
-        <div className="mt-5 space-y-4">
-          <div className="rounded-[30px] border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.99),rgba(245,246,248,0.92))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <span className="label-kicker block">Preco no Pix</span>
-                <strong className="mt-2 block text-[2.05rem] font-semibold tracking-tight text-ink">
+        <div className={cn("space-y-4", isCompactRelated ? "mt-3 space-y-2.5" : "mt-5")}>
+          <div
+            className={cn(
+              "border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.99),rgba(245,246,248,0.92))] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]",
+              isCompactRelated ? "rounded-[14px] p-3" : "rounded-[30px] p-4",
+            )}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <span className={cn("label-kicker block", isCompactRelated && "text-[0.6rem]")}>Preco no Pix</span>
+                <strong
+                  className={cn(
+                    "mt-1 block font-semibold tracking-tight text-ink sm:mt-2",
+                    isCompactRelated ? "text-[1.35rem] sm:text-[1.5rem]" : "text-[2.05rem]",
+                  )}
+                >
                   {formatCurrencyBRL(pixPrice)}
                 </strong>
-                <span className="mt-1 block text-sm font-medium text-black/48">por m2</span>
+                <span className={cn("mt-0.5 block font-medium text-black/48", isCompactRelated ? "text-xs" : "text-sm")}>
+                  por m2
+                </span>
               </div>
-              <span className="rounded-full bg-ink px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_14px_30px_rgba(15,15,15,0.16)]">
+              <span
+                className={cn(
+                  "shrink-0 rounded-full bg-ink font-semibold uppercase tracking-[0.14em] text-white",
+                  isCompactRelated ? "px-2 py-1 text-[0.58rem]" : "px-3 py-1.5 text-[0.68rem] tracking-[0.18em] shadow-[0_14px_30px_rgba(15,15,15,0.16)]",
+                )}
+              >
                 15% OFF
               </span>
             </div>
 
-            <div className="mt-4 flex items-center justify-between gap-3 border-t border-black/8 pt-4 text-sm text-black/58">
-              <span>No cartao: {formatCurrencyBRL(product.basePriceM2)}</span>
-              <span>{secondaryInfo}</span>
+            <div
+              className={cn(
+                "flex flex-wrap items-center justify-between gap-2 border-t border-black/8 text-black/58",
+                isCompactRelated ? "mt-2 pt-2 text-[0.7rem] sm:text-xs" : "mt-4 gap-3 pt-4 text-sm",
+              )}
+            >
+              <span className="min-w-0">Cartao: {formatCurrencyBRL(product.basePriceM2)}</span>
+              <span className="shrink-0">{secondaryInfo}</span>
             </div>
           </div>
 
-          <div className="rounded-[22px] border border-cyan/16 bg-cyan/[0.06] px-4 py-3 text-[0.8rem] font-medium text-black/64">
-            Compra guiada: configuracao clara, validacao da arte e fechamento com mais seguranca.
-          </div>
+          {!isCompactRelated ? (
+            <div className="rounded-[22px] border border-cyan/16 bg-cyan/[0.06] px-4 py-3 text-[0.8rem] font-medium text-black/64">
+              Compra guiada: configuracao clara, validacao da arte e fechamento com mais seguranca.
+            </div>
+          ) : null}
 
-          <div className="flex flex-wrap gap-3">
+          <div className={cn("flex flex-wrap gap-2", isCompactRelated && "gap-2")}>
             <Link
               href={`/products/${product.slug}`}
-              className={cn("btn btn-primary focus-ring", isHomeVariant ? "w-full justify-center" : "flex-1")}
+              className={cn(
+                "btn btn-primary focus-ring",
+                isHomeVariant || isCompactRelated ? "w-full justify-center" : "flex-1",
+                isCompactRelated && "min-h-[44px] py-2.5 text-sm",
+              )}
             >
               Personalizar
               <ArrowIcon />

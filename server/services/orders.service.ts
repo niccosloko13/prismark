@@ -2,6 +2,7 @@ import { withTransaction } from "@/server/db";
 import { AppError } from "@/server/errors/app-error";
 import { getProductBySlug } from "@/lib/catalog";
 import { calculateQuote } from "@/lib/pricing";
+import { buildProductExperience, getAddonsFeeTotalByIds } from "@/lib/product-experience";
 import { filesRepository } from "@/server/repositories/files.repository";
 import { ordersRepository } from "@/server/repositories/orders.repository";
 import { logger } from "@/server/services/logger";
@@ -41,6 +42,9 @@ export const ordersService = {
       throw new AppError("Quantidade abaixo do mínimo do produto.", 400, "invalid_quantity");
     }
 
+    const experience = buildProductExperience(product);
+    const addonsTotal = getAddonsFeeTotalByIds(experience, input.selectedAddonIds ?? []);
+
     const quote = calculateQuote({
       productSlug: input.productSlug,
       width: input.width,
@@ -49,6 +53,7 @@ export const ordersService = {
       material: input.material,
       finishing: input.finishing,
       deadline: input.deadline,
+      addonsTotal,
     });
 
     const order = await withTransaction(async (client) => {

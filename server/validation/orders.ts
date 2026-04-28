@@ -10,6 +10,7 @@ export const createOrderSchema = z.object({
   material: z.string().trim().min(1).max(120),
   finishing: z.string().trim().min(1).max(120),
   deadline: z.string().trim().min(1).max(120),
+  selectedAddonIds: z.array(z.string().trim().min(1).max(80)).optional(),
   notes: z.string().trim().max(2000).optional(),
   fileId: z.string().trim().min(1).max(120).nullable().optional(),
 });

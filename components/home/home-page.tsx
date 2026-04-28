@@ -174,8 +174,8 @@ export function HomePage() {
                 src={heroLogoImage}
                 alt="Prismarq Comunicacao Visual"
                 priority
-                sizes="(max-width: 640px) 280px, (max-width: 1024px) 320px, 400px"
-                className="h-auto w-[min(100%,280px)] object-contain sm:w-[min(100%,304px)] lg:w-[min(100%,340px)] xl:w-[min(100%,400px)]"
+                sizes="(max-width: 640px) 320px, (max-width: 1024px) 380px, 460px"
+                className="h-auto w-[min(100%,320px)] object-contain sm:w-[min(100%,360px)] lg:w-[min(100%,400px)] xl:w-[min(100%,460px)]"
               />
             </Link>
             <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">

@@ -21,7 +21,9 @@ function calculateForProduct(
   const finishingFee = roundTo(
     finishing.type === "perUnit" ? finishing.fee * input.quantity : finishing.fee,
   );
-  const total = roundTo((subtotal + finishingFee) * deadline.multiplier);
+  const baseTotal = roundTo((subtotal + finishingFee) * deadline.multiplier);
+  const addonsTotal = roundTo(Math.max(0, input.addonsTotal ?? 0));
+  const total = roundTo(baseTotal + addonsTotal);
 
   return {
     area,
@@ -32,6 +34,7 @@ function calculateForProduct(
     deadlineMultiplier: deadline.multiplier,
     unitBase,
     subtotal,
+    addonsTotal,
     total,
   };
 }

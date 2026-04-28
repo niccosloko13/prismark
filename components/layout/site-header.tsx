@@ -95,17 +95,19 @@ function HeaderBrand({
       aria-label="Ir para a home da Prismarq"
       className={cn(
         "focus-ring flex max-w-full items-center rounded-[20px] border border-[#E5E7EB] bg-[#F3F4F6] transition hover:border-black/12",
-        mobile ? "w-full max-w-[min(220px,calc(100vw-7.25rem))] px-2 py-2 sm:max-w-[228px]" : "px-2.5 py-1.5 xl:px-3.5 xl:py-2",
+        mobile
+          ? "w-full max-w-[min(248px,calc(100vw-6.75rem))] px-2.5 py-2 sm:max-w-[260px]"
+          : "px-3 py-2 xl:px-3.5 xl:py-2.5",
       )}
     >
       <Image
         src={headerLogoImage}
         alt="Prismarq Comunicacao Visual"
         priority={priority}
-        sizes={mobile ? "(max-width: 640px) 220px, 228px" : "(max-width: 1280px) 236px, 268px"}
+        sizes={mobile ? "(max-width: 640px) 248px, 260px" : "(max-width: 1280px) 252px, 288px"}
         className={cn(
           "h-auto w-full object-contain object-left",
-          mobile ? "w-full" : "w-[228px] xl:w-[248px] 2xl:w-[264px]",
+          mobile ? "w-full" : "w-[252px] xl:w-[276px] 2xl:w-[296px]",
         )}
       />
     </Link>

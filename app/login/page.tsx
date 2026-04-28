@@ -19,7 +19,9 @@ export default async function LoginPage() {
   return (
     <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
       <section className="panel p-6 sm:p-8 lg:p-10">
-        <BrandLogo size="xl" priority className="focus-ring rounded-full" />
+        <div className="inline-flex max-w-full rounded-[22px] border border-[#E5E7EB] bg-[#F3F4F6] px-4 py-3 sm:rounded-[26px] sm:px-5 sm:py-4">
+          <BrandLogo size="xl" priority className="focus-ring" />
+        </div>
         <Badge tone="magenta" className="mt-6">
           Portal de pedidos
         </Badge>

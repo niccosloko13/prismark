@@ -6,6 +6,7 @@ import {
   buildSelectionNotes,
   getProductExperience,
   getDefaultSelection,
+  getAddonsFeeTotalBrl,
   getSelectedAddons,
   getSelectedColor,
   getSelectedEnhancement,
@@ -177,6 +178,7 @@ export function buildCartItem({
     material: selection.material,
     finishing: selection.finishing,
     deadline: selection.deadline,
+    addonsTotal: getAddonsFeeTotalBrl(experience, selection),
   });
 
   const selectedModel = getSelectedModel(experience, selection);

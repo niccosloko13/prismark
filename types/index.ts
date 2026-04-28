@@ -80,6 +80,8 @@ export interface ProductAdditionalService {
   label: string;
   description: string;
   priceLabel: string;
+  /** Valor fixo somado ao total (0 = sob consulta / nao soma) */
+  feeBrl: number;
   highlighted?: boolean;
 }
 
@@ -177,6 +179,8 @@ export interface QuoteInput {
   material: string;
   finishing: string;
   deadline: string;
+  /** Soma fixa de servicos opcionais (R$) */
+  addonsTotal?: number;
 }
 
 export interface PriceBreakdown {
@@ -188,6 +192,7 @@ export interface PriceBreakdown {
   deadlineMultiplier: number;
   unitBase: number;
   subtotal: number;
+  addonsTotal: number;
   total: number;
 }
 
@@ -297,6 +302,7 @@ export interface CreateOrderInput {
   material: string;
   finishing: string;
   deadline: string;
+  selectedAddonIds?: string[];
   notes?: string;
   fileId?: string | null;
 }
