@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { ProductCard } from "@/components/common/product-card";
 import { ProductRasterPicture } from "@/components/common/product-raster-picture";
 import { SectionShell } from "@/components/common/section-shell";
 import { HomeFeaturedProductsCarousel } from "@/components/home/home-featured-products-carousel";
@@ -10,7 +9,30 @@ import { cn, formatCurrencyBRL } from "@/lib/utils";
 
 type AccentTone = "cyan" | "magenta" | "yellow";
 
-const quickProductSlugs = ["banner", "backdrop", "wind-banner", "cartao", "adesivo", "folder"] as const;
+/** Ordem fixa de destaque na home (carrossel e acesso rápido). */
+const homeHighlightSlugOrder = ["wind-banner", "backdrop", "banner", "cartao"] as const;
+
+const quickProductSlugs = ["wind-banner", "backdrop", "banner", "cartao", "adesivo", "folder"] as const;
+
+function orderProductsForHome<T extends { slug: string; featured: boolean; name: string }>(list: T[]): T[] {
+  const bySlug = new Map(list.map((p) => [p.slug, p]));
+  const ordered: T[] = [];
+  const used = new Set<string>();
+
+  for (const slug of homeHighlightSlugOrder) {
+    const product = bySlug.get(slug);
+    if (product) {
+      ordered.push(product);
+      used.add(slug);
+    }
+  }
+
+  const rest = list
+    .filter((p) => !used.has(p.slug))
+    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name, "pt-BR"));
+
+  return [...ordered, ...rest];
+}
 
 const commercialCategories = [
   {
@@ -200,11 +222,11 @@ function CategoryToneBadge({ tone, children }: { tone: AccentTone; children: str
 
 export async function HomePage() {
   const products = await getActiveProducts();
+  const productsHomeOrder = orderProductsForHome(products);
+
   const quickProducts = quickProductSlugs
     .map((slug) => products.find((product) => product.slug === slug))
     .filter((product): product is NonNullable<(typeof products)[number]> => Boolean(product));
-
-  const featuredProducts = products.filter((product) => product.featured).slice(0, 4);
 
   return (
     <div className="home-dark min-h-screen space-y-6 pb-16 sm:space-y-10 sm:pb-20">
@@ -310,7 +332,7 @@ export async function HomePage() {
       </div>
 
       <HomeFeaturedProductsCarousel
-        items={products.slice(0, 8).map((product) => ({
+        items={productsHomeOrder.slice(0, 8).map((product) => ({
           slug: product.slug,
           name: product.name,
           image: product.primaryImagePath,
@@ -385,19 +407,6 @@ export async function HomePage() {
           })}
         </div>
       </section>
-
-      <SectionShell
-        variant="dark"
-        eyebrow="Mais pedidos"
-        title="Produtos prontos para decisão mais rápida."
-        description="Imagem forte, preço no Pix e leitura curta para quem já quer abrir o configurador."
-      >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.slug} product={product} compact variant="home" premiumDark />
-          ))}
-        </div>
-      </SectionShell>
 
       <SectionShell
         variant="dark"

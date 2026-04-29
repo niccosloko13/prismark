@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import QRCode from "qrcode";
 
 import { useCart } from "@/components/cart/cart-provider";
@@ -324,8 +324,12 @@ export function OrderBuilder({
   const initialProduct = getProductBySlug(initialProductSlug ?? products[0].slug) ?? products[0];
   const initialDraft = resolveOrderDraft(initialProduct, initialConfig);
   const [productSlug, setProductSlug] = useState(initialProduct.slug);
+  // Width/height em cm: manter um "texto" controlado para permitir digitação livre (inclui "1")
+  // e só converter/validar ao sair do campo (onBlur) ou no submit.
   const [width, setWidth] = useState(initialDraft.width);
   const [height, setHeight] = useState(initialDraft.height);
+  const [widthText, setWidthText] = useState(String(initialDraft.width));
+  const [heightText, setHeightText] = useState(String(initialDraft.height));
   const [quantity, setQuantity] = useState(initialDraft.quantity);
   const [material, setMaterial] = useState(initialDraft.material);
   const [finishing, setFinishing] = useState(initialDraft.finishing);
@@ -353,10 +357,20 @@ export function OrderBuilder({
   const { upsertItem } = useCart();
 
   const currentProduct = getProductBySlug(productSlug) ?? initialProduct;
+
+  function parseCmText(text: string, fallback: number) {
+    const n = Number(text);
+    if (!Number.isFinite(n) || n <= 0) return fallback;
+    return n;
+  }
+
+  const widthForQuote = parseCmText(widthText, width);
+  const heightForQuote = parseCmText(heightText, height);
+
   const quote = calculateQuote({
     productSlug,
-    width,
-    height,
+    width: widthForQuote,
+    height: heightForQuote,
     quantity,
     material,
     finishing,
@@ -364,14 +378,20 @@ export function OrderBuilder({
   });
   const pixTotal = quote.total * 0.85;
   const pixSavings = quote.total - pixTotal;
-  const checkoutErrors = validateCheckoutFields({
-    customerName,
-    customerEmail,
-    customerPhone,
-    deliveryMode,
-    cep,
-    address,
-  });
+
+  const checkoutErrors = useMemo(
+    () =>
+      validateCheckoutFields({
+        customerName,
+        customerEmail,
+        customerPhone,
+        deliveryMode,
+        cep,
+        address,
+      }),
+    [customerName, customerEmail, customerPhone, deliveryMode, cep, address],
+  );
+
   const requiredFieldCount = deliveryMode === "delivery" ? 5 : 3;
   const completedFieldCount = [
     customerName.trim(),
@@ -399,6 +419,8 @@ export function OrderBuilder({
     const nextDraft = resolveOrderDraft(getProductBySlug(productSlug) ?? products[0]);
     setWidth(nextDraft.width);
     setHeight(nextDraft.height);
+    setWidthText(String(nextDraft.width));
+    setHeightText(String(nextDraft.height));
     setMaterial(nextDraft.material);
     setFinishing(nextDraft.finishing);
     setDeadline(nextDraft.deadline);
@@ -406,8 +428,18 @@ export function OrderBuilder({
     setNotes(nextDraft.notes);
   }, [productSlug]);
 
+  function areCheckoutErrorsEqual(a: CheckoutErrors, b: CheckoutErrors) {
+    const aKeys = Object.keys(a) as CheckoutField[];
+    const bKeys = Object.keys(b) as CheckoutField[];
+    if (aKeys.length !== bKeys.length) return false;
+    for (const k of aKeys) {
+      if (a[k] !== b[k]) return false;
+    }
+    return true;
+  }
+
   useEffect(() => {
-    setFieldErrors(checkoutErrors);
+    setFieldErrors((current) => (areCheckoutErrorsEqual(current, checkoutErrors) ? current : checkoutErrors));
   }, [checkoutErrors]);
 
   useEffect(() => {
@@ -499,8 +531,8 @@ export function OrderBuilder({
   function redirectToLogin() {
     const orderParams = new URLSearchParams();
     orderParams.set("product", productSlug);
-    orderParams.set("width", String(width));
-    orderParams.set("height", String(height));
+    orderParams.set("width", String(widthForQuote));
+    orderParams.set("height", String(heightForQuote));
     orderParams.set("quantity", String(quantity));
     orderParams.set("material", material);
     orderParams.set("finishing", finishing);
@@ -600,8 +632,8 @@ export function OrderBuilder({
           },
           body: JSON.stringify({
             productSlug,
-            width,
-            height,
+            width: widthForQuote,
+            height: heightForQuote,
             quantity,
             material,
             finishing,
@@ -697,8 +729,8 @@ export function OrderBuilder({
       experience,
       selection: {
         ...baseSelection,
-        width,
-        height,
+        width: widthForQuote,
+        height: heightForQuote,
         quantity,
         material,
         finishing,
@@ -794,20 +826,32 @@ export function OrderBuilder({
               <label className="space-y-2">
                 <FieldLabel>Largura (cm)</FieldLabel>
                 <input
-                  type="number"
-                  min={1}
-                  value={width}
-                  onChange={(event) => setWidth(Number(event.target.value) || 1)}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={widthText}
+                  onChange={(event) => setWidthText(event.target.value.replace(/[^\d]/g, "").slice(0, 5))}
+                  onBlur={() => {
+                    const next = parseCmText(widthText, width);
+                    setWidth(next);
+                    setWidthText(String(next));
+                  }}
                   className="field"
                 />
               </label>
               <label className="space-y-2">
                 <FieldLabel>Altura (cm)</FieldLabel>
                 <input
-                  type="number"
-                  min={1}
-                  value={height}
-                  onChange={(event) => setHeight(Number(event.target.value) || 1)}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={heightText}
+                  onChange={(event) => setHeightText(event.target.value.replace(/[^\d]/g, "").slice(0, 5))}
+                  onBlur={() => {
+                    const next = parseCmText(heightText, height);
+                    setHeight(next);
+                    setHeightText(String(next));
+                  }}
                   className="field"
                 />
               </label>
@@ -1361,7 +1405,7 @@ export function OrderBuilder({
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/50">Detalhes do pedido</p>
           <div className="mt-4 space-y-3">
             {[
-              { label: "Medidas", value: `${width} x ${height} cm` },
+              { label: "Medidas", value: `${widthForQuote} x ${heightForQuote} cm` },
               { label: "Material", value: material },
               { label: "Acabamento", value: finishing },
               { label: "Prazo", value: deadline },
