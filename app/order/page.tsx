@@ -1,5 +1,6 @@
 import { Badge } from "@/components/common/badge";
 import { OrderBuilder } from "@/components/order/order-builder";
+import { getActiveProducts } from "@/lib/active-products";
 import { getSession } from "@/lib/auth";
 
 export default async function OrderPage({
@@ -23,7 +24,7 @@ export default async function OrderPage({
     paymentMethod?: "pix" | "card";
   }>;
 }) {
-  const session = await getSession();
+  const [session, catalogProducts] = await Promise.all([getSession(), getActiveProducts()]);
   const resolvedSearchParams = await searchParams;
   const parsePositiveNumber = (value?: string) => {
     const parsed = Number(value);
@@ -70,6 +71,7 @@ export default async function OrderPage({
 
       <OrderBuilder
         session={session}
+        catalogProducts={catalogProducts}
         initialProductSlug={resolvedSearchParams.product}
         initialConfig={initialConfig}
         initialCheckout={initialCheckout}

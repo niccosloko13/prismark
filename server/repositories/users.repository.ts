@@ -6,6 +6,11 @@ import { query } from "@/server/db";
 import type { Queryable } from "@/server/db/queryable";
 import type { AppUser, AuthProvider } from "@/types";
 
+const USER_SELECT = `
+  id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash,
+  is_active, created_at, updated_at
+`;
+
 interface UserRow extends QueryResultRow {
   id: string;
   username: string | null;
@@ -18,6 +23,7 @@ interface UserRow extends QueryResultRow {
   google_sub: string | null;
   avatar_url: string | null;
   password_hash: string;
+  is_active?: boolean;
   created_at: Date | string;
   updated_at: Date | string;
 }
@@ -35,6 +41,7 @@ function mapUser(row: UserRow): AppUser {
     googleSub: row.google_sub,
     avatarUrl: row.avatar_url,
     passwordHash: row.password_hash,
+    isActive: row.is_active !== false,
     createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
   };
@@ -44,7 +51,7 @@ export const usersRepository = {
   async findAll(executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT ${USER_SELECT}
         FROM users
         ORDER BY created_at DESC
       `,
@@ -56,7 +63,7 @@ export const usersRepository = {
   async findByEmail(email: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT ${USER_SELECT}
         FROM users
         WHERE email = $1
         LIMIT 1
@@ -70,7 +77,7 @@ export const usersRepository = {
   async findById(id: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT ${USER_SELECT}
         FROM users
         WHERE id = $1
         LIMIT 1
@@ -84,7 +91,7 @@ export const usersRepository = {
   async findByGoogleSub(googleSub: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT ${USER_SELECT}
         FROM users
         WHERE google_sub = $1
         LIMIT 1
@@ -98,7 +105,7 @@ export const usersRepository = {
   async findByUsername(username: string, executor: Queryable = { query }) {
     const result = await executor.query<UserRow>(
       `
-        SELECT id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        SELECT ${USER_SELECT}
         FROM users
         WHERE username = $1
         LIMIT 1
@@ -129,7 +136,7 @@ export const usersRepository = {
       `
         INSERT INTO users (id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        RETURNING id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        RETURNING ${USER_SELECT}
       `,
       [
         id,
@@ -147,6 +154,19 @@ export const usersRepository = {
     );
 
     return mapUser(result.rows[0]);
+  },
+
+  async setIsActive(userId: string, isActive: boolean, executor: Queryable = { query }) {
+    const result = await executor.query<UserRow>(
+      `
+        UPDATE users
+        SET is_active = $2, updated_at = NOW()
+        WHERE id = $1
+        RETURNING ${USER_SELECT}
+      `,
+      [userId, isActive],
+    );
+    return result.rows[0] ? mapUser(result.rows[0]) : null;
   },
 
   async linkGoogleAccount(
@@ -168,7 +188,7 @@ export const usersRepository = {
             END,
             updated_at = NOW()
         WHERE id = $1
-        RETURNING id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        RETURNING ${USER_SELECT}
       `,
       [input.userId, input.googleSub, input.avatarUrl ?? null],
     );
@@ -189,7 +209,7 @@ export const usersRepository = {
         SET avatar_url = COALESCE($2, avatar_url),
             updated_at = NOW()
         WHERE id = $1
-        RETURNING id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, created_at, updated_at
+        RETURNING ${USER_SELECT}
       `,
       [input.userId, input.avatarUrl ?? null],
     );

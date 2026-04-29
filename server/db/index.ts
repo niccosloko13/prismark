@@ -11,6 +11,7 @@ function createPool() {
   return new Pool({
     connectionString: env.DATABASE_URL,
     max: env.DATABASE_POOL_MAX,
+    connectionTimeoutMillis: 8_000,
     ssl: env.DATABASE_SSL ? { rejectUnauthorized: false } : undefined,
   });
 }

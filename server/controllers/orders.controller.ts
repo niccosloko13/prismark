@@ -92,7 +92,13 @@ export async function updateOrderStatusController(
     const body = (await request.json()) as {
       status?: string;
       note?: string;
+      adminNotes?: string | null;
     };
+
+    if (body.adminNotes !== undefined && body.status === undefined) {
+      const order = await ordersService.updateAdminNotes(id, body.adminNotes ?? null, session);
+      return NextResponse.json({ order });
+    }
 
     const order = await ordersService.updateStatus(
       id,

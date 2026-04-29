@@ -4,16 +4,22 @@ import { AuthForm } from "@/components/auth/auth-form";
 import { Badge } from "@/components/common/badge";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { getSession } from "@/lib/auth";
+import { defaultPostAuthPath } from "@/lib/safe-return-to";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ returnTo?: string }>;
+}) {
   const session = await getSession();
+  const { returnTo } = await searchParams;
 
   if (session?.role === "admin") {
-    redirect("/admin");
+    redirect(defaultPostAuthPath("admin", returnTo));
   }
 
   if (session?.role === "client") {
-    redirect("/dashboard");
+    redirect(defaultPostAuthPath("client", returnTo));
   }
 
   return (

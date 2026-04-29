@@ -121,73 +121,82 @@ export function ProductSummaryPanel({
   return (
     <>
       <section
-        className="rounded-[22px] border border-white/8 bg-white/[0.04] p-3.5 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 xl:rounded-[34px]"
+        className={cn(
+          "rounded-[20px] border border-white/12 bg-white/[0.07] p-3 shadow-[0_0_0_1px_rgba(168,85,247,0.12),0_8px_40px_rgba(168,85,247,0.14),0_24px_64px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:rounded-[24px] sm:p-3.5 xl:p-4",
+          "ring-1 ring-white/[0.09]",
+        )}
         id="resumo-pedido"
       >
-        <div className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_20px_44px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:rounded-[26px] sm:p-5">
-          <div className="flex items-start justify-between gap-3 border-b border-white/8 pb-3">
-            <h2 className="text-lg font-semibold text-white">Resumo do pedido</h2>
-            <Badge tone="magenta" className="px-2 py-1 text-[0.58rem]">1 item</Badge>
+        <div className="rounded-[16px] border border-white/10 bg-[#070a12]/90 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_12px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[18px] sm:p-3.5">
+          <div className="flex items-start justify-between gap-2 border-b border-white/10 pb-2">
+            <h2 className="text-base font-semibold tracking-tight text-white sm:text-lg">Resumo do pedido</h2>
+            <Badge tone="magenta" className="px-1.5 py-0.5 text-[0.56rem]">1 item</Badge>
           </div>
 
-          <div className="mt-3 flex gap-3 rounded-xl border border-white/8 bg-white/[0.04] p-2.5 backdrop-blur-xl">
-            <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-white/8 bg-[#05070d]">
-              {previewImage ? <Image src={previewImage} alt={product.name} fill className="object-cover" /> : null}
+          <div className="mt-2 flex gap-2 rounded-xl border border-white/10 bg-white/[0.05] p-2 backdrop-blur-xl">
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-[#05070d] sm:h-16 sm:w-16">
+              {previewImage?.trim() ? (
+                <Image src={previewImage} alt={product.name} fill className="object-cover" sizes="64px" />
+              ) : null}
             </div>
-            <div className="min-w-0 flex-1 text-sm text-white/70">
+            <div className="min-w-0 flex-1 text-xs text-white/72 sm:text-[0.8125rem]">
               <p className="truncate font-semibold text-white">{product.name}</p>
               <p className="truncate">{selection.material}</p>
               <p className="truncate">{selection.colorId} · {selection.finishing}</p>
               <p className="truncate">{selection.deadline}</p>
               <p className="truncate">{selection.quantity} unidade</p>
             </div>
-            <p className="text-sm font-semibold text-white">{formatCurrencyBRL(quote.total)}</p>
+            <p className="shrink-0 text-xs font-semibold text-white sm:text-sm">{formatCurrencyBRL(quote.total)}</p>
           </div>
 
-          <div className="mt-4 space-y-2 text-sm">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-white/70">Subtotal</span>
-                <strong className="font-semibold text-white">{formatCurrencyBRL(quote.subtotal)}</strong>
+          <div className="mt-2.5 space-y-1.5 text-xs sm:text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-white/65">Subtotal</span>
+              <strong className="font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.subtotal)}</strong>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-white/65">Frete</span>
+              <strong className="font-semibold text-emerald-300">Grátis</strong>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-white/65">Desconto</span>
+              <strong className="font-semibold tabular-nums text-pink-300">- {formatCurrencyBRL(pixDiscount)}</strong>
+            </div>
+          </div>
+
+          <div
+            className={cn(
+              "mt-3 rounded-xl border border-white/12 bg-gradient-to-br from-white/[0.12] via-white/[0.05] to-transparent p-3 shadow-[0_0_32px_rgba(236,72,153,0.12),inset_0_1px_0_rgba(255,255,255,0.1)]",
+              pricePulse && "motion-safe:shadow-[0_0_40px_rgba(56,189,248,0.18)]",
+            )}
+          >
+            <div className="flex items-end justify-between gap-2">
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white/55 sm:text-xs">Total</span>
+              <div className="text-right">
+                <strong
+                  className={cn(
+                    "block text-[1.65rem] font-bold tracking-tight text-white tabular-nums transition duration-300 motion-safe:transform-gpu sm:text-[2.2rem]",
+                    "drop-shadow-[0_0_28px_rgba(56,189,248,0.35),0_2px_12px_rgba(0,0,0,0.45)]",
+                    pricePulse ? "scale-[1.03]" : "scale-100",
+                  )}
+                >
+                  {formatCurrencyBRL(pixTotal)}
+                </strong>
+                <span className="mt-0.5 block text-[0.65rem] text-white/55 sm:text-xs">
+                  em até 3x de {formatCurrencyBRL(unitAverage)} sem juros
+                </span>
               </div>
             </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-white/70">Frete</span>
-                <strong className="font-semibold text-emerald-300">Grátis</strong>
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-white/70">Desconto</span>
-                <strong className="font-semibold text-pink-300">- {formatCurrencyBRL(pixDiscount)}</strong>
-              </div>
-            </div>
           </div>
 
-          <div className="mt-4 flex items-end justify-between border-t border-white/8 pt-4">
-            <span className="text-2xl font-semibold text-white">Total</span>
-            <div className="text-right">
-              <strong
-                className={cn(
-                  "block text-[2rem] font-semibold tracking-tight text-white transition duration-300 motion-safe:transform-gpu",
-                  pricePulse ? "scale-[1.02]" : "scale-100",
-                )}
-              >
-                {formatCurrencyBRL(pixTotal)}
-              </strong>
-              <span className="text-xs text-white/60">em até 3x de {formatCurrencyBRL(unitAverage)} sem juros</span>
-            </div>
+          <div className="mt-2 rounded-lg border border-emerald-400/30 bg-emerald-500/[0.12] p-2 sm:p-2.5">
+            <p className="text-[0.68rem] font-semibold text-emerald-200 sm:text-xs">15% OFF no PIX</p>
+            <p className="text-[0.78rem] text-white/75 sm:text-sm">Pague {formatCurrencyBRL(pixTotal)} com PIX</p>
           </div>
 
-          <div className="mt-3 rounded-xl border border-cyan-400/25 bg-cyan-400/10 p-3">
-            <p className="text-xs font-semibold text-pink-300">15% OFF no PIX</p>
-            <p className="text-sm text-white/70">Pague {formatCurrencyBRL(pixTotal)} com PIX</p>
-          </div>
-
-          <div className="mt-3 hidden gap-2 lg:grid">
+          <div className="mt-2.5 hidden gap-1.5 lg:grid">
             {!editingCartItemId ? (
-              <button type="button" onClick={handleBuyNow} className="btn btn-primary focus-ring min-h-12 w-full justify-center text-sm">
+              <button type="button" onClick={handleBuyNow} className="btn btn-primary focus-ring min-h-11 w-full justify-center text-sm">
                 Finalizar pedido
               </button>
             ) : null}
@@ -196,13 +205,13 @@ export function ProductSummaryPanel({
               onClick={handleCartAction}
               disabled={isPending}
               className={cn(
-                "focus-ring min-h-11 w-full justify-center text-sm",
+                "focus-ring min-h-10 w-full justify-center text-sm",
                 editingCartItemId ? "btn btn-primary" : "btn btn-secondary",
               )}
             >
               {isPending ? "Adicionando..." : editingCartItemId ? "Salvar no carrinho" : "Adicionar ao carrinho"}
             </button>
-            <p className="text-center text-xs text-white/60">Ambiente seguro e criptografado</p>
+            <p className="pt-0.5 text-center text-[0.65rem] text-white/55">Ambiente seguro e criptografado</p>
           </div>
         </div>
       </section>

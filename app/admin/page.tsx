@@ -1,102 +1,79 @@
 import Link from "next/link";
 
 import { AdminShell } from "@/components/admin/admin-shell";
-import { StatusPill } from "@/components/common/status-pill";
 import { requireAdminSession } from "@/lib/admin";
-import { getOrders, getPaymentSettings, getPendingPixPayments } from "@/lib/storage";
+import { getAdminDashboardMetrics } from "@/lib/admin-metrics";
 import { formatCurrencyBRL } from "@/lib/utils";
 
 export default async function AdminPage() {
   await requireAdminSession();
+  const m = await getAdminDashboardMetrics();
 
-  const orders = await getOrders();
-  const [paymentSettings, pendingPixPayments] = await Promise.all([getPaymentSettings(), getPendingPixPayments()]);
-  const awaitingPayment = orders.filter((order) => order.status === "aguardando pagamento").length;
-  const confirmed = orders.filter((order) => order.status === "confirmado").length;
-  const cancelled = orders.filter((order) => order.status === "cancelado").length;
-  const confirmedRevenue = orders.filter((order) => order.status === "confirmado").reduce((sum, o) => sum + o.value, 0);
+  const tiles = [
+    { label: "Faturamento (pipeline pago)", value: formatCurrencyBRL(m.revenueTotal) },
+    { label: "Faturamento hoje", value: formatCurrencyBRL(m.revenueToday) },
+    { label: "Faturamento no mês", value: formatCurrencyBRL(m.revenueMonth) },
+    { label: "Pedidos hoje", value: String(m.ordersToday) },
+    { label: "Pedidos no mês", value: String(m.ordersMonth) },
+    { label: "Pix pendentes", value: String(m.pixPending) },
+    { label: "Em produção / análise", value: String(m.ordersInProduction) },
+    { label: "Clientes cadastrados", value: String(m.clientsRegistered) },
+    { label: "Produtos ativos (vitrine)", value: String(m.productsActive) },
+    { label: "Produtos no catálogo base", value: String(m.productsCatalog) },
+    { label: "Total de pedidos", value: String(m.ordersTotal) },
+  ];
 
   return (
-    <AdminShell title="Dashboard" subtitle="Visão operacional de pedidos e pagamentos Pix da Prismarq.">
+    <AdminShell
+      title="Dashboard geral"
+      subtitle="Métricas em tempo real a partir do PostgreSQL: pedidos, Pix e base de clientes."
+    >
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {[
-          { label: "Total de pedidos", value: String(orders.length) },
-          { label: "Aguardando pagamento", value: String(awaitingPayment) },
-          { label: "Pagamentos Pix pendentes", value: String(pendingPixPayments.length) },
-          { label: "Pedidos confirmados", value: String(confirmed) },
-          { label: "Receita confirmada", value: formatCurrencyBRL(confirmedRevenue) },
-          { label: "Pedidos cancelados", value: String(cancelled) },
-        ].map((item) => (
-          <article key={item.label} className="panel p-4">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-black/46">{item.label}</p>
-            <strong className="mt-2 block text-2xl font-semibold text-ink">{item.value}</strong>
+        {tiles.map((item) => (
+          <article
+            key={item.label}
+            className="rounded-[22px] border border-white/10 bg-[#0d1019]/90 p-4 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+          >
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-white/45">{item.label}</p>
+            <strong className="mt-2 block text-2xl font-semibold tabular-nums text-white">{item.value}</strong>
           </article>
         ))}
       </section>
 
       <section className="grid gap-4 xl:grid-cols-2">
-        <article className="panel p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-ink">Últimos pedidos</h3>
-            <Link href="/admin/orders" className="text-sm font-semibold text-cyan-700">
-              Ver todos
-            </Link>
-          </div>
-          <div className="mt-3 grid gap-2">
-            {orders.slice(0, 5).map((order) => (
-              <div key={order.id} className="rounded-[14px] border border-black/10 bg-white p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-ink">#{order.id}</p>
-                  <StatusPill status={order.status} />
-                </div>
-                <p className="mt-1 text-xs text-black/58">
-                  {order.clientName} · {order.productName}
-                </p>
-              </div>
-            ))}
-          </div>
+        <article className="rounded-[22px] border border-white/10 bg-[#0d1019]/90 p-5 backdrop-blur-xl">
+          <h3 className="text-lg font-semibold text-white">Produtos mais vendidos</h3>
+          <ul className="mt-4 space-y-2 text-sm text-white/72">
+            {m.topProducts.length === 0 ? (
+              <li className="text-white/50">Ainda não há histórico suficiente.</li>
+            ) : (
+              m.topProducts.map((row) => (
+                <li
+                  key={row.slug}
+                  className="flex items-center justify-between gap-2 rounded-2xl border border-white/8 bg-white/[0.04] px-3 py-2"
+                >
+                  <span className="font-medium text-white">{row.name}</span>
+                  <span className="tabular-nums text-cyan-200">{row.count} ped.</span>
+                </li>
+              ))
+            )}
+          </ul>
         </article>
 
-        <article className="panel p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-ink">Últimos pagamentos Pix</h3>
-            <Link href="/admin/payments" className="text-sm font-semibold text-cyan-700">
-              Ver pendentes
+        <article className="rounded-[22px] border border-white/10 bg-[#0d1019]/90 p-5 backdrop-blur-xl">
+          <h3 className="text-lg font-semibold text-white">Atalhos</h3>
+          <div className="mt-4 grid gap-2 text-sm font-semibold">
+            <Link href="/admin/orders" className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-cyan-200 hover:bg-white/[0.08]">
+              Ver todos os pedidos →
+            </Link>
+            <Link href="/admin/payments" className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-cyan-200 hover:bg-white/[0.08]">
+              Conferir Pix pendentes →
+            </Link>
+            <Link href="/admin/marketing" className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-cyan-200 hover:bg-white/[0.08]">
+              Destaques e cupons →
             </Link>
           </div>
-          <div className="mt-3 grid gap-2">
-            {pendingPixPayments.slice(0, 5).map((payment) => (
-              <div key={payment.id} className="rounded-[14px] border border-black/10 bg-white p-3">
-                <p className="text-sm font-semibold text-ink">Pedido #{payment.order.id}</p>
-                <p className="mt-1 text-xs text-black/58">
-                  {payment.order.clientName} · txid {payment.txid}
-                </p>
-              </div>
-            ))}
-            {pendingPixPayments.length === 0 ? <p className="text-sm text-black/58">Sem pagamentos pendentes.</p> : null}
-          </div>
         </article>
-      </section>
-
-      <section className="panel p-4">
-        <h3 className="text-lg font-semibold text-ink">Alertas importantes</h3>
-        <div className="mt-3 grid gap-2">
-          {!paymentSettings?.pixEnabled || !paymentSettings.pixKey ? (
-            <p className="rounded-[14px] border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              Pix não configurado.
-            </p>
-          ) : null}
-          {pendingPixPayments.length > 0 ? (
-            <p className="rounded-[14px] border border-cyan/20 bg-cyan/10 px-3 py-2 text-sm text-ink">
-              Existem pagamentos pendentes aguardando conferência.
-            </p>
-          ) : null}
-          {awaitingPayment > 0 ? (
-            <p className="rounded-[14px] border border-black/10 bg-black/[0.03] px-3 py-2 text-sm text-black/72">
-              Existem pedidos sem pagamento confirmado.
-            </p>
-          ) : null}
-        </div>
       </section>
     </AdminShell>
   );

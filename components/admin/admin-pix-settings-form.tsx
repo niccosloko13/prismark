@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from "react";
 
-import { PIX_KEY_TYPES, type PaymentSettingsRecord, type PixKeyType } from "@/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { validateAdminPixKey } from "@/lib/pix/validate-admin-pix";
+import { PIX_KEY_TYPES, type PaymentSettingsRecord, type PixKeyType } from "@/types";
 
 function maskKey(value: string | null) {
   if (!value) return "-";
@@ -30,6 +31,14 @@ export function AdminPixSettingsForm({ initialSettings }: { initialSettings: Pay
     if (state.pixEnabled && (!state.pixKey || !state.pixReceiverName || !state.pixReceiverCity)) {
       setError("Para ativar Pix, preencha chave, nome do recebedor e cidade.");
       return;
+    }
+
+    if (state.pixEnabled) {
+      const keyCheck = validateAdminPixKey(state.pixKey, state.pixKeyType);
+      if (!keyCheck.ok) {
+        setError(keyCheck.message);
+        return;
+      }
     }
 
     startTransition(async () => {
@@ -63,15 +72,16 @@ export function AdminPixSettingsForm({ initialSettings }: { initialSettings: Pay
         <label className="space-y-2">
           <span className="text-sm font-medium text-black/62">Tipo da chave</span>
           <Select
+            theme="light"
             value={state.pixKeyType}
             onValueChange={(next) => setState((prev) => ({ ...prev, pixKeyType: next as PixKeyType }))}
           >
-            <SelectTrigger className="rounded-[18px] bg-white text-ink border border-black/10 backdrop-blur-none">
+            <SelectTrigger className="rounded-[18px]">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-white text-ink border border-black/10 backdrop-blur-none">
+            <SelectContent>
               {PIX_KEY_TYPES.map((type) => (
-                <SelectItem key={type} value={type} className="text-ink data-[state=checked]:text-white">
+                <SelectItem key={type} value={type}>
                   {type}
                 </SelectItem>
               ))}

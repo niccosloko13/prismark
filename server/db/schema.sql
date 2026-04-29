@@ -110,6 +110,8 @@ CREATE INDEX IF NOT EXISTS idx_payments_order_id ON payments(order_id);
 CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
 CREATE INDEX IF NOT EXISTS idx_payments_method ON payments(method);
 
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS pix_qr_data_url TEXT;
+
 DO $$
 DECLARE
   constraint_name TEXT;
@@ -182,3 +184,69 @@ CREATE INDEX IF NOT EXISTS idx_files_uploaded_by_user_id ON files(uploaded_by_us
 CREATE UNIQUE INDEX IF NOT EXISTS idx_files_unique_order_id ON files(order_id) WHERE order_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_order_status_history_order_id ON order_status_history(order_id);
 CREATE INDEX IF NOT EXISTS idx_order_events_order_id ON order_events(order_id);
+
+-- Admin / operações (2026)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS admin_notes TEXT;
+
+CREATE TABLE IF NOT EXISTS site_settings (
+  id TEXT PRIMARY KEY DEFAULT 'default',
+  legal_name TEXT,
+  brand_name TEXT,
+  address_line TEXT,
+  city_state TEXT,
+  postal_code TEXT,
+  phone_display TEXT,
+  phone_digits TEXT,
+  email TEXT,
+  short_trust_line TEXT,
+  support_line TEXT,
+  shipping_free_min_brl NUMERIC(12, 2),
+  pix_discount_percent NUMERIC(5, 2) DEFAULT 15,
+  site_whatsapp_digits TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS product_overrides (
+  product_slug TEXT PRIMARY KEY,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  base_price_m2 NUMERIC(12, 2),
+  featured BOOLEAN,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS home_featured_slugs (
+  id TEXT PRIMARY KEY,
+  product_slug TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE INDEX IF NOT EXISTS idx_home_featured_sort ON home_featured_slugs (sort_order);
+
+CREATE TABLE IF NOT EXISTS marketing_banners (
+  id TEXT PRIMARY KEY,
+  title TEXT,
+  image_url TEXT NOT NULL,
+  href TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_marketing_banners_sort ON marketing_banners (sort_order);
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id TEXT PRIMARY KEY,
+  code TEXT NOT NULL UNIQUE,
+  discount_type TEXT NOT NULL CHECK (discount_type IN ('percent', 'fixed')),
+  discount_value NUMERIC(12, 2) NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  max_uses INT,
+  uses_count INT NOT NULL DEFAULT 0,
+  valid_from TIMESTAMPTZ,
+  valid_until TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupons_active ON coupons (active);

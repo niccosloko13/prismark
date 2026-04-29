@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { type ReactNode, useState, useTransition } from "react";
+
+import { defaultPostAuthPath } from "@/lib/safe-return-to";
 
 type AuthMode = "login" | "register";
 
@@ -45,12 +48,24 @@ function GoogleMark() {
   );
 }
 
-export function AuthForm() {
+export function AuthForm({
+  defaultMode = "login",
+  showModeToggle = true,
+  quickRegister = false,
+  bottomLink,
+}: {
+  defaultMode?: AuthMode;
+  showModeToggle?: boolean;
+  /** Cadastro em uma etapa: sem campo empresa (usa Particular no servidor). */
+  quickRegister?: boolean;
+  /** Ex.: link para /login na página de cadastro */
+  bottomLink?: ReactNode;
+} = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams.get("returnTo");
   const authErrorCode = searchParams.get("authError");
-  const [mode, setMode] = useState<AuthMode>("login");
+  const [mode, setMode] = useState<AuthMode>(defaultMode);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -73,8 +88,10 @@ export function AuthForm() {
           : {
               name: String(formData.get("name") ?? ""),
               email: String(formData.get("email") ?? ""),
-              company: String(formData.get("company") ?? ""),
-              phone: String(formData.get("phone") ?? ""),
+              ...(quickRegister
+                ? {}
+                : { company: String(formData.get("company") ?? "").trim() || undefined }),
+              phone: String(formData.get("phone") ?? "").trim() || undefined,
               password: String(formData.get("password") ?? ""),
             };
 
@@ -97,7 +114,8 @@ export function AuthForm() {
         }
 
         setMessage(mode === "login" ? "Login realizado com sucesso." : "Conta criada com sucesso.");
-        router.push(data.user.role === "admin" ? "/admin" : returnTo || "/dashboard");
+        const nextPath = defaultPostAuthPath(data.user.role, returnTo);
+        router.push(nextPath);
         router.refresh();
       } catch (submitError) {
         setError(submitError instanceof Error ? submitError.message : "Falha inesperada.");
@@ -107,24 +125,26 @@ export function AuthForm() {
 
   return (
     <div className="panel p-6 sm:p-8">
-      <div className="grid grid-cols-2 gap-3 rounded-full border border-white/12 bg-white/[0.05] p-1">
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          data-active={mode === "login"}
-          className="btn-chip focus-ring"
-        >
-          Login
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("register")}
-          data-active={mode === "register"}
-          className="btn-chip focus-ring"
-        >
-          Cadastro
-        </button>
-      </div>
+      {showModeToggle ? (
+        <div className="grid grid-cols-2 gap-3 rounded-full border border-white/12 bg-white/[0.05] p-1">
+          <button
+            type="button"
+            onClick={() => setMode("login")}
+            data-active={mode === "login"}
+            className="btn-chip focus-ring"
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("register")}
+            data-active={mode === "register"}
+            className="btn-chip focus-ring"
+          >
+            Cadastro
+          </button>
+        </div>
+      ) : null}
 
       <div className="mt-6 space-y-4">
         <a
@@ -149,26 +169,41 @@ export function AuthForm() {
       <form action={handleSubmit} className="mt-6 space-y-4">
         {mode === "register" ? (
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="space-y-2">
-              <span className="text-sm font-medium text-white">Nome</span>
-              <input name="name" required className="field" placeholder="Seu nome" />
+            <label className="space-y-2 sm:col-span-2">
+              <span className="text-sm font-medium text-white">Nome completo</span>
+              <input name="name" required autoComplete="name" className="field" placeholder="Seu nome" />
             </label>
-            <label className="space-y-2">
-              <span className="text-sm font-medium text-white">Empresa</span>
-              <input name="company" required className="field" placeholder="Nome da empresa" />
-            </label>
+            {!quickRegister ? (
+              <label className="space-y-2 sm:col-span-2">
+                <span className="text-sm font-medium text-white">Empresa ou projeto (opcional)</span>
+                <input name="company" className="field" placeholder="Deixe em branco para Particular" />
+              </label>
+            ) : null}
           </div>
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="space-y-2">
             <span className="text-sm font-medium text-white">E-mail</span>
-            <input name="email" type="email" required className="field" placeholder="voce@empresa.com.br" />
+            <input
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              className="field"
+              placeholder="voce@empresa.com.br"
+            />
           </label>
           {mode === "register" ? (
             <label className="space-y-2">
-              <span className="text-sm font-medium text-white">Telefone</span>
-              <input name="phone" required className="field" placeholder="(11) 99999-9999" />
+              <span className="text-sm font-medium text-white">WhatsApp (opcional)</span>
+              <input
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                className="field"
+                placeholder="(11) 99999-9999"
+              />
             </label>
           ) : null}
         </div>
@@ -180,9 +215,13 @@ export function AuthForm() {
             type="password"
             required
             minLength={8}
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
             className="field"
-            placeholder="Mínimo de 8 caracteres"
+            placeholder="Mínimo 8 caracteres, letra e número"
           />
+          {mode === "register" ? (
+            <span className="text-xs text-white/50">Use pelo menos 8 caracteres, com letras e números.</span>
+          ) : null}
         </label>
 
         <div aria-live="polite" className="min-h-6 text-sm">
@@ -191,9 +230,40 @@ export function AuthForm() {
         </div>
 
         <button type="submit" disabled={isPending} className="btn btn-primary focus-ring w-full">
-          {isPending ? "Processando..." : mode === "login" ? "Entrar" : "Criar conta"}
+          {isPending
+            ? "Processando..."
+            : mode === "login"
+              ? "Entrar"
+              : quickRegister
+                ? "Criar conta e continuar"
+                : "Criar conta"}
         </button>
       </form>
+
+      {bottomLink ? <div className="mt-6 text-center text-sm text-white/65">{bottomLink}</div> : null}
+
+      {showModeToggle && mode === "login" ? (
+        <p className="mt-4 text-center text-sm text-white/60">
+          Novo por aqui?{" "}
+          <Link
+            href={returnTo ? `/cadastro?returnTo=${encodeURIComponent(returnTo)}` : "/cadastro"}
+            className="font-semibold text-cyan-300 underline-offset-4 hover:underline"
+          >
+            Criar conta
+          </Link>
+        </p>
+      ) : null}
+      {showModeToggle && mode === "register" ? (
+        <p className="mt-4 text-center text-sm text-white/60">
+          Já tem conta?{" "}
+          <Link
+            href={returnTo ? `/login?returnTo=${encodeURIComponent(returnTo)}` : "/login"}
+            className="font-semibold text-cyan-300 underline-offset-4 hover:underline"
+          >
+            Entrar
+          </Link>
+        </p>
+      ) : null}
     </div>
   );
 }

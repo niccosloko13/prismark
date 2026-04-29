@@ -47,7 +47,9 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <ClientOrdersPanel orders={orders} />
+      <div id="pedidos">
+        <ClientOrdersPanel orders={orders} />
+      </div>
     </div>
   );
 }

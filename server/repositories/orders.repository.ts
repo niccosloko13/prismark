@@ -30,6 +30,7 @@ interface OrderRow extends QueryResultRow {
   value_total: string | number;
   status: OrderStatus;
   notes: string | null;
+  admin_notes?: string | null;
   created_at: Date | string;
   updated_at: Date | string;
   file_id: string | null;
@@ -103,6 +104,7 @@ function mapOrder(row: OrderRow): OrderRecord {
     value: Number(row.value_total),
     status: row.status,
     notes: row.notes,
+    adminNotes: row.admin_notes ?? null,
     file: mapOptionalFile(row),
     statusHistory: [],
     auditLogs: [],
@@ -153,6 +155,7 @@ async function fetchOrders(whereSql: string, params: unknown[], executor: Querya
         o.value_total,
         o.status,
         o.notes,
+        o.admin_notes,
         o.created_at,
         o.updated_at,
         f.id AS file_id,
@@ -306,6 +309,19 @@ export const ordersRepository = {
         WHERE id = $1
       `,
       [orderId, status],
+    );
+
+    return ordersRepository.findById(orderId, executor);
+  },
+
+  async updateAdminNotes(orderId: string, adminNotes: string | null, executor: Queryable = { query }) {
+    await executor.query(
+      `
+        UPDATE orders
+        SET admin_notes = $2, updated_at = NOW()
+        WHERE id = $1
+      `,
+      [orderId, adminNotes],
     );
 
     return ordersRepository.findById(orderId, executor);

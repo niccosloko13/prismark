@@ -177,7 +177,7 @@ export default async function ProductDetailPage({
   });
 
   return (
-    <div className="min-h-screen space-y-6 bg-[#05070d] text-white">
+    <div className="min-h-screen space-y-4 bg-[#05070d] text-white sm:space-y-5">
       <ProductStudio
         product={product}
         experience={experience}

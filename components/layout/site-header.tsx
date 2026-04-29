@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { CartNavLink } from "@/components/cart/cart-nav-link";
+import { HeaderAuthMenu, useEncodedReturnTo } from "@/components/layout/header-auth-menu";
 import { HeaderSearch } from "@/components/layout/header-search";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { companyLinks, companyProfile } from "@/lib/company";
@@ -171,6 +172,7 @@ function HomePedidoOnlineLink() {
 
 export function SiteHeader({ session }: { session: SessionUser | null }) {
   const pathname = usePathname();
+  const encodedReturnTo = useEncodedReturnTo();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -193,7 +195,8 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
 
   const isAdmin = session?.role === "admin";
   const accountHref = "/dashboard";
-  const accountLabel = session ? "Minha conta" : "Login / Cadastro";
+  const mobileLoginHref = `/login?returnTo=${encodedReturnTo}`;
+  const mobileCadastroHref = `/cadastro?returnTo=${encodedReturnTo}`;
   const isHomeActive = pathname === "/";
   const isProdutosActive = pathname === "/produtos" || pathname === "/products";
   const isContatoActive = pathname === "/contact";
@@ -327,53 +330,30 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   <HeaderSearch className="w-[18rem] xl:w-[20rem]" tone={isStorefront ? "dark" : "light"} />
                   <div className={cn("hidden h-8 w-px xl:block", isStorefront ? "bg-white/12" : "bg-black/8")} />
                   <CartNavLink headerOnDark={isStorefront} />
-                  {session ? (
-                    <>
-                      {!isAdmin ? (
+                  {isAdmin ? (
+                    <LogoutButton
+                      className={
+                        isStorefront
+                          ? "!border-white/20 !bg-transparent !text-white hover:!bg-white/10"
+                          : undefined
+                      }
+                    />
+                  ) : (
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      <HeaderAuthMenu session={session} isStorefront={isStorefront} isAdmin={false} />
+                      {!session ? (
                         <Link
-                          href={accountHref}
+                          href="/order"
                           className={cn(
                             "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition",
                             isStorefront
-                              ? "bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white shadow-[0_8px_28px_rgba(168,85,247,0.35)] hover:brightness-110"
+                              ? "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_30px_rgba(168,85,247,0.38),0_0_32px_rgba(56,189,248,0.2)] hover:scale-[1.03] hover:brightness-110"
                               : "btn btn-primary",
                           )}
                         >
-                          {accountLabel}
+                          Pedir agora
                         </Link>
                       ) : null}
-                      <LogoutButton
-                        className={
-                          isStorefront
-                            ? "!border-white/20 !bg-transparent !text-white hover:!bg-white/10"
-                            : undefined
-                        }
-                      />
-                    </>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href="/login"
-                        className={cn(
-                          "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition",
-                          isStorefront
-                            ? "border-white/30 bg-transparent text-white hover:border-white/45 hover:bg-white/[0.06]"
-                            : "btn btn-secondary",
-                        )}
-                      >
-                        {isStorefront ? "Entrar" : "Login"}
-                      </Link>
-                      <Link
-                        href="/order"
-                        className={cn(
-                          "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition",
-                          isStorefront
-                            ? "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_30px_rgba(168,85,247,0.38),0_0_32px_rgba(56,189,248,0.2)] hover:scale-[1.03] hover:brightness-110"
-                            : "btn btn-primary",
-                        )}
-                      >
-                        Pedir agora
-                      </Link>
                     </div>
                   )}
                 </div>
@@ -451,13 +431,23 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
               Contato
             </DrawerLink>
             {session && !isAdmin ? (
-              <DrawerLink href={accountHref} highlighted storefront={isStorefront}>
-                {accountLabel}
-              </DrawerLink>
+              <>
+                <DrawerLink href={accountHref} highlighted storefront={isStorefront}>
+                  Meu painel
+                </DrawerLink>
+                <DrawerLink href={`${accountHref}#pedidos`} storefront={isStorefront}>
+                  Meus pedidos
+                </DrawerLink>
+              </>
             ) : !session ? (
-              <DrawerLink href="/login" highlighted storefront={isStorefront}>
-                {accountLabel}
-              </DrawerLink>
+              <>
+                <DrawerLink href={mobileLoginHref} highlighted storefront={isStorefront}>
+                  Entrar
+                </DrawerLink>
+                <DrawerLink href={mobileCadastroHref} storefront={isStorefront}>
+                  Criar conta
+                </DrawerLink>
+              </>
             ) : null}
             {!session ? (
               <Link

@@ -1,11 +1,13 @@
+import { validateAdminPixKey } from "@/lib/pix/validate-admin-pix";
 import { withTransaction } from "@/server/db";
 import { AppError } from "@/server/errors/app-error";
 import { ordersRepository } from "@/server/repositories/orders.repository";
 import { paymentSettingsRepository } from "@/server/repositories/payment-settings.repository";
 import { paymentsRepository } from "@/server/repositories/payments.repository";
+import { generatePixQrDataUrl } from "@/server/payments/pix-qr";
+import { buildPixCopyPaste, generatePixTxid } from "@/server/payments/pix";
 import { logger } from "@/server/services/logger";
-import { buildPixCopyPaste, describePixAmount, generatePixTxid } from "@/server/payments/pix";
-import type { PixKeyType, SessionUser } from "@/types";
+import type { PaymentRecord, PixKeyType, SessionUser } from "@/types";
 
 function normalizeNullable(value?: string | null) {
   const text = value?.trim();
@@ -41,6 +43,8 @@ export const paymentsService = {
     const pixReceiverCity = normalizeNullable(rawInput.pixReceiverCity);
     const pixKeyType = rawInput.pixKeyType ?? null;
 
+    let normalizedPixKey = pixKey;
+
     if (pixEnabled) {
       if (!pixKey || !pixKeyType || !pixReceiverName || !pixReceiverCity) {
         throw new AppError(
@@ -49,11 +53,17 @@ export const paymentsService = {
           "pix_settings_invalid",
         );
       }
+
+      const keyValidation = validateAdminPixKey(pixKey, pixKeyType);
+      if (!keyValidation.ok) {
+        throw new AppError(keyValidation.message, 400, "pix_key_invalid");
+      }
+      normalizedPixKey = keyValidation.sanitizedKey;
     }
 
     const settings = await paymentSettingsRepository.upsert({
       pixEnabled,
-      pixKey,
+      pixKey: normalizedPixKey,
       pixKeyType,
       pixReceiverName,
       pixReceiverCity,
@@ -93,22 +103,42 @@ export const paymentsService = {
 
     const existingPayment = await paymentsRepository.findPendingByOrderId(order.id);
     if (existingPayment) {
+      const paymentWithQr = await paymentsService.ensurePixQrStored(existingPayment);
       return {
         available: true as const,
-        payment: existingPayment,
+        payment: paymentWithQr,
         order,
       };
     }
 
     const txid = generatePixTxid(order.id);
+
+    const amountStr = Number(order.value).toFixed(2);
+    if (!amountStr.includes(".")) {
+      throw new AppError("Valor Pix sem separador decimal.", 500, "pix_amount_invalid");
+    }
+
     const pixCopyPaste = buildPixCopyPaste({
       pixKey: settings!.pixKey!,
+      pixKeyType: settings!.pixKeyType,
       receiverName: settings!.pixReceiverName!,
       receiverCity: settings!.pixReceiverCity!,
       amount: order.value,
       txid,
-      description: describePixAmount(order.value),
     });
+
+    if (process.env.NODE_ENV === "development") {
+      console.info("[pix_emv_debug]", {
+        pixKeyType: settings!.pixKeyType,
+        amount: order.value,
+        amountField54: amountStr,
+        txid,
+        txidLength: txid.length,
+        payloadLength: pixCopyPaste.length,
+      });
+    }
+
+    const pixQrDataUrl = await generatePixQrDataUrl(pixCopyPaste);
 
     const payment = await withTransaction(async (client) => {
       const createdPayment = await paymentsRepository.create(
@@ -119,6 +149,7 @@ export const paymentsService = {
           status: "PENDING",
           txid,
           pixCopyPaste,
+          pixQrDataUrl,
           proofUrl: null,
         },
         client,
@@ -172,6 +203,37 @@ export const paymentsService = {
       payment,
       order: freshOrder,
     };
+  },
+
+  async ensurePixQrStored(payment: PaymentRecord) {
+    if (!payment.pixCopyPaste || payment.pixQrDataUrl) {
+      return payment;
+    }
+    const url = await generatePixQrDataUrl(payment.pixCopyPaste);
+    const updated = await paymentsRepository.updatePixQrDataUrl(payment.id, url);
+    return updated ?? payment;
+  },
+
+  async getPixManualPageData(orderId: string, user: SessionUser) {
+    const order = await ordersRepository.findById(orderId);
+    if (!order) {
+      throw new AppError("Pedido não encontrado.", 404, "order_not_found");
+    }
+    if (user.role !== "admin" && order.clientId !== user.id) {
+      throw new AppError("Acesso negado ao pedido.", 403, "order_forbidden");
+    }
+
+    const payment = await paymentsRepository.findLatestPixManualByOrderId(orderId);
+    if (!payment) {
+      return { order, payment: null as null };
+    }
+
+    const withQr =
+      payment.status === "PENDING" && payment.pixCopyPaste && !payment.pixQrDataUrl
+        ? ((await paymentsService.ensurePixQrStored(payment)) ?? payment)
+        : payment;
+
+    return { order, payment: withQr };
   },
 
   async listPendingForAdmin(user: SessionUser) {

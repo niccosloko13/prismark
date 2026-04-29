@@ -2,6 +2,8 @@
 
 import { useMemo, useState, useTransition } from "react";
 
+import { validateAdminPixKey } from "@/lib/pix/validate-admin-pix";
+import { PAYMENT_STATUS_LABELS } from "@/lib/payment-status-label";
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import { PIX_KEY_TYPES, type PaymentSettingsRecord, type PaymentWithOrderRecord, type PixKeyType } from "@/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,6 +33,18 @@ export function AdminPaymentsPanel({
   function saveSettings() {
     setError("");
     setMessage("");
+
+    if (formState.pixEnabled) {
+      if (!formState.pixKey || !formState.pixReceiverName || !formState.pixReceiverCity) {
+        setError("Para ativar Pix, preencha chave, nome e cidade do recebedor.");
+        return;
+      }
+      const keyCheck = validateAdminPixKey(formState.pixKey, formState.pixKeyType);
+      if (!keyCheck.ok) {
+        setError(keyCheck.message);
+        return;
+      }
+    }
 
     startTransition(async () => {
       try {
@@ -111,15 +125,16 @@ export function AdminPaymentsPanel({
           <label className="space-y-2">
             <span className="text-sm font-medium text-black/62">Tipo da chave</span>
             <Select
+              theme="light"
               value={formState.pixKeyType}
               onValueChange={(next) => setFormState((current) => ({ ...current, pixKeyType: next as PixKeyType }))}
             >
-              <SelectTrigger className="rounded-[18px] bg-white text-ink border border-black/10 backdrop-blur-none">
+              <SelectTrigger className="rounded-[18px]">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white text-ink border border-black/10 backdrop-blur-none">
+              <SelectContent>
                 {PIX_KEY_TYPES.map((type) => (
-                  <SelectItem key={type} value={type} className="text-ink data-[state=checked]:text-white">
+                  <SelectItem key={type} value={type}>
                     {type}
                   </SelectItem>
                 ))}
@@ -229,7 +244,8 @@ export function AdminPaymentsPanel({
                     <span className="font-semibold text-black/64">Data/hora do Pix:</span> {formatDateBR(payment.createdAt)}
                   </p>
                   <p>
-                    <span className="font-semibold text-black/64">Status:</span> {payment.status}
+                    <span className="font-semibold text-black/64">Status do Pix:</span>{" "}
+                    {PAYMENT_STATUS_LABELS[payment.status]}
                   </p>
                   <p>
                     <span className="font-semibold text-black/64">Comprovante:</span> {payment.proofUrl ? "Enviado" : "Não enviado"}
@@ -243,7 +259,7 @@ export function AdminPaymentsPanel({
                     onClick={() => updatePayment(payment.id, "confirm")}
                     className="btn btn-primary focus-ring"
                   >
-                    Confirmar pagamento
+                    Marcar como pago
                   </button>
                   <button
                     type="button"
@@ -251,7 +267,7 @@ export function AdminPaymentsPanel({
                     onClick={() => updatePayment(payment.id, "cancel")}
                     className="btn btn-secondary focus-ring"
                   >
-                    Cancelar
+                    Marcar como cancelado
                   </button>
                 </div>
               </article>

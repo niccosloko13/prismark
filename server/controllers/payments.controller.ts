@@ -70,6 +70,7 @@ export async function createPixPaymentController(request: NextRequest) {
 
     return NextResponse.json({
       available: true,
+      orderId: result.order.id,
       payment: result.payment,
       order: result.order,
     });

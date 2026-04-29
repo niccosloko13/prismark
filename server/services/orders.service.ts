@@ -1,6 +1,6 @@
 import { withTransaction } from "@/server/db";
 import { AppError } from "@/server/errors/app-error";
-import { getProductBySlug } from "@/lib/catalog";
+import { getActiveProductBySlug } from "@/lib/active-products";
 import { calculateQuote } from "@/lib/pricing";
 import { buildProductExperience, getAddonsFeeTotalByIds } from "@/lib/product-experience";
 import { filesRepository } from "@/server/repositories/files.repository";
@@ -32,11 +32,13 @@ export const ordersService = {
 
   async create(rawInput: CreateOrderInput, user: SessionUser) {
     const input = createOrderSchema.parse(rawInput);
-    const product = getProductBySlug(input.productSlug);
+    const active = await getActiveProductBySlug(input.productSlug);
 
-    if (!product) {
-      throw new AppError("Produto não encontrado.", 404, "product_not_found");
+    if (!active) {
+      throw new AppError("Produto indisponível ou não encontrado.", 404, "product_not_found");
     }
+
+    const product = active;
 
     if (input.quantity < product.minQuantity) {
       throw new AppError("Quantidade abaixo do mínimo do produto.", 400, "invalid_quantity");
@@ -192,5 +194,37 @@ export const ordersService = {
     });
 
     return updatedOrder;
+  },
+
+  async updateAdminNotes(orderId: string, adminNotes: string | null, user: SessionUser) {
+    if (user.role !== "admin") {
+      throw new AppError("Somente o admin pode editar observações internas.", 403, "admin_only");
+    }
+
+    const current = await ordersRepository.findById(orderId);
+    if (!current) {
+      throw new AppError("Pedido não encontrado.", 404, "order_not_found");
+    }
+
+    const normalized = adminNotes?.trim() ? adminNotes.trim() : null;
+
+    await withTransaction(async (client) => {
+      await ordersRepository.updateAdminNotes(orderId, normalized, client);
+      await ordersRepository.createAuditLog(
+        {
+          orderId,
+          action: "admin_notes_updated",
+          actorUserId: user.id,
+          payload: { length: normalized?.length ?? 0 },
+        },
+        client,
+      );
+    });
+
+    const updated = await ordersRepository.findById(orderId);
+    if (!updated) {
+      throw new AppError("Falha ao atualizar pedido.", 500, "order_update_failed");
+    }
+    return updated;
   },
 };

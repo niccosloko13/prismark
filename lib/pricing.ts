@@ -39,6 +39,13 @@ function calculateForProduct(
   };
 }
 
+export function calculateQuoteForProduct(
+  product: Product,
+  input: Omit<QuoteInput, "productSlug">,
+): PriceBreakdown {
+  return calculateForProduct(product, input);
+}
+
 export function calculateQuote(input: QuoteInput): PriceBreakdown {
   const product = getProductBySlug(input.productSlug);
 

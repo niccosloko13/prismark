@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 
+import { PAYMENT_STATUS_LABELS } from "@/lib/payment-status-label";
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import type { PaymentWithOrderRecord } from "@/types";
 
@@ -37,57 +38,70 @@ export function AdminPaymentsBoard({ initialPayments }: { initialPayments: Payme
   return (
     <div className="space-y-4">
       <div className="min-h-6 text-sm">
-        {error ? <p className="font-medium text-red-600">{error}</p> : null}
-        {!error && message ? <p className="font-medium text-emerald-700">{message}</p> : null}
+        {error ? <p className="font-medium text-red-300">{error}</p> : null}
+        {!error && message ? <p className="font-medium text-emerald-300">{message}</p> : null}
       </div>
 
       <div className="grid gap-3">
         {payments.map((payment) => (
-          <article key={payment.id} className="panel p-4">
-            <div className="grid gap-2 text-sm sm:grid-cols-2 xl:grid-cols-4">
+          <article
+            key={payment.id}
+            className="rounded-[22px] border border-white/10 bg-[#0d1019]/92 p-4 backdrop-blur-xl"
+          >
+            <div className="grid gap-2 text-sm text-white/75 sm:grid-cols-2 xl:grid-cols-4">
               <p>
-                <strong>Pedido:</strong> #{payment.order.id}
+                <strong className="text-white">Pedido:</strong> #{payment.order.id}
               </p>
               <p>
-                <strong>txid:</strong> {payment.txid}
+                <strong className="text-white">txid:</strong> {payment.txid}
               </p>
               <p>
-                <strong>Cliente:</strong> {payment.order.clientName}
+                <strong className="text-white">Cliente:</strong> {payment.order.clientName}
               </p>
               <p>
-                <strong>Contato:</strong> {payment.order.clientEmail}
+                <strong className="text-white">Contato:</strong> {payment.order.clientEmail}
                 {payment.order.clientPhone ? ` | ${payment.order.clientPhone}` : ""}
               </p>
               <p>
-                <strong>Produto:</strong> {payment.order.productName}
+                <strong className="text-white">Produto:</strong> {payment.order.productName}
               </p>
               <p>
-                <strong>Quantidade:</strong> {payment.order.measures.quantity} un.
+                <strong className="text-white">Quantidade:</strong> {payment.order.measures.quantity} un.
               </p>
               <p>
-                <strong>Valor:</strong> {formatCurrencyBRL(payment.order.value)}
+                <strong className="text-white">Valor:</strong> {formatCurrencyBRL(payment.order.value)}
               </p>
               <p>
-                <strong>Data/hora:</strong> {formatDateBR(payment.createdAt)}
+                <strong className="text-white">Data/hora:</strong> {formatDateBR(payment.createdAt)}
               </p>
               <p>
-                <strong>Status:</strong> {payment.status}
+                <strong className="text-white">Status do Pix:</strong> {PAYMENT_STATUS_LABELS[payment.status]}
               </p>
               <p>
-                <strong>Comprovante:</strong> {payment.proofUrl ? "Enviado" : "Não enviado"}
+                <strong className="text-white">Comprovante:</strong> {payment.proofUrl ? "Enviado" : "Não enviado"}
               </p>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              <button className="btn btn-primary" disabled={isPending} onClick={() => handleAction(payment.id, "confirm")}>
-                Confirmar pagamento
+              <button
+                className="focus-ring rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                disabled={isPending}
+                onClick={() => handleAction(payment.id, "confirm")}
+              >
+                Marcar como pago
               </button>
-              <button className="btn btn-secondary" disabled={isPending} onClick={() => handleAction(payment.id, "cancel")}>
-                Cancelar
+              <button
+                className="focus-ring rounded-full border border-white/15 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                disabled={isPending}
+                onClick={() => handleAction(payment.id, "cancel")}
+              >
+                Marcar como cancelado
               </button>
             </div>
           </article>
         ))}
-        {payments.length === 0 ? <p className="panel p-4 text-sm text-black/58">Nenhum pagamento pendente.</p> : null}
+        {payments.length === 0 ? (
+          <p className="rounded-[22px] border border-white/10 bg-[#0d1019]/80 p-4 text-sm text-white/55">Nenhum pagamento pendente.</p>
+        ) : null}
       </div>
     </div>
   );

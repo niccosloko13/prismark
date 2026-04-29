@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { createFallbackProductFromSlug, products as catalogProducts } from "@/lib/catalog";
+import { productOverridesRepository, type ProductOverride } from "@/server/repositories/product-overrides.repository";
 import type { Product } from "@/types";
 
 const PRODUCT_ROOT = path.join(process.cwd(), "public", "product");
@@ -15,6 +16,10 @@ export interface ActiveProduct extends Product {
 }
 
 let cachedActiveProductsPromise: Promise<ActiveProduct[]> | null = null;
+
+export function clearActiveProductsCache() {
+  cachedActiveProductsPromise = null;
+}
 
 function normalizeKey(value: string) {
   return value
@@ -93,7 +98,31 @@ async function buildActiveProducts() {
     });
   }
 
-  return result.sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name, "pt-BR"));
+  const sorted = result.sort(
+    (a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name, "pt-BR"),
+  );
+
+  let overrides: ProductOverride[] = [];
+  try {
+    overrides = await productOverridesRepository.listAll();
+  } catch {
+    overrides = [];
+  }
+
+  const bySlug = new Map(overrides.map((o) => [o.productSlug, o]));
+  const visible = sorted.filter((p) => bySlug.get(p.slug)?.isActive !== false);
+
+  return visible.map((p) => {
+    const o = bySlug.get(p.slug);
+    if (!o) {
+      return p;
+    }
+    return {
+      ...p,
+      basePriceM2: o.basePriceM2 ?? p.basePriceM2,
+      featured: o.featured ?? p.featured,
+    };
+  });
 }
 
 export async function getActiveProducts() {

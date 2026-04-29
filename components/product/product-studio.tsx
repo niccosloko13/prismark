@@ -91,7 +91,7 @@ export function ProductStudio({
   }
 
   return (
-    <div className="space-y-4 pb-[11.5rem] sm:space-y-5 sm:pb-32 xl:space-y-6 xl:pb-0">
+    <div className="space-y-3 pb-[11.5rem] sm:space-y-4 sm:pb-32 xl:space-y-4 xl:pb-0">
       <div className="flex flex-wrap items-center gap-2 px-1 text-[0.78rem] text-white/60">
         <Link href="/" className="transition hover:text-white">Home</Link>
         <span>{">"}</span>
@@ -102,8 +102,8 @@ export function ProductStudio({
         <span className="text-cyan-300">{product.name}</span>
       </div>
 
-      <div className="grid gap-3 xl:grid-cols-[90px_minmax(0,1fr)_420px] xl:items-start xl:gap-4">
-        <div className="order-2 grid grid-cols-5 gap-2 xl:order-1 xl:grid-cols-1 xl:grid-rows-[auto_minmax(0,1fr)_auto]">
+      <div className="grid gap-2.5 xl:grid-cols-[90px_minmax(0,1fr)_400px] xl:items-start xl:gap-3">
+        <div className="order-2 grid grid-cols-5 gap-1.5 xl:order-1 xl:grid-cols-1 xl:grid-rows-[auto_minmax(0,1fr)_auto] xl:gap-2">
           <button
             type="button"
             onClick={goPrevImage}
@@ -112,7 +112,7 @@ export function ProductStudio({
           >
             ^
           </button>
-          <div className="col-span-5 grid grid-cols-5 gap-2 xl:col-span-1 xl:grid-cols-1">
+          <div className="col-span-5 grid grid-cols-5 gap-1.5 xl:col-span-1 xl:grid-cols-1 xl:gap-2">
             {experience.gallery.map((item) => (
               <button
                 key={item.id}
@@ -121,10 +121,10 @@ export function ProductStudio({
                 aria-pressed={item.id === activeGallery?.id}
                 onClick={() => setActiveGalleryId(item.id)}
                 className={cn(
-                  "focus-ring group relative overflow-hidden rounded-[14px] border bg-white/[0.04] shadow-[0_8px_18px_rgba(0,0,0,0.25)] backdrop-blur-xl transition duration-200",
+                  "focus-ring group relative overflow-hidden rounded-[12px] border bg-white/[0.04] shadow-[0_6px_16px_rgba(0,0,0,0.28)] backdrop-blur-xl transition duration-200",
                   item.id === activeGallery?.id
-                    ? "border-cyan-400/70 ring-1 ring-cyan-400/35 shadow-[0_0_26px_rgba(56,189,248,0.22)]"
-                    : "border-white/8 hover:border-white/18",
+                    ? "z-[1] scale-[1.03] border-fuchsia-400/75 shadow-[0_0_28px_rgba(217,70,239,0.45),0_0_36px_rgba(56,189,248,0.28),inset_0_0_0_1px_rgba(255,255,255,0.12)] ring-2 ring-cyan-400/40"
+                    : "border-white/8 hover:scale-[1.04] hover:border-fuchsia-400/35 hover:shadow-[0_0_22px_rgba(168,85,247,0.22)]",
                 )}
               >
                 <div className="relative aspect-square bg-[radial-gradient(circle_at_top,rgba(11,15,26,0.9),rgba(5,7,13,0.95))]">
@@ -135,7 +135,7 @@ export function ProductStudio({
                     fill
                     unoptimized
                     sizes="(max-width: 1280px) 20vw, 90px"
-                    className="object-contain p-1.5 transition duration-300 group-hover:scale-[1.03]"
+                    className="object-contain p-1.5 transition duration-300 group-hover:scale-[1.06]"
                   />
                 </div>
               </button>
@@ -151,10 +151,10 @@ export function ProductStudio({
           </button>
         </div>
 
-        <div className="order-1 space-y-3 xl:order-2">
-          <section className="rounded-[22px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-4 xl:rounded-[34px]">
-            <div className="relative overflow-hidden rounded-[20px] border border-white/8 bg-white/[0.04] backdrop-blur-xl">
-              <div className="relative aspect-[4/4.35] min-h-[340px] bg-[radial-gradient(circle_at_top,rgba(11,15,26,0.95),rgba(5,7,13,0.98))] sm:min-h-[480px]">
+        <div className="order-1 space-y-2.5 xl:order-2">
+          <section className="rounded-[20px] border border-white/10 bg-white/[0.05] p-2.5 shadow-[0_20px_56px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:rounded-[24px] sm:p-3 xl:rounded-[28px]">
+            <div className="relative overflow-hidden rounded-[16px] border-2 border-white/12 bg-[#070a14]/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04),0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[20px]">
+              <div className="relative aspect-[4/4.35] min-h-[300px] bg-[radial-gradient(circle_at_30%_20%,rgba(56,189,248,0.06),transparent_45%),radial-gradient(circle_at_top,rgba(11,15,26,0.95),rgba(5,7,13,0.98))] sm:min-h-[420px]">
                 {activeGallery ? (
                   <ProductRasterPicture
                     src={activeGallery.src}
@@ -164,12 +164,12 @@ export function ProductStudio({
                     priority
                     unoptimized
                     sizes="(max-width: 1280px) 100vw, 760px"
-                    className="object-contain p-3 sm:p-4"
+                    className="object-contain p-5 sm:p-7 md:p-8"
                   />
                 ) : null}
               </div>
             </div>
-            <p className="mt-2 text-center text-[0.72rem] text-white/60">Passe o mouse para ampliar</p>
+            <p className="mt-1.5 text-center text-[0.7rem] text-white/55">Passe o mouse para ampliar</p>
           </section>
 
           <ProductPurchasePanel
@@ -239,7 +239,7 @@ export function ProductStudio({
           />
         </div>
 
-        <div className="order-3 xl:sticky xl:top-[120px] xl:self-start">
+        <div className="order-3 xl:sticky xl:top-24 xl:z-20 xl:self-start">
           <ProductSummaryPanel
             product={product}
             experience={experience}
@@ -252,20 +252,20 @@ export function ProductStudio({
         </div>
       </div>
 
-      <section className="grid gap-3 rounded-[18px] border border-white/8 bg-white/[0.04] p-4 backdrop-blur-xl sm:grid-cols-3">
+      <section className="grid gap-2 rounded-[16px] border border-white/8 bg-white/[0.04] p-3 backdrop-blur-xl sm:grid-cols-3 sm:p-3.5">
         {[
           { title: "Alta qualidade", text: "Impressao com cores vivas" },
           { title: "Durabilidade", text: "Material resistente e acabamento premium" },
           { title: "Satisfacao garantida", text: "Compromisso com o melhor resultado" },
         ].map((item) => (
-          <div key={item.title} className="rounded-xl border border-white/8 bg-white/[0.04] p-4 backdrop-blur-xl">
+          <div key={item.title} className="rounded-xl border border-white/8 bg-white/[0.04] p-3 backdrop-blur-xl">
             <p className="text-sm font-semibold text-white">{item.title}</p>
-            <p className="mt-1 text-xs text-white/70">{item.text}</p>
+            <p className="mt-0.5 text-xs text-white/70">{item.text}</p>
           </div>
         ))}
       </section>
 
-      <div className="space-y-3 sm:space-y-4">
+      <div className="space-y-2.5 sm:space-y-3">
         <ProductSpecs specs={experience.specs} />
         <div id="arquivos">
           <TemplateDownloads downloads={experience.downloads} />
@@ -273,8 +273,8 @@ export function ProductStudio({
       </div>
 
       {relatedProducts.length > 0 ? (
-        <section className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 lg:p-6 xl:rounded-[34px]">
-          <div className="max-w-3xl border-b border-white/8 pb-3 sm:pb-4">
+        <section className="rounded-[20px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[24px] sm:p-4 lg:p-5">
+          <div className="max-w-3xl border-b border-white/8 pb-2.5 sm:pb-3">
             <p className="label-kicker text-[0.64rem]">Relacionados</p>
             <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:text-xl">
               Outros produtos da mesma linha
@@ -283,7 +283,7 @@ export function ProductStudio({
               Atalhos compactos para continuar comprando.
             </p>
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4">
+          <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-2.5 lg:grid-cols-4">
             {relatedProducts.map((item) => (
               <ProductCard key={item.product.slug} product={item.product} compact imageSrc={item.imageSrc ?? undefined} />
             ))}

@@ -17,6 +17,7 @@ export function toSessionUser(user: AppUser): SessionUser {
     company: user.company,
     phone: user.phone,
     role: user.role,
+    isActive: user.isActive,
   };
 }
 
@@ -33,6 +34,10 @@ export const authService = {
 
     if (!matches) {
       throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
+    }
+
+    if (!user.isActive) {
+      throw new AppError("Esta conta foi desativada. Entre em contato com a Prismarq.", 403, "account_inactive");
     }
 
     return user;
@@ -53,6 +58,10 @@ export const authService = {
 
     const matches = await passwordService.verify(password, user.passwordHash);
     if (!matches) {
+      throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
+    }
+
+    if (!user.isActive) {
       throw new AppError("Credenciais inválidas.", 401, "invalid_credentials");
     }
 
@@ -104,6 +113,10 @@ export const authService = {
           throw new AppError("NÃ£o foi possÃ­vel atualizar a sessÃ£o Google da conta.", 500, "google_profile_refresh_failed");
         }
 
+        if (!refreshedLinkedUser.isActive) {
+          throw new AppError("Esta conta foi desativada. Entre em contato com a Prismarq.", 403, "account_inactive");
+        }
+
         return refreshedLinkedUser;
       }
 
@@ -121,6 +134,10 @@ export const authService = {
 
         if (!linkedExistingUser) {
           throw new AppError("NÃ£o foi possÃ­vel vincular a conta Google.", 500, "google_link_failed");
+        }
+
+        if (!linkedExistingUser.isActive) {
+          throw new AppError("Esta conta foi desativada. Entre em contato com a Prismarq.", 403, "account_inactive");
         }
 
         return linkedExistingUser;

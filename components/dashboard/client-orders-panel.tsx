@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { StatusPill } from "@/components/common/status-pill";
+import { CLIENT_ORDER_STATUS_LABELS } from "@/lib/client-order-status";
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import { ORDER_STATUSES, type OrderRecord, type OrderStatus } from "@/types";
 
@@ -25,7 +27,7 @@ export function ClientOrdersPanel({ orders }: { orders: OrderRecord[] }) {
             data-active={statusFilter === label}
             className="btn-chip focus-ring"
           >
-            {label}
+            {label === "todos" ? "Todos" : CLIENT_ORDER_STATUS_LABELS[label]}
           </button>
         ))}
       </div>
@@ -42,7 +44,7 @@ export function ClientOrdersPanel({ orders }: { orders: OrderRecord[] }) {
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="display-title text-2xl font-semibold tracking-tight text-white">{order.productName}</h3>
-                    <StatusPill status={order.status} tone="dark" />
+                    <StatusPill status={order.status} tone="dark" label={CLIENT_ORDER_STATUS_LABELS[order.status]} />
                   </div>
                   <p className="mt-2 text-sm text-white/65">
                     {order.id} · criado em {formatDateBR(order.createdAt)}
@@ -77,11 +79,24 @@ export function ClientOrdersPanel({ orders }: { orders: OrderRecord[] }) {
                   {formatDateBR(order.statusHistory[0].createdAt)}
                 </p>
               ) : null}
-              {order.file ? (
-                <a href={order.file.url} className="btn btn-secondary focus-ring mt-4 px-4 py-2">
-                  Abrir arquivo enviado
-                </a>
-              ) : null}
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link href={`/dashboard/pedidos/${order.id}`} className="btn btn-secondary focus-ring px-4 py-2">
+                  Ver pedido
+                </Link>
+                {order.status === "aguardando pagamento" ? (
+                  <Link
+                    href={`/dashboard/pedidos/${order.id}/pagamento`}
+                    className="btn btn-primary focus-ring px-4 py-2"
+                  >
+                    Pagar com Pix
+                  </Link>
+                ) : null}
+                {order.file ? (
+                  <a href={order.file.url} className="btn btn-secondary focus-ring px-4 py-2">
+                    Abrir arquivo enviado
+                  </a>
+                ) : null}
+              </div>
             </article>
           ))}
         </div>

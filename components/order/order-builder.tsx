@@ -1,23 +1,21 @@
 
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import QRCode from "qrcode";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 import { useCart } from "@/components/cart/cart-provider";
 import { Badge } from "@/components/common/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { buildCartItem } from "@/lib/cart";
-import { getProductBySlug, products } from "@/lib/catalog";
-import { getDefaultSelection, getProductExperience } from "@/lib/product-experience";
+import { products } from "@/lib/catalog";
+import { getDefaultSelection, buildProductExperience } from "@/lib/product-experience";
 import { resolveOrderDraft, type OrderDraftValues } from "@/lib/order-presets";
-import { calculateQuote } from "@/lib/pricing";
-import { cn, formatCurrencyBRL, formatDateBR } from "@/lib/utils";
-import type { OrderRecord, PaymentRecord, SessionUser, StoredFile } from "@/types";
+import { calculateQuoteForProduct } from "@/lib/pricing";
+import { cn, formatCurrencyBRL } from "@/lib/utils";
+import type { Product, SessionUser, StoredFile } from "@/types";
 
 type CheckoutField = "customerName" | "customerEmail" | "customerPhone" | "cep" | "address";
 type CheckoutErrors = Partial<Record<CheckoutField, string>>;
@@ -273,43 +271,19 @@ function buildCheckoutNotes({
   return blocks.join("\n");
 }
 
-function extractAdditionalServices(notes?: string | null) {
-  const source = notes ?? "";
-  const match = source.match(/Serviços adicionais:\s*(.+)/i);
-  if (!match?.[1]) {
-    return [];
-  }
-
-  return match[1]
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-type PixCheckoutState =
-  | {
-      available: true;
-      order: OrderRecord;
-      payment: PaymentRecord;
-    }
-  | {
-      available: false;
-      orderId: string;
-      customerName: string;
-      amount: number;
-    };
-
 export function OrderBuilder({
   session,
   initialProductSlug,
   lockProduct = false,
   initialConfig,
   initialCheckout,
+  catalogProducts,
 }: {
   session: SessionUser | null;
   initialProductSlug?: string;
   lockProduct?: boolean;
   initialConfig?: OrderDraftValues;
+  catalogProducts?: Product[];
   initialCheckout?: {
     customerName?: string;
     customerEmail?: string;
@@ -321,7 +295,12 @@ export function OrderBuilder({
   };
 }) {
   const router = useRouter();
-  const initialProduct = getProductBySlug(initialProductSlug ?? products[0].slug) ?? products[0];
+  const catalog = catalogProducts?.length ? catalogProducts : products;
+  const pickProduct = useCallback(
+    (slug: string) => catalog.find((p) => p.slug === slug) ?? catalog[0],
+    [catalog],
+  );
+  const initialProduct = pickProduct(initialProductSlug ?? catalog[0].slug);
   const initialDraft = resolveOrderDraft(initialProduct, initialConfig);
   const [productSlug, setProductSlug] = useState(initialProduct.slug);
   // Width/height em cm: manter um "texto" controlado para permitir digitação livre (inclui "1")
@@ -349,14 +328,11 @@ export function OrderBuilder({
   const [touchedFields, setTouchedFields] = useState<Partial<Record<CheckoutField, boolean>>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [pixCheckout, setPixCheckout] = useState<PixCheckoutState | null>(null);
-  const [pixQrCodeUrl, setPixQrCodeUrl] = useState("");
-  const [pixCopied, setPixCopied] = useState(false);
   const initializedRef = useRef(false);
   const fieldRefs = useRef<Partial<Record<CheckoutField, HTMLInputElement | null>>>({});
   const { upsertItem } = useCart();
 
-  const currentProduct = getProductBySlug(productSlug) ?? initialProduct;
+  const currentProduct = pickProduct(productSlug);
 
   function parseCmText(text: string, fallback: number) {
     const n = Number(text);
@@ -367,8 +343,7 @@ export function OrderBuilder({
   const widthForQuote = parseCmText(widthText, width);
   const heightForQuote = parseCmText(heightText, height);
 
-  const quote = calculateQuote({
-    productSlug,
+  const quote = calculateQuoteForProduct(currentProduct, {
     width: widthForQuote,
     height: heightForQuote,
     quantity,
@@ -416,7 +391,7 @@ export function OrderBuilder({
       return;
     }
 
-    const nextDraft = resolveOrderDraft(getProductBySlug(productSlug) ?? products[0]);
+    const nextDraft = resolveOrderDraft(pickProduct(productSlug));
     setWidth(nextDraft.width);
     setHeight(nextDraft.height);
     setWidthText(String(nextDraft.width));
@@ -426,7 +401,7 @@ export function OrderBuilder({
     setDeadline(nextDraft.deadline);
     setQuantity(nextDraft.quantity);
     setNotes(nextDraft.notes);
-  }, [productSlug]);
+  }, [productSlug, pickProduct]);
 
   function areCheckoutErrorsEqual(a: CheckoutErrors, b: CheckoutErrors) {
     const aKeys = Object.keys(a) as CheckoutField[];
@@ -452,34 +427,6 @@ export function OrderBuilder({
       });
     }
   }, [deliveryMode]);
-
-  useEffect(() => {
-    if (!pixCheckout?.available || !pixCheckout.payment.pixCopyPaste) {
-      setPixQrCodeUrl("");
-      return;
-    }
-
-    let active = true;
-    QRCode.toDataURL(pixCheckout.payment.pixCopyPaste, {
-      width: 232,
-      margin: 1,
-      color: { dark: "#111111", light: "#FFFFFFFF" },
-    })
-      .then((dataUrl) => {
-        if (active) {
-          setPixQrCodeUrl(dataUrl);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setPixQrCodeUrl("");
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [pixCheckout]);
 
   const normalizedCheckout = {
     customerName: customerName.trim(),
@@ -548,7 +495,7 @@ export function OrderBuilder({
 
     const params = new URLSearchParams();
     params.set("returnTo", `/order?${orderParams.toString()}`);
-    router.push(`/login?${params.toString()}`);
+    router.push(`/cadastro?${params.toString()}`);
   }
 
   function validateCheckout() {
@@ -583,9 +530,6 @@ export function OrderBuilder({
   function handleSubmit() {
     setError("");
     setMessage("");
-    setPixCheckout(null);
-    setPixQrCodeUrl("");
-    setPixCopied(false);
     setSubmitAttempted(true);
 
     if (!session) {
@@ -675,8 +619,7 @@ export function OrderBuilder({
 
           const pixPayload = (await pixResponse.json()) as {
             available?: boolean;
-            payment?: PaymentRecord;
-            order?: OrderRecord;
+            orderId?: string;
             message?: string;
           };
 
@@ -684,23 +627,19 @@ export function OrderBuilder({
             throw new Error(pixPayload.message ?? "Nao foi possivel preparar o pagamento Pix.");
           }
 
-          if (pixPayload.available && pixPayload.payment && pixPayload.order) {
-            setPixCheckout({
-              available: true,
-              order: pixPayload.order,
-              payment: pixPayload.payment,
-            });
-            setMessage(`Pedido #${pixPayload.order.id} criado. Aguardando pagamento.`);
-          } else {
-            setPixCheckout({
-              available: false,
-              orderId: data.order.id,
-              customerName: normalizedCheckout.customerName,
-              amount: quote.total,
-            });
-            setMessage(`Pedido #${data.order.id} criado.`);
+          if (pixPayload.available) {
+            const orderIdForPix = pixPayload.orderId?.trim() || data.order.id;
+            if (!orderIdForPix) {
+              throw new Error("Resposta do servidor sem identificador do pedido.");
+            }
+            router.push(`/dashboard/pedidos/${orderIdForPix}/pagamento`);
+            router.refresh();
+            return;
           }
 
+          setMessage(
+            `Pedido #${data.order.id} criado. O Pix nao esta disponivel no momento — acesse o painel ou fale com a Prismarq.`,
+          );
           return;
         }
 
@@ -717,11 +656,7 @@ export function OrderBuilder({
     setError("");
     setMessage("");
 
-    const experience = getProductExperience(productSlug);
-    if (!experience) {
-      setError("Nao foi possivel preparar o carrinho para este produto.");
-      return;
-    }
+    const experience = buildProductExperience(currentProduct);
 
     const baseSelection = getDefaultSelection(currentProduct, experience);
     const cartItem = buildCartItem({
@@ -753,20 +688,6 @@ export function OrderBuilder({
     router.push("/cart");
   }
 
-  async function handleCopyPixCode() {
-    if (!pixCheckout?.available || !pixCheckout.payment.pixCopyPaste) {
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(pixCheckout.payment.pixCopyPaste);
-      setPixCopied(true);
-      window.setTimeout(() => setPixCopied(false), 1800);
-    } catch {
-      setError("Nao foi possivel copiar o codigo Pix automaticamente.");
-    }
-  }
-
   return (
     <>
     <div className="grid gap-4 pb-[8.5rem] sm:gap-5 sm:pb-28 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-6 lg:pb-6">
@@ -789,10 +710,10 @@ export function OrderBuilder({
 
           {!session ? (
             <Link
-              href={`/login?returnTo=${encodeURIComponent(`/order?product=${productSlug}`)}`}
+              href={`/cadastro?returnTo=${encodeURIComponent(`/order?product=${productSlug}`)}`}
               className="btn btn-secondary focus-ring"
             >
-              Entrar para finalizar
+              Criar conta e continuar
             </Link>
           ) : (
             <div className="surface-muted px-4 py-3 text-sm font-medium text-white/80">Cliente logado: {session.name}</div>
@@ -813,7 +734,7 @@ export function OrderBuilder({
                       <SelectValue placeholder="Selecione o produto" />
                     </SelectTrigger>
                     <SelectContent>
-                      {products.map((product) => (
+                      {catalog.map((product) => (
                         <SelectItem key={product.slug} value={product.slug}>
                           {product.name}
                         </SelectItem>
@@ -1218,134 +1139,6 @@ export function OrderBuilder({
           <p className="mt-3 text-center text-sm font-medium text-white/65">{primaryActionHelper}</p>
         </div>
 
-        {pixCheckout ? (
-          pixCheckout.available ? (
-            <section className="mt-6 rounded-[32px] border border-cyan/24 bg-[linear-gradient(135deg,rgba(236,72,153,0.16),rgba(168,85,247,0.14),rgba(56,189,248,0.14))] p-5 shadow-[0_22px_44px_rgba(0,181,255,0.1)] backdrop-blur-xl sm:p-6">
-              <p className="label-kicker">Pagamento via Pix</p>
-              <h3 className="display-title mt-2 text-[1.4rem] font-semibold tracking-tight text-white sm:text-[1.55rem]">
-                Pagamento via Pix
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-white/70">
-                Para finalizar seu pedido, realize o pagamento via Pix utilizando o QR Code ou o código abaixo. Assim
-                que o pagamento for identificado, seu pedido será confirmado em instantes.
-              </p>
-
-              <div className="mt-4 rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_14px_30px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/50">Resumo do pedido</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Produto principal</p>
-                    <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.productName}</strong>
-                  </div>
-                  <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Quantidade</p>
-                    <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.measures.quantity} un.</strong>
-                  </div>
-                  <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Configuração principal</p>
-                    <strong className="mt-1 block text-sm font-semibold text-white">
-                      {pixCheckout.order.measures.width} x {pixCheckout.order.measures.height} cm · {pixCheckout.order.material}
-                    </strong>
-                    <p className="mt-1 text-xs text-white/60">Acabamento: {pixCheckout.order.finishing}</p>
-                  </div>
-                  <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Prazo escolhido</p>
-                    <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.deadline}</strong>
-                  </div>
-                  <div className="surface-muted px-4 py-3 sm:col-span-2">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Serviços adicionais</p>
-                    <strong className="mt-1 block text-sm font-semibold text-white">
-                      {extractAdditionalServices(pixCheckout.order.notes).length > 0
-                        ? extractAdditionalServices(pixCheckout.order.notes).join(" · ")
-                        : "Nenhum serviço adicional"}
-                    </strong>
-                  </div>
-                  <div className="surface-muted px-4 py-3 sm:col-span-2">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Total do pedido</p>
-                    <strong className="mt-1 block text-lg font-semibold text-white">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Pedido</p>
-                  <strong className="mt-1 block text-sm font-semibold text-white">#{pixCheckout.order.id}</strong>
-                </div>
-                <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Código Pix / txid</p>
-                  <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.payment.txid}</strong>
-                </div>
-                <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Cliente</p>
-                  <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.clientName}</strong>
-                </div>
-                <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Data de criação do pedido</p>
-                  <strong className="mt-1 block text-sm font-semibold text-white">{formatDateBR(pixCheckout.order.createdAt)}</strong>
-                </div>
-                <div className="surface-muted px-4 py-3 sm:col-span-2">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Status</p>
-                  <strong className="mt-1 block text-sm font-semibold text-amber-800">Aguardando pagamento</strong>
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-                <div className="rounded-[22px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_14px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-                  {pixQrCodeUrl ? (
-                    <Image
-                      src={pixQrCodeUrl}
-                      alt="QR Code Pix do pedido"
-                      width={232}
-                      height={232}
-                      unoptimized
-                      className="h-full w-full rounded-[14px]"
-                    />
-                  ) : (
-                    <div className="flex aspect-square items-center justify-center rounded-[14px] bg-black/[0.03] text-sm text-white/60">
-                      Gerando QR Code...
-                    </div>
-                  )}
-                </div>
-
-                <div className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_14px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/50">Código Pix copia-e-cola</p>
-                  <textarea
-                    readOnly
-                    value={pixCheckout.payment.pixCopyPaste ?? ""}
-                    className="field mt-2 min-h-[122px] rounded-[18px] text-[0.76rem] leading-5"
-                  />
-                  <button type="button" onClick={handleCopyPixCode} className="btn btn-primary focus-ring mt-3">
-                    {pixCopied ? "Codigo copiado!" : "Copiar codigo Pix"}
-                  </button>
-                </div>
-              </div>
-
-              <p className="mt-4 text-sm leading-6 text-white/70">
-                O valor do Pix já está vinculado a este pedido. Após a identificação do pagamento, iniciaremos a
-                próxima etapa de produção.
-              </p>
-              <p className="mt-2 text-sm leading-6 text-white/70">
-                Caso deseje agilizar o processo, você pode enviar o comprovante de pagamento. Isso nos ajuda a
-                localizar sua transação mais rapidamente.
-              </p>
-              <p className="mt-2 text-sm font-medium text-white/80">
-                Ambiente seguro — seu pedido só é confirmado após a identificação do pagamento.
-              </p>
-              <p className="mt-2 text-sm font-medium text-white/80">
-                Após realizar o pagamento, acompanhe o status do seu pedido pelo painel ou aguarde a atualização da
-                equipe Prismarq.
-              </p>
-            </section>
-          ) : (
-            <section className="mt-6 rounded-[30px] border border-white/8 bg-white/[0.04] p-5 shadow-[0_16px_34px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-6">
-              <h3 className="display-title text-[1.3rem] font-semibold tracking-tight text-white">Pix indisponível no momento.</h3>
-              <p className="mt-2 text-sm leading-6 text-white/70">
-                Escolha outro método de pagamento ou entre em contato com a Prismarq.
-              </p>
-            </section>
-          )
-        ) : null}
       </div>
 
       <aside className="panel h-fit p-6 sm:p-8 lg:sticky lg:top-8">
@@ -1439,47 +1232,29 @@ export function OrderBuilder({
 
       <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-white/8 bg-[#05070d]/96 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-4 lg:hidden">
         <div className="mx-auto w-full max-w-[1600px]">
-          {pixCheckout?.available ? (
-            <>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-white/50">Pagamento Pix</p>
-                <strong className="text-sm font-semibold tabular-nums text-white">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyPixCode}
-                className="home-btn-gradient focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center px-4 text-[0.9375rem] font-semibold"
-              >
-                {pixCopied ? "Codigo copiado!" : "Copiar codigo Pix"}
-              </button>
-            </>
-          ) : !pixCheckout ? (
-            <>
-              <div className="flex items-end justify-between gap-3">
-                <div className="min-w-0 shrink">
-                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total</p>
-                  <strong className="mt-0.5 block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
-                  <p className="text-[0.72rem] font-medium text-cyan-200">{formatCurrencyBRL(pixTotal)} no Pix</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isPending}
-                className="home-btn-gradient focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center gap-2 px-4 text-[0.9375rem] font-semibold transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {primaryActionLabel}
-                <ArrowRight />
-              </button>
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className="focus-ring mt-2 flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-              >
-                Adicionar ao carrinho
-              </button>
-            </>
-          ) : null}
+          <div className="flex items-end justify-between gap-3">
+            <div className="min-w-0 shrink">
+              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total</p>
+              <strong className="mt-0.5 block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
+              <p className="text-[0.72rem] font-medium text-cyan-200">{formatCurrencyBRL(pixTotal)} no Pix</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isPending}
+            className="home-btn-gradient focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center gap-2 px-4 text-[0.9375rem] font-semibold transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {primaryActionLabel}
+            <ArrowRight />
+          </button>
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="focus-ring mt-2 flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+          >
+            Adicionar ao carrinho
+          </button>
         </div>
       </div>
     </>

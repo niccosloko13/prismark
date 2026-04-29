@@ -258,6 +258,8 @@ export interface OrderRecord {
   value: number;
   status: OrderStatus;
   notes?: string | null;
+  /** Notas internas (somente admin). */
+  adminNotes?: string | null;
   file?: StoredFile | null;
   statusHistory?: OrderStatusHistoryEntry[];
   auditLogs?: OrderAuditLogEntry[];
@@ -275,6 +277,8 @@ export interface AppUser {
   authProvider?: AuthProvider;
   googleSub?: string | null;
   avatarUrl?: string | null;
+  /** Conta ativa; clientes inativos não autenticam. */
+  isActive: boolean;
   createdAt: string;
   updatedAt?: string;
 }
@@ -287,6 +291,7 @@ export interface SessionUser {
   company: string;
   phone: string;
   role: Role;
+  isActive: boolean;
 }
 
 export interface LoginInput {
@@ -297,8 +302,10 @@ export interface LoginInput {
 export interface RegisterInput {
   name: string;
   email: string;
-  company: string;
-  phone: string;
+  /** Opcional no formulário; persistido como "Particular" se vazio. */
+  company?: string;
+  /** WhatsApp opcional; vazio se não informado. */
+  phone?: string;
   password: string;
 }
 
@@ -343,6 +350,8 @@ export interface PaymentRecord {
   status: PaymentStatus;
   txid: string;
   pixCopyPaste: string | null;
+  /** Data URL PNG do QR (mesmo payload que pixCopyPaste). */
+  pixQrDataUrl: string | null;
   proofUrl: string | null;
   createdAt: string;
   updatedAt: string;

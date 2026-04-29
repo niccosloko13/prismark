@@ -6,6 +6,7 @@ import { SectionShell } from "@/components/common/section-shell";
 import { HomeFeaturedProductsCarousel } from "@/components/home/home-featured-products-carousel";
 import { getActiveProducts } from "@/lib/active-products";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
+import { marketingRepository } from "@/server/repositories/marketing.repository";
 
 type AccentTone = "cyan" | "magenta" | "yellow";
 
@@ -14,12 +15,15 @@ const homeHighlightSlugOrder = ["wind-banner", "backdrop", "banner", "cartao"] a
 
 const quickProductSlugs = ["wind-banner", "backdrop", "banner", "cartao", "adesivo", "folder"] as const;
 
-function orderProductsForHome<T extends { slug: string; featured: boolean; name: string }>(list: T[]): T[] {
+function orderProductsForHome<T extends { slug: string; featured: boolean; name: string }>(
+  list: T[],
+  highlightOrder: readonly string[],
+): T[] {
   const bySlug = new Map(list.map((p) => [p.slug, p]));
   const ordered: T[] = [];
   const used = new Set<string>();
 
-  for (const slug of homeHighlightSlugOrder) {
+  for (const slug of highlightOrder) {
     const product = bySlug.get(slug);
     if (product) {
       ordered.push(product);
@@ -221,8 +225,22 @@ function CategoryToneBadge({ tone, children }: { tone: AccentTone; children: str
 }
 
 export async function HomePage() {
+  let featuredRows: Awaited<ReturnType<typeof marketingRepository.listFeaturedActive>> = [];
+  let banners: Awaited<ReturnType<typeof marketingRepository.listBannersActive>> = [];
+  try {
+    [featuredRows, banners] = await Promise.all([
+      marketingRepository.listFeaturedActive(),
+      marketingRepository.listBannersActive(),
+    ]);
+  } catch {
+    featuredRows = [];
+    banners = [];
+  }
+
   const products = await getActiveProducts();
-  const productsHomeOrder = orderProductsForHome(products);
+  const highlightSlugs =
+    featuredRows.length > 0 ? featuredRows.map((r) => r.productSlug) : homeHighlightSlugOrder;
+  const productsHomeOrder = orderProductsForHome(products, highlightSlugs);
 
   const quickProducts = quickProductSlugs
     .map((slug) => products.find((product) => product.slug === slug))
@@ -313,6 +331,35 @@ export async function HomePage() {
           </div>
         </div>
       </section>
+
+      {banners.length > 0 ? (
+        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {banners.map((b) => {
+            const inner = (
+              <div className="group relative overflow-hidden rounded-[22px] border border-white/10 bg-white/[0.04] shadow-[0_20px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:border-cyan-400/25">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={b.imageUrl}
+                  alt={b.title ?? "Banner"}
+                  className="aspect-[21/9] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                />
+                {b.title ? (
+                  <p className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3 text-sm font-semibold text-white">
+                    {b.title}
+                  </p>
+                ) : null}
+              </div>
+            );
+            return b.href ? (
+              <Link key={b.id} href={b.href} className="block focus-ring rounded-[22px]">
+                {inner}
+              </Link>
+            ) : (
+              <div key={b.id}>{inner}</div>
+            );
+          })}
+        </section>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
         {heroBenefits.map((b) => (

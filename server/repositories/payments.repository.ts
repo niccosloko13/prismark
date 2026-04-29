@@ -14,6 +14,7 @@ interface PaymentRow extends QueryResultRow {
   status: PaymentStatus;
   txid: string;
   pix_copy_paste: string | null;
+  pix_qr_data_url: string | null;
   proof_url: string | null;
   created_at: Date | string;
   updated_at: Date | string;
@@ -48,6 +49,7 @@ function mapPayment(row: PaymentRow): PaymentRecord {
     status: row.status,
     txid: row.txid,
     pixCopyPaste: row.pix_copy_paste,
+    pixQrDataUrl: row.pix_qr_data_url,
     proofUrl: row.proof_url,
     createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
@@ -93,6 +95,7 @@ export const paymentsRepository = {
           status,
           txid,
           pix_copy_paste,
+          pix_qr_data_url,
           proof_url,
           created_at,
           updated_at,
@@ -119,6 +122,7 @@ export const paymentsRepository = {
           status,
           txid,
           pix_copy_paste,
+          pix_qr_data_url,
           proof_url,
           created_at,
           updated_at,
@@ -126,6 +130,34 @@ export const paymentsRepository = {
           cancelled_at
         FROM payments
         WHERE order_id = $1 AND method = 'PIX_MANUAL' AND status = 'PENDING'
+        ORDER BY created_at DESC
+        LIMIT 1
+      `,
+      [orderId],
+    );
+
+    return result.rows[0] ? mapPayment(result.rows[0]) : null;
+  },
+
+  async findLatestPixManualByOrderId(orderId: string, executor: Queryable = { query }) {
+    const result = await executor.query<PaymentRow>(
+      `
+        SELECT
+          id,
+          order_id,
+          amount,
+          method,
+          status,
+          txid,
+          pix_copy_paste,
+          pix_qr_data_url,
+          proof_url,
+          created_at,
+          updated_at,
+          confirmed_at,
+          cancelled_at
+        FROM payments
+        WHERE order_id = $1 AND method = 'PIX_MANUAL'
         ORDER BY created_at DESC
         LIMIT 1
       `,
@@ -143,6 +175,7 @@ export const paymentsRepository = {
       status: PaymentStatus;
       txid: string;
       pixCopyPaste: string | null;
+      pixQrDataUrl: string | null;
       proofUrl: string | null;
     },
     executor: Queryable = { query },
@@ -159,14 +192,37 @@ export const paymentsRepository = {
           status,
           txid,
           pix_copy_paste,
+          pix_qr_data_url,
           proof_url
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       `,
-      [id, input.orderId, input.amount, input.method, input.status, input.txid, input.pixCopyPaste, input.proofUrl],
+      [
+        id,
+        input.orderId,
+        input.amount,
+        input.method,
+        input.status,
+        input.txid,
+        input.pixCopyPaste,
+        input.pixQrDataUrl,
+        input.proofUrl,
+      ],
     );
 
     return paymentsRepository.findById(id, executor);
+  },
+
+  async updatePixQrDataUrl(paymentId: string, pixQrDataUrl: string, executor: Queryable = { query }) {
+    await executor.query(
+      `
+        UPDATE payments
+        SET pix_qr_data_url = $2, updated_at = NOW()
+        WHERE id = $1
+      `,
+      [paymentId, pixQrDataUrl],
+    );
+    return paymentsRepository.findById(paymentId, executor);
   },
 
   async listPending(executor: Queryable = { query }) {
@@ -180,6 +236,7 @@ export const paymentsRepository = {
           p.status,
           p.txid,
           p.pix_copy_paste,
+          p.pix_qr_data_url,
           p.proof_url,
           p.created_at,
           p.updated_at,

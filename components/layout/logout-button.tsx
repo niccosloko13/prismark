@@ -14,7 +14,7 @@ export function LogoutButton({ className }: { className?: string }) {
       await fetch("/api/auth/logout", {
         method: "POST",
       });
-      router.push("/login");
+      router.push("/");
       router.refresh();
     });
   }

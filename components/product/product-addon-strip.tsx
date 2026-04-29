@@ -33,13 +33,13 @@ export function ProductAddonStrip({
 
   return (
     <section
-      className="rounded-[22px] border border-white/8 bg-white/[0.04] p-2.5 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-3 xl:rounded-[34px]"
+      className="rounded-[18px] border border-white/8 bg-white/[0.04] p-2 shadow-[0_20px_52px_rgba(0,0,0,0.32)] backdrop-blur-xl sm:rounded-[22px] sm:p-2.5"
       aria-label="Servicos opcionais"
     >
-      <p className="label-kicker text-[0.58rem] tracking-[0.2em]">Servicos opcionais</p>
-      <p className="mt-0.5 text-[0.72rem] leading-snug text-white/58">Marque abaixo — soma no total.</p>
+      <p className="label-kicker text-[0.56rem] tracking-[0.2em]">Servicos opcionais</p>
+      <p className="mt-0.5 text-[0.68rem] leading-snug text-white/55">Marque abaixo — soma no total.</p>
 
-      <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
+      <div className="mt-1.5 grid gap-1.5 sm:grid-cols-2">
         {addons.map((addon) => {
           const selected = selectedAddonIds.includes(addon.id);
           const priceHint = formatAddonPriceHint(addon.priceLabel);

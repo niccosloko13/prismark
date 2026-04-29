@@ -100,6 +100,31 @@ html.prismarq-admin body::before {
   opacity: 1;
 }
 
+/* Admin: conteúdo sempre legível (layout aplica text-white no body para o storefront) */
+html.prismarq-admin #main {
+  color: var(--fg);
+}
+
+html.prismarq-admin #main .panel,
+html.prismarq-admin #main .panel p,
+html.prismarq-admin #main .panel strong {
+  color: inherit;
+}
+
+html.prismarq-admin #main input.field,
+html.prismarq-admin #main textarea.field,
+html.prismarq-admin #main select {
+  color: var(--fg) !important;
+  background-color: #fff !important;
+  -webkit-text-fill-color: var(--fg);
+}
+
+html.prismarq-admin #main input.field::placeholder,
+html.prismarq-admin #main textarea.field::placeholder {
+  color: rgba(15, 15, 15, 0.38) !important;
+  -webkit-text-fill-color: rgba(15, 15, 15, 0.38);
+}
+
 /* ---------- Home dark premium (scope: .home-dark) ---------- */
 .home-dark {
   --home-bg: #05070d;

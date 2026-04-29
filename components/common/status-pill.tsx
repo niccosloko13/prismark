@@ -26,7 +26,16 @@ const statusMapDark: Record<OrderStatus, string> = {
   entregue: "bg-emerald-500/18 text-emerald-100 border-emerald-400/30",
 };
 
-export function StatusPill({ status, tone = "light" }: { status: OrderStatus; tone?: "light" | "dark" }) {
+export function StatusPill({
+  status,
+  tone = "light",
+  label,
+}: {
+  status: OrderStatus;
+  tone?: "light" | "dark";
+  /** Texto exibido no lugar do slug interno (ex.: painel do cliente). */
+  label?: string;
+}) {
   const map = tone === "dark" ? statusMapDark : statusMapLight;
   return (
     <span
@@ -35,7 +44,7 @@ export function StatusPill({ status, tone = "light" }: { status: OrderStatus; to
         map[status],
       )}
     >
-      {status}
+      {label ?? status}
     </span>
   );
 }

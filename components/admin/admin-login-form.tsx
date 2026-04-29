@@ -3,10 +3,12 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { defaultPostAuthPath } from "@/lib/safe-return-to";
+
 export function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") || "/admin";
+  const returnTo = searchParams.get("returnTo");
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -27,7 +29,7 @@ export function AdminLoginForm() {
         if (!response.ok || payload.user?.role !== "admin") {
           throw new Error(payload.message ?? "Credenciais inválidas.");
         }
-        router.push(returnTo);
+        router.push(defaultPostAuthPath("admin", returnTo));
         router.refresh();
       } catch (submitError) {
         setError(submitError instanceof Error ? submitError.message : "Falha ao autenticar.");

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { defaultPostAuthPath } from "@/lib/safe-return-to";
+import { withController } from "@/server/controllers/controller-utils";
 import { isAppError } from "@/server/errors/app-error";
 import { authService, toSessionUser } from "@/server/services/auth.service";
 import { logger } from "@/server/services/logger";
@@ -8,7 +10,6 @@ import {
   googleOauthService,
 } from "@/server/services/google-oauth.service";
 import { buildSessionCookieOptions, signSessionToken } from "@/server/services/session.service";
-import { withController } from "@/server/controllers/controller-utils";
 
 function setSessionCookie(response: NextResponse, token: string) {
   const cookieOptions = buildSessionCookieOptions();
@@ -33,14 +34,6 @@ function clearGoogleOauthStateCookie(response: NextResponse) {
     value: "",
     maxAge: 0,
   });
-}
-
-function resolvePostAuthRedirect(role: "admin" | "client", returnTo?: string | null) {
-  if (!returnTo || returnTo === "/dashboard") {
-    return role === "admin" ? "/admin" : "/dashboard";
-  }
-
-  return returnTo;
 }
 
 function buildLoginRedirect(request: NextRequest, authError: string, returnTo?: string | null) {
@@ -148,7 +141,9 @@ export async function googleCallbackController(request: NextRequest) {
     });
     const sessionUser = toSessionUser(result.user);
     const token = await signSessionToken(sessionUser);
-    const response = NextResponse.redirect(new URL(resolvePostAuthRedirect(sessionUser.role, result.returnTo), request.url));
+    const response = NextResponse.redirect(
+      new URL(defaultPostAuthPath(sessionUser.role, result.returnTo), request.url),
+    );
     setSessionCookie(response, token);
     clearGoogleOauthStateCookie(response);
     return response;

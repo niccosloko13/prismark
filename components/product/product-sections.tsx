@@ -165,12 +165,12 @@ export function ProductSpecs({
   return (
     <section
       className={cn(
-        "rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 lg:p-6 xl:rounded-[34px]",
+        "rounded-[20px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_20px_56px_rgba(0,0,0,0.32)] backdrop-blur-xl sm:rounded-[24px] sm:p-4 lg:p-5",
         attachBelowGallery &&
-          "-mt-px rounded-t-none border-t-0 pt-3 shadow-[0_14px_34px_rgba(15,15,15,0.045)] sm:pt-4 lg:pt-5",
+          "-mt-px rounded-t-none border-t-0 pt-2.5 shadow-[0_14px_34px_rgba(15,15,15,0.045)] sm:pt-3 lg:pt-4",
       )}
     >
-      <div className="max-w-3xl border-b border-white/8 pb-3 sm:pb-4">
+      <div className="max-w-3xl border-b border-white/8 pb-2 sm:pb-3">
         <p className="label-kicker text-[0.64rem]">Especificacoes</p>
         <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:mt-2 sm:text-xl">
           Ficha tecnica resumida
@@ -180,10 +180,10 @@ export function ProductSpecs({
         </p>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-[16px] border border-white/8 bg-white/[0.04] backdrop-blur-xl sm:rounded-[20px]">
+      <div className="mt-3 overflow-hidden rounded-[14px] border border-white/8 bg-white/[0.04] backdrop-blur-xl sm:rounded-[18px]">
         <dl className="divide-y divide-white/[0.08]">
           {specs.map((item) => (
-            <div key={item.label} className="grid gap-0.5 px-3 py-2.5 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)] sm:gap-4 sm:px-4 sm:py-3">
+            <div key={item.label} className="grid gap-0.5 px-2.5 py-2 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)] sm:gap-3 sm:px-3 sm:py-2.5">
               <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/50 sm:pt-0.5">{item.label}</dt>
               <dd className="text-[0.8125rem] font-medium leading-snug text-white/80 sm:text-sm sm:leading-6">{item.value}</dd>
             </div>
@@ -200,8 +200,8 @@ export function TemplateDownloads({
   downloads: ProductDownloadAsset[];
 }) {
   return (
-    <section className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 lg:p-6 xl:rounded-[34px]">
-      <div className="max-w-3xl border-b border-white/8 pb-3 sm:pb-4">
+    <section className="rounded-[20px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_20px_56px_rgba(0,0,0,0.32)] backdrop-blur-xl sm:rounded-[24px] sm:p-4 lg:p-5">
+      <div className="max-w-3xl border-b border-white/8 pb-2 sm:pb-3">
         <p className="label-kicker text-[0.64rem]">Arquivos e gabaritos</p>
         <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:mt-2 sm:text-xl">
           Downloads para montar a arte
@@ -211,7 +211,7 @@ export function TemplateDownloads({
         </p>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-2.5">
+      <div className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-3 sm:gap-2">
         {downloads.map((item) => (
           <Link
             key={item.id}

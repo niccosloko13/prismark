@@ -71,7 +71,6 @@ export function CartPage({ session }: { session: SessionUser | null }) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [createdOrders, setCreatedOrders] = useState<string[]>([]);
   const pixSubtotal = subtotal * 0.85;
 
   function updateQuantity(itemId: string, quantity: number) {
@@ -115,7 +114,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
   function handleFinalize() {
     if (!session) {
-      router.push("/login?returnTo=/cart");
+      router.push("/cadastro?returnTo=/cart");
       return;
     }
 
@@ -130,6 +129,8 @@ export function CartPage({ session }: { session: SessionUser | null }) {
     startTransition(async () => {
       try {
         const createdIds: string[] = [];
+
+        const pixNote = "\n\nPagamento: Pix com 15% de desconto";
 
         for (const item of items) {
           const product = getProductBySlug(item.productSlug);
@@ -151,7 +152,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               finishing: item.selection.finishing,
               deadline: item.selection.deadline,
               selectedAddonIds: item.selection.selectedAddonIds,
-              notes: buildCartOrderNotes(item),
+              notes: `${buildCartOrderNotes(item)}${pixNote}`.trim(),
             }),
           });
 
@@ -167,17 +168,37 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           createdIds.push(data.order.id);
         }
 
+        for (const orderId of createdIds) {
+          const pixResponse = await fetch("/api/payments/pix", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId }),
+          });
+          const pixJson = (await pixResponse.json()) as { available?: boolean; message?: string };
+          if (!pixResponse.ok || !pixJson.available) {
+            throw new Error(
+              pixJson.message ??
+                `Pix nao disponivel para o pedido ${orderId}. Abra o painel ou fale com a Prismarq.`,
+            );
+          }
+        }
+
         clearCart();
-        setCreatedOrders(createdIds);
-        setMessage(`Pedido enviado com ${createdIds.length} item(ns).`);
+        const firstId = createdIds[0];
+        const mais = createdIds.length - 1;
+        router.push(
+          mais > 0
+            ? `/dashboard/pedidos/${firstId}/pagamento?outros=${mais}`
+            : `/dashboard/pedidos/${firstId}/pagamento`,
+        );
+        router.refresh();
       } catch (submitError) {
         setError(submitError instanceof Error ? submitError.message : "Falha inesperada ao finalizar o carrinho.");
       }
     });
   }
 
-  const showEmpty = items.length === 0 && createdOrders.length === 0 && !message;
-  const showSuccess = items.length === 0 && createdOrders.length > 0;
+  const showEmpty = items.length === 0 && !message;
 
   if (showEmpty) {
     return (
@@ -204,64 +225,6 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                 Voltar para a home
               </Link>
             </div>
-          </div>
-        </div>
-      </SectionShell>
-    );
-  }
-
-  if (showSuccess) {
-    return (
-      <SectionShell
-        eyebrow="Carrinho"
-        title="Pedido enviado com sucesso."
-        description={message || "Os itens foram gerados e encaminhados para a producao."}
-      >
-        <div className="panel relative overflow-hidden p-8 sm:p-10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(0,181,255,0.14),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(255,46,191,0.12),_transparent_35%)]" />
-          <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-white shadow-[0_14px_32px_rgba(15,15,15,0.18)]">
-                  <CartGlyph />
-                </span>
-                <div>
-                  <p className="label-kicker">Resumo final</p>
-                  <p className="mt-1 text-lg font-semibold text-white">
-                    {createdOrders.length} pedido(s) criado(s) com sucesso.
-                  </p>
-                </div>
-              </div>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-white/65">
-                Os itens foram enviados com a configuracao atual preservada. Voce pode acompanhar tudo no painel
-                do cliente.
-              </p>
-            </div>
-            <div className="surface-card p-5">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/50">Status</p>
-              <strong className="mt-3 block text-2xl font-semibold text-white">Pronto para acompanhamento</strong>
-              <p className="mt-2 text-sm leading-6 text-white/62">
-                A producao ja recebeu a sequencia de pedidos gerados.
-              </p>
-            </div>
-          </div>
-          <div className="relative mt-6 flex flex-wrap gap-3">
-            <Link href="/dashboard" className="btn btn-primary focus-ring">
-              Ver painel
-            </Link>
-            <Link href="/produtos" className="btn btn-secondary focus-ring">
-              Continuar comprando
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setMessage("");
-                setCreatedOrders([]);
-              }}
-              className="btn btn-ghost focus-ring border border-white/15 bg-white/[0.06] px-4 py-2 text-white"
-            >
-              Fechar mensagem
-            </button>
           </div>
         </div>
       </SectionShell>
@@ -302,7 +265,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
             <CartStatCard label="Subtotal" value={formatCurrencyBRL(subtotal)} note="Soma dos itens ja selecionados." />
             <CartStatCard
               label="Status"
-              value={session ? "Pronto" : "Login necessario"}
+              value={session ? "Pronto" : "Conta necessária"}
               note={session ? "Finalize agora ou continue editando." : "Entre para concluir o pedido."}
             />
           </div>
@@ -333,7 +296,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                   <div className="grid gap-0 lg:grid-cols-[240px_minmax(0,1fr)]">
                     <div className="relative min-h-[240px] bg-black/[0.03] lg:min-h-full">
                       <Image
-                        src={item.image}
+                        src={item.image?.trim() ? item.image : "/card.png"}
                         alt={item.productName}
                         fill
                         className="object-cover"
@@ -476,7 +439,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               <div className="surface-card p-4">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Status</p>
                 <strong className="mt-2 block text-lg font-semibold text-white">
-                  {session ? "Pronto para finalizar" : "Login necessario"}
+                  {session ? "Pronto para finalizar" : "Conta para finalizar"}
                 </strong>
               </div>
             </div>
@@ -493,13 +456,6 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           {message ? (
             <div className="mt-6 rounded-[24px] border border-emerald-400/25 bg-emerald-500/10 p-4 text-sm leading-6 text-emerald-200">
               {message}
-              {createdOrders.length > 0 ? (
-                <div className="mt-3">
-                  <Link href="/dashboard" className="btn btn-primary focus-ring inline-flex px-4 py-2">
-                    Acompanhar no painel
-                  </Link>
-                </div>
-              ) : null}
             </div>
           ) : null}
 
@@ -520,8 +476,8 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                 {isPending ? "Finalizando..." : "Finalizar itens do carrinho"}
               </button>
             ) : (
-              <Link href="/login?returnTo=/cart" className="btn btn-primary focus-ring h-14 justify-center text-base">
-                Entrar para finalizar itens
+              <Link href="/cadastro?returnTo=/cart" className="btn btn-primary focus-ring h-14 justify-center text-base">
+                Criar conta e finalizar
               </Link>
             )}
 
@@ -559,10 +515,10 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               </button>
             ) : (
               <Link
-                href="/login?returnTo=/cart"
+                href="/cadastro?returnTo=/cart"
                 className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center px-4 text-[0.9375rem] font-semibold"
               >
-                Entrar para finalizar
+                Criar conta e finalizar
               </Link>
             )}
           </div>
