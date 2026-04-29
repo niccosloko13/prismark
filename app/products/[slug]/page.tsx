@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProductStudio } from "@/components/product/product-studio";
+import { getActiveProductBySlug, getActiveProductSlugs, getActiveProducts } from "@/lib/active-products";
 import { buildProductExperience, getDefaultSelection, type ProductSelectionState } from "@/lib/product-experience";
-import { getProductBySlug, products } from "@/lib/catalog";
+import { getPublicImageSrcCandidates } from "@/lib/product-images";
+import type { Product } from "@/types";
 
 export async function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
+  const slugs = await getActiveProductSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -15,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getActiveProductBySlug(slug);
 
   if (!product) {
     return {
@@ -44,7 +47,7 @@ function buildInitialSelection({
   experience,
   searchParams,
 }: {
-  product: NonNullable<ReturnType<typeof getProductBySlug>>;
+  product: Product;
   experience: ReturnType<typeof buildProductExperience>;
   searchParams: {
     cartItem?: string;
@@ -141,13 +144,32 @@ export default async function ProductDetailPage({
 }) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
-  const product = getProductBySlug(slug);
+  const product = await getActiveProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
   const experience = buildProductExperience(product);
+  if (product.imagePaths.length > 0) {
+    experience.gallery = product.imagePaths.map((src, index) => ({
+      id: `${product.slug}-folder-${index + 1}`,
+      title: `${product.name} ${index + 1}`,
+      subtitle: "Imagem do catálogo ativo",
+      accent: (index % 3 === 0 ? "cyan" : index % 3 === 1 ? "magenta" : "yellow") as "cyan" | "magenta" | "yellow",
+      src,
+      srcCandidates: getPublicImageSrcCandidates(src),
+    }));
+  }
+
+  const activeProducts = await getActiveProducts();
+  const relatedProducts = activeProducts
+    .filter((item) => item.slug !== product.slug && (item.category === product.category || item.featured))
+    .slice(0, 4)
+    .map((item) => ({
+      product: item,
+      imageSrc: item.primaryImagePath,
+    }));
   const initialSelection = buildInitialSelection({
     product,
     experience,
@@ -155,13 +177,14 @@ export default async function ProductDetailPage({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen space-y-6 bg-[#05070d] text-white">
       <ProductStudio
         product={product}
         experience={experience}
         initialSelection={initialSelection.selection}
         editingCartItemId={initialSelection.editingCartItemId}
         cartNotes={initialSelection.notes}
+        relatedProducts={relatedProducts}
       />
     </div>
   );

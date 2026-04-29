@@ -43,7 +43,7 @@ export function ProductHeroPanel({ product, experience }: { product: Product; ex
   const stats = socialStats(rating);
 
   return (
-    <section className="panel relative overflow-hidden p-3 sm:p-4">
+    <section className="relative overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-4 xl:rounded-[34px]">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(0,181,255,0),rgba(0,181,255,0.42),rgba(255,46,191,0.44),rgba(255,211,0,0.38),rgba(255,211,0,0))]" />
 
       <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">

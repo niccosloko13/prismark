@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --bg: #ffffff;
+  --bg: rgb(255, 255, 255);
   --fg: #0f0f0f;
   --muted: #5f6671;
   --line: rgba(15, 15, 15, 0.08);
@@ -43,7 +43,7 @@ body {
     radial-gradient(circle at 12% 12%, rgba(0, 181, 255, 0.045), transparent 20%),
     radial-gradient(circle at 88% 16%, rgba(255, 46, 191, 0.04), transparent 18%),
     radial-gradient(circle at 74% 82%, rgba(255, 211, 0, 0.06), transparent 16%),
-    linear-gradient(180deg, #ffffff 0%, #fbfbfc 100%);
+    linear-gradient(180deg, rgb(255, 255, 255) 0%, #fbfbfc 100%);
 }
 
 body::before {
@@ -65,7 +65,8 @@ body::before {
 /* Storefront: viewport escura | Admin: mantém claro */
 html.prismarq-site-dark,
 html.prismarq-site-dark body {
-  background-color: #05070d !important;
+  background: #05070d !important;
+  background-image: none !important;
 }
 
 html.prismarq-site-dark body {
@@ -83,7 +84,7 @@ html.prismarq-site-dark body::before {
 
 html.prismarq-admin body,
 html.prismarq-admin {
-  background-color: #ffffff !important;
+  background-color: rgb(255, 255, 255) !important;
 }
 
 html.prismarq-admin body {
@@ -102,14 +103,14 @@ html.prismarq-admin body::before {
 /* ---------- Home dark premium (scope: .home-dark) ---------- */
 .home-dark {
   --home-bg: #05070d;
-  --home-surface: #0b0f1a;
+  --home-surface: #05070d;
   --home-border: rgba(255, 255, 255, 0.1);
   --home-text-muted: rgba(255, 255, 255, 0.7);
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   isolation: isolate;
   background: var(--home-bg);
-  color: #ffffff;
+  color: rgb(255, 255, 255);
 }
 
 .home-dark::before {
@@ -551,11 +552,11 @@ html.prismarq-admin body::before {
     pointer-events: none;
     content: "";
     -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
+      linear-gradient(rgba(255, 255, 255, 1) 0 0) content-box,
+      linear-gradient(rgba(255, 255, 255, 1) 0 0);
     mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
+      linear-gradient(rgba(255, 255, 255, 1) 0 0) content-box,
+      linear-gradient(rgba(255, 255, 255, 1) 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
   }
@@ -574,7 +575,7 @@ html.prismarq-admin body::before {
   }
 
   .home-section-surface {
-    @apply rounded-[22px] border border-white/10 bg-white/[0.04] backdrop-blur-xl sm:rounded-[28px] xl:rounded-[34px];
+    @apply rounded-[22px] border border-white/8 bg-white/[0.04] backdrop-blur-xl sm:rounded-[28px] xl:rounded-[34px];
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.04) inset,
       0 24px 64px rgba(0, 0, 0, 0.35);
@@ -666,7 +667,7 @@ html.prismarq-admin body::before {
       0 4px 28px rgba(236, 72, 153, 0.4),
       0 0 0 1px rgba(255, 255, 255, 0.14) inset,
       0 0 40px rgba(56, 189, 248, 0.15);
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     transition:
       transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
@@ -721,7 +722,7 @@ html.prismarq-admin body::before {
   html.prismarq-site-dark .btn-chip[data-active="true"] {
     border-color: transparent;
     background: linear-gradient(125deg, #ec4899 0%, #a855f7 32%, #6366f1 65%, #3b82f6 100%);
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     box-shadow:
       0 8px 28px rgba(236, 72, 153, 0.38),
       0 0 0 1px rgba(255, 255, 255, 0.14) inset,
@@ -735,7 +736,7 @@ html.prismarq-admin body::before {
   html.prismarq-site-dark .btn-secondary {
     border-color: rgba(255, 255, 255, 0.18);
     background: rgba(255, 255, 255, 0.06);
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
@@ -752,7 +753,7 @@ html.prismarq-admin body::before {
 
   html.prismarq-site-dark .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.06);
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
   }
 
   html.prismarq-site-dark .choice-card {
@@ -760,7 +761,7 @@ html.prismarq-admin body::before {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
       0 0 0 1px rgba(255, 255, 255, 0.03);
@@ -769,7 +770,7 @@ html.prismarq-admin body::before {
   html.prismarq-site-dark .choice-card[data-selected="true"] {
     border-color: rgb(34 211 238 / 0.45);
     background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
       0 0 32px rgba(56, 189, 248, 0.22),
@@ -778,9 +779,9 @@ html.prismarq-admin body::before {
 
   html.prismarq-site-dark .field,
   html.prismarq-site-dark :where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea) {
-    border-color: rgba(255, 255, 255, 0.12) !important;
-    background-color: #0b0f1a !important;
-    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    color: rgba(255, 255, 255, 1) !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
   }
 
@@ -791,6 +792,28 @@ html.prismarq-admin body::before {
   }
 
   html.prismarq-site-dark #main .text-ink {
-    color: #fff !important;
+    color: rgba(255, 255, 255, 1) !important;
   }
+
+  /* Hardening global do storefront: elimina restos de tema claro */
+  html.prismarq-site-dark [class*="text-black"],
+  html.prismarq-site-dark [class*="text-ink"] {
+    color: rgba(255, 255, 255, 0.92) !important;
+  }
+
+  html.prismarq-site-dark [class*="text-neutral-900"],
+  html.prismarq-site-dark [class*="text-zinc-900"],
+  html.prismarq-site-dark [class*="text-slate-900"] {
+    color: rgba(255, 255, 255, 0.92) !important;
+  }
+
+  html.prismarq-site-dark [class*="bg-white"],
+  html.prismarq-site-dark [class*="bg-gray-"],
+  html.prismarq-site-dark [class*="bg-slate-"] {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  /* Obs: entradas/painéis já são tratados pelas regras acima */
 }

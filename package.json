@@ -11,6 +11,7 @@
     "db:seed": "tsx scripts/db-seed.ts"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.2.6",
     "bcryptjs": "2.4.3",
     "dotenv": "16.4.7",
     "jose": "5.9.6",

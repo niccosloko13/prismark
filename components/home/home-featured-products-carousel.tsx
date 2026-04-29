@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useRef } from "react";
 
 import { ProductRasterPicture } from "@/components/common/product-raster-picture";
-import { products } from "@/lib/catalog";
-import { getProductPrimaryImagePath } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
-import type { Product } from "@/types";
 
-const HOME_FEATURED_SLUGS = ["banner", "backdrop", "backdrop-tecido", "wind-banner"] as const;
+type FeaturedCarouselItem = {
+  slug: string;
+  name: string;
+  image: string | null;
+};
 
 function Chevron({ dir }: { dir: "left" | "right" }) {
   return (
@@ -23,12 +24,8 @@ function Chevron({ dir }: { dir: "left" | "right" }) {
   );
 }
 
-export function HomeFeaturedProductsCarousel() {
+export function HomeFeaturedProductsCarousel({ items }: { items: FeaturedCarouselItem[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
-
-  const items = HOME_FEATURED_SLUGS.map((slug) => products.find((p) => p.slug === slug)).filter(
-    (p): p is Product => Boolean(p),
-  );
 
   function scrollByDir(dir: -1 | 1) {
     const el = scrollerRef.current;
@@ -85,7 +82,7 @@ export function HomeFeaturedProductsCarousel() {
             )}
           >
             {items.map((product) => {
-              const image = getProductPrimaryImagePath(product.slug) ?? "/criativo1.png";
+              const image = product.image ?? "/criativo1.png";
               return (
                 <Link
                   key={product.slug}

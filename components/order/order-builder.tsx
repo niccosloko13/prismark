@@ -10,6 +10,7 @@ import QRCode from "qrcode";
 
 import { useCart } from "@/components/cart/cart-provider";
 import { Badge } from "@/components/common/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { buildCartItem } from "@/lib/cart";
 import { getProductBySlug, products } from "@/lib/catalog";
 import { getDefaultSelection, getProductExperience } from "@/lib/product-experience";
@@ -775,13 +776,18 @@ export function OrderBuilder({
               {!lockProduct ? (
                 <label className="space-y-2 sm:col-span-2">
                   <FieldLabel>Produto</FieldLabel>
-                  <select value={productSlug} onChange={(event) => setProductSlug(event.target.value)} className="field">
-                    {products.map((product) => (
-                      <option key={product.slug} value={product.slug}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={productSlug} onValueChange={setProductSlug}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o produto" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.slug} value={product.slug}>
+                          {product.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </label>
               ) : null}
 
@@ -825,33 +831,48 @@ export function OrderBuilder({
 
               <label className="space-y-2">
                 <FieldLabel>Material</FieldLabel>
-                <select value={material} onChange={(event) => setMaterial(event.target.value)} className="field">
-                  {currentProduct.materials.map((item) => (
-                    <option key={item.label} value={item.label}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+                <Select value={material} onValueChange={setMaterial}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o material" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currentProduct.materials.map((item) => (
+                      <SelectItem key={item.label} value={item.label}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
               <label className="space-y-2">
                 <FieldLabel>Acabamento</FieldLabel>
-                <select value={finishing} onChange={(event) => setFinishing(event.target.value)} className="field">
-                  {currentProduct.finishings.map((item) => (
-                    <option key={item.label} value={item.label}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+                <Select value={finishing} onValueChange={setFinishing}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o acabamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currentProduct.finishings.map((item) => (
+                      <SelectItem key={item.label} value={item.label}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
               <label className="space-y-2 sm:col-span-2">
                 <FieldLabel>Prazo</FieldLabel>
-                <select value={deadline} onChange={(event) => setDeadline(event.target.value)} className="field">
-                  {currentProduct.deadlines.map((item) => (
-                    <option key={item.label} value={item.label}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+                <Select value={deadline} onValueChange={setDeadline}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o prazo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currentProduct.deadlines.map((item) => (
+                      <SelectItem key={item.label} value={item.label}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
 
               <label className="space-y-3 sm:col-span-2">

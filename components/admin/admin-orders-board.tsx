@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { StatusPill } from "@/components/common/status-pill";
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import { ORDER_STATUSES, type OrderRecord, type OrderStatus } from "@/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const statuses: OrderStatus[] = [...ORDER_STATUSES];
 
@@ -169,22 +170,26 @@ export function AdminOrdersBoard({ orders }: { orders: OrderRecord[] }) {
 
             <div className="mt-5 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap items-center gap-3">
-                <select
+                <Select
                   value={drafts[order.id] ?? order.status}
-                  onChange={(event) =>
+                  onValueChange={(next) =>
                     setDrafts((previous) => ({
                       ...previous,
-                      [order.id]: event.target.value as OrderStatus,
+                      [order.id]: next as OrderStatus,
                     }))
                   }
-                  className="field rounded-full px-4 py-3"
                 >
-                  {statuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="rounded-full bg-white text-ink border border-black/10 backdrop-blur-none px-4 py-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white text-ink border border-black/10 backdrop-blur-none">
+                    {statuses.map((status) => (
+                      <SelectItem key={status} value={status} className="text-ink data-[state=checked]:text-white">
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <button
                   type="button"
                   disabled={isPending}

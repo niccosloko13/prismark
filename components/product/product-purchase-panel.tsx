@@ -1,48 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/common/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 import type { ProductExperience, ProductSelectionState } from "@/lib/product-experience";
 
-function ChevronDown() {
+function StarsRow() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
-      <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function SelectField({
-  label,
-  value,
-  onChange,
-  children,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  children: ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/45">{label}</span>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className="field h-[3.25rem] appearance-none rounded-[18px] border-white/8 bg-white/[0.04] pr-11 text-[0.94rem] font-medium text-white shadow-[0_14px_28px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl transition hover:border-white/18 focus:border-cyan/40"
-        >
-          {children}
-        </select>
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/45">
-          <ChevronDown />
-        </span>
-      </div>
-    </label>
+    <div className="inline-flex items-center gap-0.5 text-yellow-400" aria-hidden>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <span key={index}>★</span>
+      ))}
+    </div>
   );
 }
 
@@ -190,19 +162,22 @@ export function ProductPurchasePanel({
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <div className="flex flex-wrap items-center gap-2 px-0.5 text-sm text-white/50">
-        <Link href="/" className="transition hover:text-white">
-          Home
-        </Link>
-        <span className="text-white/35">/</span>
-        <Link href="/produtos" className="transition hover:text-white">
-          Produtos
-        </Link>
-        <span className="text-white/35">/</span>
-        <span className="font-medium text-white">{product.name}</span>
-      </div>
+      <section
+        id="configurador"
+        className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 xl:rounded-[34px]"
+      >
+        <div className="mb-3 space-y-2">
+          <Badge tone="magenta" className="px-2.5 py-1 text-[0.62rem]">
+            MAIS VENDIDO
+          </Badge>
+          <h1 className="display-title text-[clamp(1.8rem,3vw,2.6rem)] font-semibold tracking-tight text-white">{product.name}</h1>
+          <div className="flex items-center gap-2 text-sm text-white/70">
+            <StarsRow />
+            <span>4.9 (126 avaliações)</span>
+          </div>
+          <p className="text-sm text-white/70">{product.description}</p>
+        </div>
 
-      <section id="configurador" className="panel p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-2 border-b border-white/8 pb-3 sm:gap-3 sm:pb-4">
           <div className="min-w-0">
             <p className="label-kicker text-[0.64rem]">Configurador</p>
@@ -246,23 +221,39 @@ export function ProductPurchasePanel({
 
         <div className="mt-2.5 grid gap-2 md:grid-cols-2 md:gap-2.5">
           <ControlCard title="Material">
-            <SelectField label="Material" value={selection.material} onChange={onMaterialChange}>
-              {product.materials.map((item) => (
-                <option key={item.label} value={item.label}>
-                  {item.label}
-                </option>
-              ))}
-            </SelectField>
+            <div>
+              <p className="mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/45">Material</p>
+              <Select value={selection.material} onValueChange={onMaterialChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o material" />
+                </SelectTrigger>
+                <SelectContent>
+                  {product.materials.map((item) => (
+                    <SelectItem key={item.label} value={item.label}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </ControlCard>
 
           <ControlCard title="Formato">
-            <SelectField label="Formato" value={selection.formatId} onChange={onFormatChange}>
-              {experience.formats.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label} • {item.width} x {item.height} cm
-                </option>
-              ))}
-            </SelectField>
+            <div>
+              <p className="mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/45">Formato</p>
+              <Select value={selection.formatId} onValueChange={onFormatChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o formato" />
+                </SelectTrigger>
+                <SelectContent>
+                  {experience.formats.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.label} • {item.width} x {item.height} cm
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </ControlCard>
         </div>
 

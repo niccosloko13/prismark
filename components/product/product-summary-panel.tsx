@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useEffect, useState, useTransition } from "react";
 
 import { useCart } from "@/components/cart/cart-provider";
@@ -84,8 +85,10 @@ export function ProductSummaryPanel({
   const selectedAddonsForSummary = selectedAddonsState.filter((item) => item.selected);
   const color = experience.colors.find((item) => item.id === selection.colorId) ?? experience.colors[0];
   const pixTotal = quote.total * 0.85;
+  const pixDiscount = quote.total - pixTotal;
   const unitAverage = quote.total / Math.max(selection.quantity, 1);
   const naturalSummary = `${selection.quantity} un. em ${selection.material.toLowerCase()}, ${selection.width} x ${selection.height} cm, ${selection.finishing.toLowerCase()} e ${color?.label ?? "cor padrao"}.`;
+  const previewImage = experience.gallery[0]?.src ?? "";
 
   useEffect(() => {
     setPricePulse(true);
@@ -117,173 +120,89 @@ export function ProductSummaryPanel({
 
   return (
     <>
-      <section className="panel p-3.5 sm:p-5" id="resumo-pedido">
+      <section
+        className="rounded-[22px] border border-white/8 bg-white/[0.04] p-3.5 shadow-[0_24px_64px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 xl:rounded-[34px]"
+        id="resumo-pedido"
+      >
         <div className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_20px_44px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:rounded-[26px] sm:p-5">
-          <div className="flex flex-wrap items-start justify-between gap-2 border-b border-white/8 pb-3">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <Badge tone="cyan" className="px-2.5 py-1 text-[0.6rem]">
-                  Total
-                </Badge>
-                <span className="rounded-full border border-white/12 bg-white/[0.08] px-2.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/65">
-                  15% Pix
-                </span>
-              </div>
-              <h2 className="display-title mt-2 text-lg font-semibold tracking-tight text-white sm:text-xl">Fechar pedido</h2>
-              <p className="mt-1 text-[0.78rem] leading-snug text-white/60 sm:text-[0.8125rem]">
-                Confira o valor e siga para o carrinho ou checkout.
-              </p>
-            </div>
-            <Badge tone="yellow" className="shrink-0 px-2.5 py-1 text-[0.6rem]">
-              {selection.deadline}
-            </Badge>
+          <div className="flex items-start justify-between gap-3 border-b border-white/8 pb-3">
+            <h2 className="text-lg font-semibold text-white">Resumo do pedido</h2>
+            <Badge tone="magenta" className="px-2 py-1 text-[0.58rem]">1 item</Badge>
           </div>
 
-          <div className="mt-4 space-y-3">
-            <div className="rounded-[20px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_14px_32px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-xl sm:rounded-[22px] sm:p-4">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-white/45">Valor</p>
+          <div className="mt-3 flex gap-3 rounded-xl border border-white/8 bg-white/[0.04] p-2.5 backdrop-blur-xl">
+            <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-white/8 bg-[#05070d]">
+              {previewImage ? <Image src={previewImage} alt={product.name} fill className="object-cover" /> : null}
+            </div>
+            <div className="min-w-0 flex-1 text-sm text-white/70">
+              <p className="truncate font-semibold text-white">{product.name}</p>
+              <p className="truncate">{selection.material}</p>
+              <p className="truncate">{selection.colorId} · {selection.finishing}</p>
+              <p className="truncate">{selection.deadline}</p>
+              <p className="truncate">{selection.quantity} unidade</p>
+            </div>
+            <p className="text-sm font-semibold text-white">{formatCurrencyBRL(quote.total)}</p>
+          </div>
+
+          <div className="mt-4 space-y-2 text-sm">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/70">Subtotal</span>
+                <strong className="font-semibold text-white">{formatCurrencyBRL(quote.subtotal)}</strong>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/70">Frete</span>
+                <strong className="font-semibold text-emerald-300">Grátis</strong>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/70">Desconto</span>
+                <strong className="font-semibold text-pink-300">- {formatCurrencyBRL(pixDiscount)}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-end justify-between border-t border-white/8 pt-4">
+            <span className="text-2xl font-semibold text-white">Total</span>
+            <div className="text-right">
               <strong
                 className={cn(
-                  "mt-2 block text-[clamp(2rem,3.6vw,2.85rem)] font-semibold tracking-[-0.04em] text-white transition duration-300 motion-safe:transform-gpu",
+                  "block text-[2rem] font-semibold tracking-tight text-white transition duration-300 motion-safe:transform-gpu",
                   pricePulse ? "scale-[1.02]" : "scale-100",
                 )}
               >
-                {formatCurrencyBRL(quote.total)}
+                {formatCurrencyBRL(pixTotal)}
               </strong>
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-[0.8125rem]">
-                <span className="rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_8px_24px_rgba(236,72,153,0.35)] sm:text-sm">
-                  {formatCurrencyBRL(pixTotal)} Pix
-                </span>
-                <span className="font-medium text-white/55">{formatCurrencyBRL(unitAverage)}/un.</span>
-              </div>
+              <span className="text-xs text-white/60">em até 3x de {formatCurrencyBRL(unitAverage)} sem juros</span>
             </div>
+          </div>
 
-            <div className="hidden w-full gap-2 lg:grid">
-              <button
-                type="button"
-                onClick={handleCartAction}
-                disabled={isPending}
-                className="btn btn-primary focus-ring inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 text-sm font-semibold transition duration-200 disabled:cursor-wait disabled:opacity-80 sm:min-h-[3.15rem] sm:text-[0.95rem]"
-              >
-                {isPending ? "Adicionando..." : editingCartItemId ? "Salvar no carrinho" : "Adicionar ao carrinho"}
-                <ArrowRight />
+          <div className="mt-3 rounded-xl border border-cyan-400/25 bg-cyan-400/10 p-3">
+            <p className="text-xs font-semibold text-pink-300">15% OFF no PIX</p>
+            <p className="text-sm text-white/70">Pague {formatCurrencyBRL(pixTotal)} com PIX</p>
+          </div>
+
+          <div className="mt-3 hidden gap-2 lg:grid">
+            {!editingCartItemId ? (
+              <button type="button" onClick={handleBuyNow} className="btn btn-primary focus-ring min-h-12 w-full justify-center text-sm">
+                Finalizar pedido
               </button>
-              {!editingCartItemId ? (
-                <button type="button" onClick={handleBuyNow} className="btn btn-secondary focus-ring min-h-11 w-full justify-center text-sm sm:min-h-12">
-                  Comprar agora
-                </button>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            <div className="surface-muted px-2 py-2 sm:px-3 sm:py-2.5">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45 sm:text-[0.62rem]">Qtd</p>
-              <strong className="mt-0.5 block text-sm font-semibold text-white sm:text-base">{selection.quantity} un.</strong>
-            </div>
-            <div className="surface-muted px-2 py-2 sm:px-3 sm:py-2.5">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45 sm:text-[0.62rem]">Area</p>
-              <strong className="mt-0.5 block text-sm font-semibold text-white sm:text-base">{quote.area.toFixed(2)} m2</strong>
-            </div>
-            <div className="surface-muted px-2 py-2 sm:px-3 sm:py-2.5">
-              <p className="text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45 sm:text-[0.62rem]">Fatur.</p>
-              <strong className="mt-0.5 block text-sm font-semibold text-white sm:text-base">{quote.billableArea.toFixed(2)} m2</strong>
-            </div>
-          </div>
-
-          <div className="mt-3 rounded-[18px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_12px_26px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-3.5">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-white/45">Sua escolha</p>
-              <span className="rounded-full border border-white/12 bg-white/[0.08] px-2.5 py-0.5 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-white/65">
-                {selection.deadline}
-              </span>
-            </div>
-            <p className="mt-2 text-[0.8125rem] leading-snug text-white/70 sm:text-sm sm:leading-6">{naturalSummary}</p>
-            {selectedAddons.length > 0 ? (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {selectedAddons.map((addon) => {
-                  const hint = formatAddonPriceHint(addon.priceLabel);
-                  return (
-                    <span
-                      key={addon.id}
-                      className="inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-full border border-cyan/28 bg-white/[0.08] px-2 py-1 sm:px-2.5 sm:py-1"
-                    >
-                      <span className="min-w-0 truncate text-[clamp(0.58rem,3.2vw,0.68rem)] font-semibold uppercase leading-tight tracking-[0.06em] text-white/75 sm:tracking-[0.08em]">
-                        {addon.label}
-                      </span>
-                      {hint ? (
-                        <span className="shrink-0 text-[clamp(0.55rem,2.8vw,0.65rem)] font-semibold tabular-nums text-cyan-300">
-                          {hint}
-                        </span>
-                      ) : null}
-                    </span>
-                  );
-                })}
-              </div>
             ) : null}
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-2 rounded-[16px] border border-white/8 bg-white/[0.04] px-3 py-2.5 text-[0.78rem] shadow-[0_8px_20px_rgba(0,0,0,0.2)] backdrop-blur-xl sm:gap-x-5 sm:text-[0.8125rem]">
-            <div>
-              <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45">Subtotal</span>
-              <strong className="font-semibold text-white">{formatCurrencyBRL(quote.subtotal)}</strong>
-            </div>
-            <div className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden />
-            <div>
-              <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45">Acab.</span>
-              <strong className="font-semibold text-white">{formatCurrencyBRL(quote.finishingFee)}</strong>
-            </div>
-            <div className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden />
-            <div>
-              <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45">R$/m2</span>
-              <strong className="font-semibold text-white">{formatCurrencyBRL(quote.pricePerM2)}</strong>
-            </div>
-            {quote.addonsTotal > 0 ? (
-              <>
-                <div className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden />
-                <div>
-                  <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-white/45">Extras</span>
-                  <strong className="font-semibold text-cyan-300">{formatCurrencyBRL(quote.addonsTotal)}</strong>
-                </div>
-              </>
-            ) : null}
-          </div>
-
-          <div className="mt-3 rounded-[16px] border border-cyan/25 bg-cyan/[0.1] px-3 py-2.5">
-            <p className="text-[0.7rem] font-semibold text-cyan-200">Serviços adicionais incluídos no total</p>
-            {selectedAddonsForSummary.length > 0 ? (
-              <ul className="mt-1.5 space-y-1 text-[0.75rem] font-medium text-white/72 sm:text-[0.8rem]">
-                {selectedAddonsForSummary.map((addon) => (
-                  <li key={addon.id} className="flex items-center justify-between gap-2">
-                    <span className="truncate">{addon.label}</span>
-                    <span className="shrink-0 font-semibold text-cyan-300">+ {formatCurrencyBRL(addon.price)}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-1.5 text-[0.75rem] text-white/60 sm:text-[0.8rem]">Nenhum serviço adicional selecionado.</p>
-            )}
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {[
-              { icon: <SparkIcon />, label: "Producao propria" },
-              { icon: <TruckIcon />, label: "Envio / retirada" },
-              { icon: <ShieldIcon />, label: "Revisao de arquivo" },
-              { icon: <HeadsetIcon />, label: "Suporte" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="rounded-[14px] border border-white/8 bg-white/[0.04] px-2 py-2 shadow-[0_8px_18px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:rounded-[16px] sm:px-2.5"
-              >
-                <div className="flex items-center gap-1.5 text-white">
-                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-white/[0.08] [&_svg]:h-3.5 [&_svg]:w-3.5">
-                    {item.icon}
-                  </span>
-                  <span className="text-[0.58rem] font-semibold uppercase leading-tight tracking-[0.08em] text-white/65 sm:text-[0.62rem]">{item.label}</span>
-                </div>
-              </div>
-            ))}
+            <button
+              type="button"
+              onClick={handleCartAction}
+              disabled={isPending}
+              className={cn(
+                "focus-ring min-h-11 w-full justify-center text-sm",
+                editingCartItemId ? "btn btn-primary" : "btn btn-secondary",
+              )}
+            >
+              {isPending ? "Adicionando..." : editingCartItemId ? "Salvar no carrinho" : "Adicionar ao carrinho"}
+            </button>
+            <p className="text-center text-xs text-white/60">Ambiente seguro e criptografado</p>
           </div>
         </div>
       </section>

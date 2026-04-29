@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ProductRasterPicture } from "@/components/common/product-raster-picture";
-import { getProductPrimaryImagePath } from "@/lib/product-images";
-import { products } from "@/lib/catalog";
+import { ProdutosSortSelect } from "@/components/produtos/produtos-sort-select";
+import { getActiveProducts } from "@/lib/active-products";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -101,7 +101,7 @@ function matchesMaterial(product: Product, material: MaterialKey) {
   return materials.some((item) => item.includes("vinil"));
 }
 
-function sortProducts(list: Product[], sort: SortKey): Product[] {
+function sortProducts<T extends Product>(list: T[], sort: SortKey): T[] {
   const copy = [...list];
   if (sort === "menor-preco") {
     return copy.sort((a, b) => a.basePriceM2 - b.basePriceM2);
@@ -168,8 +168,7 @@ function SearchIcon() {
   );
 }
 
-function ProductListCard({ product }: { product: Product }) {
-  const imageSrc = getProductPrimaryImagePath(product.slug);
+function ProductListCard({ product, imageSrc }: { product: Product; imageSrc: string | null }) {
   const badgeLabel = product.featured ? "MAIS VENDIDO" : "NOVO";
   const pixPrice = product.basePriceM2 * 0.85;
   const installmentText = product.minQuantity > 1 ? `${product.minQuantity}00 un.` : "a partir de";
@@ -235,6 +234,7 @@ export default async function ProdutosPage({
     view?: string;
   }>;
 }) {
+  const products = await getActiveProducts();
   const params = await searchParams;
   const query = (params.q ?? "").trim();
   const normalizedQuery = normalizeForSearch(query);
@@ -436,15 +436,7 @@ export default async function ProdutosPage({
               />
             </div>
             <p className="px-1 text-[0.82rem] text-white/60">{filteredProducts.length} produtos encontrados</p>
-            <div className="flex items-center gap-1.5">
-              <label htmlFor="ordenar" className="text-[0.8rem] text-white/60">Ordenar por</label>
-              <select id="ordenar" name="sort" defaultValue={sortKey} className="h-10 rounded-[10px] border border-white/8 bg-[#05070d] px-2.5 text-sm text-white outline-none">
-                <option value="mais-vendidos">Mais vendidos</option>
-                <option value="menor-preco">Menor preço</option>
-                <option value="maior-preco">Maior preço</option>
-                <option value="nome">Nome</option>
-              </select>
-            </div>
+            <ProdutosSortSelect value={sortKey} />
             <div className="inline-flex h-10 items-center gap-1 rounded-[10px] border border-white/8 bg-[#05070d] p-1">
               <button name="view" value="grid" className={cn("rounded-md px-2 py-1 text-[0.68rem]", view === "grid" ? "bg-white/[0.12] text-white" : "text-white/50")}>Grid</button>
               <button name="view" value="list" className={cn("rounded-md px-2 py-1 text-[0.68rem]", view === "list" ? "bg-white/[0.12] text-white" : "text-white/50")}>Lista</button>
@@ -453,7 +445,7 @@ export default async function ProdutosPage({
 
           <div className={cn("grid gap-3", view === "list" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4")}>
             {filteredProducts.map((product) => (
-              <ProductListCard key={product.slug} product={product} />
+              <ProductListCard key={product.slug} product={product} imageSrc={product.primaryImagePath ?? null} />
             ))}
           </div>
 

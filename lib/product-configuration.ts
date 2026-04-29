@@ -409,7 +409,7 @@ function buildColors(product: Product, palette: readonly string[]) {
     case "folheto":
       return [
         { id: "4x0", label: "4x0 · Colorido frente", description: "Entrada mais usada para panfletagem e oferta.", swatch: cmykSwatch },
-        { id: "4x4", label: "4x4 · Frente e verso", description: "Aproveita os dois lados para mais argumento comercial.", swatch: "linear-gradient(135deg, #00B5FF 0%, #ffffff 50%, #FF2EBF 100%)" },
+        { id: "4x4", label: "4x4 · Frente e verso", description: "Aproveita os dois lados para mais argumento comercial.", swatch: "linear-gradient(135deg, #00B5FF 0%, rgb(255, 255, 255) 50%, #FF2EBF 100%)" },
         { id: "1x0", label: "1x0 · Preto frente", description: "Alternativa econômica para comunicado objetivo.", swatch: "linear-gradient(135deg, #0f0f0f 0%, #646464 100%)" },
       ];
     case "folder":
@@ -422,7 +422,7 @@ function buildColors(product: Product, palette: readonly string[]) {
     case "adesivo-perfurado":
       return [
         { id: "4x0", label: "4x0 · Colorido frente", description: "Leitura externa com produção direta e objetiva.", swatch: cmykSwatch },
-        { id: "4x0-branco", label: "4x0 · Com apoio de branco", description: "Ajuda na leitura em bases transparentes ou mistas.", swatch: "linear-gradient(135deg, #ffffff 0%, #00B5FF 40%, #FF2EBF 100%)" },
+        { id: "4x0-branco", label: "4x0 · Com apoio de branco", description: "Ajuda na leitura em bases transparentes ou mistas.", swatch: "linear-gradient(135deg, rgb(255, 255, 255) 0%, #00B5FF 40%, #FF2EBF 100%)" },
         { id: "alta-cobertura", label: "Alta cobertura", description: "Mais presença de cor para vidro e fachada iluminada.", swatch: "linear-gradient(135deg, #0f0f0f 0%, #00B5FF 50%, #FFD300 100%)" },
       ];
     case "placa-pvc":
@@ -430,13 +430,13 @@ function buildColors(product: Product, palette: readonly string[]) {
     case "totem":
       return [
         { id: "4x0", label: "4x0 · Frente colorida", description: "Face principal com comunicação mais forte.", swatch: cmykSwatch },
-        { id: "4x4", label: "4x4 · Frente e verso", description: "Útil para peças centrais ou leitura nos dois lados.", swatch: "linear-gradient(135deg, #00B5FF 0%, #ffffff 50%, #FF2EBF 100%)" },
+        { id: "4x4", label: "4x4 · Frente e verso", description: "Útil para peças centrais ou leitura nos dois lados.", swatch: "linear-gradient(135deg, #00B5FF 0%, rgb(255, 255, 255) 50%, #FF2EBF 100%)" },
         { id: "institucional", label: "Institucional", description: "Base sóbria para marca, orientação e sinalização.", swatch: "linear-gradient(135deg, #0f0f0f 0%, #525252 100%)" },
       ];
     default:
       return [
         { id: "4x0", label: "4x0 · Colorido frente", description: "Configuração principal para comunicação promocional.", swatch: cmykSwatch },
-        { id: "4x4", label: "4x4 · Frente e verso", description: "Expande leitura para estruturas e peças premium.", swatch: "linear-gradient(135deg, #00B5FF 0%, #ffffff 50%, #FF2EBF 100%)" },
+        { id: "4x4", label: "4x4 · Frente e verso", description: "Expande leitura para estruturas e peças premium.", swatch: "linear-gradient(135deg, #00B5FF 0%, rgb(255, 255, 255) 50%, #FF2EBF 100%)" },
         { id: "alta-cobertura", label: "Alta cobertura", description: "Mais presença de cor para campanhas de impacto.", swatch: "linear-gradient(135deg, #FFD300 0%, #00B5FF 45%, #FF2EBF 100%)" },
       ];
   }

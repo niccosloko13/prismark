@@ -956,8 +956,61 @@ export const contactChannels = [
   },
 ];
 
+function slugToName(slug: string) {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1))
+    .join(" ");
+}
+
+export function createFallbackProductFromSlug(slug: string): Product {
+  const safeSlug = slug.trim().toLowerCase() || "produto";
+  const safeName = slugToName(safeSlug);
+
+  return {
+    slug: safeSlug,
+    name: safeName,
+    category: "Produtos",
+    badge: "Disponível",
+    description: "Produto em configuração inicial. Personalize para avançar com o pedido.",
+    lead: "Catálogo ativo com parâmetros padrão temporários.",
+    basePriceM2: 89,
+    minimumArea: 0.5,
+    minQuantity: 1,
+    materials: [
+      {
+        label: "Material padrão",
+        multiplier: 1,
+        description: "Base temporária até o cadastro técnico completo.",
+      },
+    ],
+    finishings: [
+      {
+        label: "Acabamento padrão",
+        fee: 0,
+        type: "perOrder",
+        description: "Acabamento temporário para manter o fluxo estável.",
+      },
+    ],
+    deadlines: [
+      { label: "Expresso · 2 dias", days: 2, multiplier: 1.2 },
+      { label: "Standard · 4 dias", days: 4, multiplier: 1 },
+      { label: "Planejado · 6 dias", days: 6, multiplier: 0.92 },
+    ],
+    applications: ["Comunicação visual"],
+    deliveryNote: "Entrega conforme disponibilidade operacional.",
+    featured: false,
+  };
+}
+
 export function getProductBySlug(slug: string) {
-  return products.find((product) => product.slug === slug) ?? null;
+  const normalizedSlug = slug.trim().toLowerCase();
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  return products.find((product) => product.slug === normalizedSlug) ?? createFallbackProductFromSlug(normalizedSlug);
 }
 
 export const productConfigurations: Record<string, ProductConfiguration> = Object.fromEntries(

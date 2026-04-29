@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import { PIX_KEY_TYPES, type PaymentSettingsRecord, type PaymentWithOrderRecord, type PixKeyType } from "@/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function AdminPaymentsPanel({
   initialSettings,
@@ -109,17 +110,21 @@ export function AdminPaymentsPanel({
 
           <label className="space-y-2">
             <span className="text-sm font-medium text-black/62">Tipo da chave</span>
-            <select
+            <Select
               value={formState.pixKeyType}
-              onChange={(event) => setFormState((current) => ({ ...current, pixKeyType: event.target.value as PixKeyType }))}
-              className="field"
+              onValueChange={(next) => setFormState((current) => ({ ...current, pixKeyType: next as PixKeyType }))}
             >
-              {PIX_KEY_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="rounded-[18px] bg-white text-ink border border-black/10 backdrop-blur-none">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-white text-ink border border-black/10 backdrop-blur-none">
+                {PIX_KEY_TYPES.map((type) => (
+                  <SelectItem key={type} value={type} className="text-ink data-[state=checked]:text-white">
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label className="space-y-2">

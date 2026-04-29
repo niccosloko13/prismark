@@ -182,18 +182,20 @@ export function ProductCard({
   compact = false,
   variant = "default",
   premiumDark = false,
+  imageSrc: imageSrcOverride,
 }: {
   product: Product;
   compact?: boolean;
   variant?: "default" | "home" | "catalog";
   /** Legado: landing já usa cartão escuro; vitrine única é escura. */
   premiumDark?: boolean;
+  imageSrc?: string;
 }) {
   if (variant === "catalog") {
     return <CatalogProductCard product={product} />;
   }
 
-  const imageSrc = getProductPrimaryImagePath(product.slug);
+  const imageSrc = imageSrcOverride ?? getProductPrimaryImagePath(product.slug);
   const isHomeVariant = variant === "home";
   void premiumDark;
   const pixPrice = product.basePriceM2 * 0.85;

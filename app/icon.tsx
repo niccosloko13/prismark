@@ -14,7 +14,7 @@ export default function Icon() {
   const baseUrl =
     process.env.APP_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  const logoUrl = new URL("/logo%20header.png", baseUrl).href;
+  const logoUrl = new URL("/logo%20header%20(2).png", baseUrl).href;
 
   return new ImageResponse(
     (
@@ -25,7 +25,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%)",
+          background: "linear-gradient(180deg, rgb(255, 255, 255) 0%, #f7f8fa 100%)",
           border: "1px solid rgba(15, 15, 15, 0.12)",
           borderRadius: "18px",
           overflow: "hidden",
@@ -36,8 +36,7 @@ export default function Icon() {
           alt="Prismarq Comunicacao Visual"
           style={{
             width: "54px",
-            height: "auto",
-            maxHeight: "46px",
+            height: "32px",
             objectFit: "contain",
           }}
         />

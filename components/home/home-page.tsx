@@ -5,8 +5,7 @@ import { ProductCard } from "@/components/common/product-card";
 import { ProductRasterPicture } from "@/components/common/product-raster-picture";
 import { SectionShell } from "@/components/common/section-shell";
 import { HomeFeaturedProductsCarousel } from "@/components/home/home-featured-products-carousel";
-import { products } from "@/lib/catalog";
-import { getProductPrimaryImagePath } from "@/lib/product-images";
+import { getActiveProducts } from "@/lib/active-products";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 
 type AccentTone = "cyan" | "magenta" | "yellow";
@@ -199,7 +198,8 @@ function CategoryToneBadge({ tone, children }: { tone: AccentTone; children: str
   );
 }
 
-export function HomePage() {
+export async function HomePage() {
+  const products = await getActiveProducts();
   const quickProducts = quickProductSlugs
     .map((slug) => products.find((product) => product.slug === slug))
     .filter((product): product is NonNullable<(typeof products)[number]> => Boolean(product));
@@ -309,7 +309,13 @@ export function HomePage() {
         ))}
       </div>
 
-      <HomeFeaturedProductsCarousel />
+      <HomeFeaturedProductsCarousel
+        items={products.slice(0, 8).map((product) => ({
+          slug: product.slug,
+          name: product.name,
+          image: product.primaryImagePath,
+        }))}
+      />
 
       <section
         className={cn(
@@ -337,7 +343,7 @@ export function HomePage() {
 
         <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 pt-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-6 lg:grid lg:snap-none lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:pb-0 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
           {quickProducts.map((product) => {
-            const image = getProductPrimaryImagePath(product.slug) ?? "/criativo1.png";
+            const image = product.primaryImagePath ?? "/criativo1.png";
             const pixPrice = product.basePriceM2 * 0.85;
 
             return (

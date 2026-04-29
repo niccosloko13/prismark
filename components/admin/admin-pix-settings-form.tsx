@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { PIX_KEY_TYPES, type PaymentSettingsRecord, type PixKeyType } from "@/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 function maskKey(value: string | null) {
   if (!value) return "-";
@@ -61,17 +62,21 @@ export function AdminPixSettingsForm({ initialSettings }: { initialSettings: Pay
 
         <label className="space-y-2">
           <span className="text-sm font-medium text-black/62">Tipo da chave</span>
-          <select
-            className="field"
+          <Select
             value={state.pixKeyType}
-            onChange={(event) => setState((prev) => ({ ...prev, pixKeyType: event.target.value as PixKeyType }))}
+            onValueChange={(next) => setState((prev) => ({ ...prev, pixKeyType: next as PixKeyType }))}
           >
-            {PIX_KEY_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="rounded-[18px] bg-white text-ink border border-black/10 backdrop-blur-none">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-white text-ink border border-black/10 backdrop-blur-none">
+              {PIX_KEY_TYPES.map((type) => (
+                <SelectItem key={type} value={type} className="text-ink data-[state=checked]:text-white">
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
 
         <label className="space-y-2">
