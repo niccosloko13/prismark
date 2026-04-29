@@ -73,16 +73,6 @@ export function ProductStudio({
     [experience.addons, selection.selectedAddonIds],
   );
 
-  useEffect(() => {
-    const addonsTotal = selectedAddons.filter((item) => item.selected).reduce((sum, item) => sum + item.price, 0);
-    const basePrice = quote.total - addonsTotal;
-    console.log({
-      basePrice,
-      addonsTotal,
-      total: quote.total,
-    });
-  }, [quote.total, selectedAddons]);
-
   const relatedProducts = products
     .filter((item) => item.slug !== product.slug && (item.category === product.category || item.featured))
     .slice(0, 4);
@@ -188,12 +178,12 @@ export function ProductStudio({
 
       {relatedProducts.length > 0 ? (
         <section className="panel p-4 sm:p-5 lg:p-6">
-          <div className="max-w-3xl border-b border-black/8 pb-3 sm:pb-4">
+          <div className="max-w-3xl border-b border-white/8 pb-3 sm:pb-4">
             <p className="label-kicker text-[0.64rem]">Relacionados</p>
-            <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-ink sm:text-xl">
+            <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:text-xl">
               Outros produtos da mesma linha
             </h2>
-            <p className="mt-1.5 text-[0.8125rem] leading-snug text-black/58 sm:text-sm">
+            <p className="mt-1.5 text-[0.8125rem] leading-snug text-white/60 sm:text-sm">
               Atalhos compactos para continuar comprando.
             </p>
           </div>

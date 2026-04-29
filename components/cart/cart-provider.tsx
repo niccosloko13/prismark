@@ -66,15 +66,15 @@ function CartToastRegion({
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className="pointer-events-auto overflow-hidden rounded-[24px] border border-black/10 bg-white/96 p-4 shadow-[0_24px_60px_rgba(15,15,15,0.16)] backdrop-blur"
+          className="pointer-events-auto overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
         >
           <div className="mb-3 h-1 rounded-full bg-[linear-gradient(90deg,#00B5FF_0%,#FF2EBF_55%,#FFD300_100%)]" />
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-ink">{toast.title}</p>
-              <p className="mt-1 text-sm leading-6 text-black/62">{toast.description}</p>
+              <p className="text-sm font-semibold text-white">{toast.title}</p>
+              <p className="mt-1 text-sm leading-6 text-white/65">{toast.description}</p>
               {toast.actionHref && toast.actionLabel ? (
-                <Link href={toast.actionHref} className="mt-3 inline-flex text-sm font-semibold text-ink underline-offset-4 hover:underline">
+                <Link href={toast.actionHref} className="mt-3 inline-flex text-sm font-semibold text-cyan-300 underline-offset-4 hover:underline">
                   {toast.actionLabel}
                 </Link>
               ) : null}
@@ -82,7 +82,7 @@ function CartToastRegion({
             <button
               type="button"
               onClick={() => onDismiss(toast.id)}
-              className="focus-ring inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-black/[0.03] text-black/58 transition hover:bg-black/[0.06]"
+              className="focus-ring inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white/65 transition hover:bg-white/10"
               aria-label="Fechar notificação"
             >
               <CloseIcon />
@@ -197,7 +197,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         notify({
           title: "Item removido",
           description: `${item.productName} saiu do carrinho.`,
-          actionHref: "/products",
+          actionHref: "/produtos",
           actionLabel: "Continuar comprando",
         });
       }
@@ -207,7 +207,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         notify({
           title: "Carrinho limpo",
           description: "Os itens foram removidos. Você pode montar novos pedidos a qualquer momento.",
-          actionHref: "/products",
+          actionHref: "/produtos",
           actionLabel: "Ver produtos",
         });
       }

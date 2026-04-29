@@ -18,8 +18,8 @@ const config: Config = {
         steel: "#707070",
       },
       fontFamily: {
-        display: ['"Sora"', '"Space Grotesk"', '"Aptos Display"', '"Segoe UI Variable Display"', "sans-serif"],
-        sans: ['"Inter"', '"Aptos"', '"Segoe UI Variable"', '"Segoe UI"', "sans-serif"],
+        display: ["var(--font-sora)", '"Sora"', '"Space Grotesk"', "sans-serif"],
+        sans: ["var(--font-inter)", '"Inter"', '"Segoe UI"', "sans-serif"],
         mono: ['"JetBrains Mono"', '"Consolas"', "monospace"],
       },
       boxShadow: {

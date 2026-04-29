@@ -20,10 +20,12 @@ export function HeaderSearch({
   mobile = false,
   className,
   onNavigate,
+  tone = "light",
 }: {
   mobile?: boolean;
   className?: string;
   onNavigate?: () => void;
+  tone?: "light" | "dark";
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -59,7 +61,7 @@ export function HeaderSearch({
 
   function navigate(term: string) {
     const trimmedTerm = term.trim();
-    const href = trimmedTerm ? `/products?q=${encodeURIComponent(trimmedTerm)}` : "/products";
+    const href = trimmedTerm ? `/produtos?q=${encodeURIComponent(trimmedTerm)}` : "/produtos";
 
     setIsFocused(false);
     onNavigate?.();
@@ -85,21 +87,25 @@ export function HeaderSearch({
           onChange={(event) => setQuery(event.target.value)}
           placeholder="O que você está procurando?"
           className={cn(
-            "focus-ring w-full rounded-full border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,248,249,0.94))] text-sm text-ink shadow-[0_14px_30px_rgba(15,15,15,0.05)] outline-none transition placeholder:text-black/34",
-            "pr-12",
+            "focus-ring w-full rounded-full border text-sm shadow-[0_14px_30px_rgba(15,15,15,0.05)] outline-none transition pr-12",
+            tone === "dark"
+              ? "border-white/8 bg-white/[0.04] text-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] backdrop-blur-xl placeholder:text-white/45 hover:border-white/20 focus:border-cyan-400/45"
+              : "border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,248,249,0.94))] text-ink placeholder:text-black/34 hover:border-black/16 focus:border-cyan/26",
             mobile
               ? "h-12 px-4 text-[0.95rem]"
-              : "h-[48px] px-4 text-[0.92rem] hover:border-black/16 focus:border-cyan/26",
+              : "h-[48px] px-4 text-[0.92rem]",
           )}
         />
         <button
           type="submit"
           aria-label="Pesquisar produtos"
           className={cn(
-            "focus-ring absolute right-1.5 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full transition",
-            mobile
-              ? "h-9 w-9 bg-ink text-white shadow-[0_12px_24px_rgba(15,15,15,0.18)] hover:bg-black"
-              : "h-9 w-9 bg-black/[0.04] text-black/60 hover:bg-black/[0.08] hover:text-ink",
+            "focus-ring absolute right-1.5 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full transition",
+            tone === "dark"
+              ? "bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500 text-white shadow-[0_8px_22px_rgba(168,85,247,0.4)] hover:brightness-110"
+              : mobile
+                ? "bg-ink text-white shadow-[0_12px_24px_rgba(15,15,15,0.18)] hover:bg-black"
+                : "bg-black/[0.04] text-black/60 hover:bg-black/[0.08] hover:text-ink",
           )}
         >
           <SearchIcon />
@@ -109,11 +115,19 @@ export function HeaderSearch({
       {isFocused && filteredSuggestions.length > 0 ? (
         <div
           className={cn(
-            "z-30 rounded-[24px] border border-black/8 bg-white/98 shadow-[0_22px_56px_rgba(15,15,15,0.12)] backdrop-blur-xl",
+            "z-30 rounded-[24px] border shadow-[0_22px_56px_rgba(15,15,15,0.12)] backdrop-blur-xl",
+            tone === "dark"
+              ? "border-white/8 bg-white/[0.04] text-white backdrop-blur-xl"
+              : "border-black/8 bg-white/98",
             mobile ? "mt-3 p-3" : "absolute left-0 right-0 top-[calc(100%+0.7rem)] p-3",
           )}
         >
-          <p className="px-1 text-[0.67rem] font-semibold uppercase tracking-[0.22em] text-black/42">
+          <p
+            className={cn(
+              "px-1 text-[0.67rem] font-semibold uppercase tracking-[0.22em]",
+              tone === "dark" ? "text-white/45" : "text-black/42",
+            )}
+          >
             Buscas rápidas
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -122,7 +136,12 @@ export function HeaderSearch({
                 key={term}
                 type="button"
                 onClick={() => navigate(term)}
-                className="focus-ring rounded-full border border-black/10 bg-black/[0.02] px-3.5 py-2 text-sm font-medium text-ink transition hover:border-black/18 hover:bg-black/[0.05]"
+                className={cn(
+                  "focus-ring rounded-full border px-3.5 py-2 text-sm font-medium transition",
+                  tone === "dark"
+                    ? "border-white/15 bg-white/5 text-white/90 hover:border-cyan-400/40 hover:bg-white/10"
+                    : "border-black/10 bg-black/[0.02] text-ink hover:border-black/18 hover:bg-black/[0.05]",
+                )}
               >
                 {term}
               </button>

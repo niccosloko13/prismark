@@ -8,10 +8,10 @@ export default function ContactPage() {
     <div className="space-y-6">
       <section className="panel p-6 sm:p-8 lg:p-10">
         <p className="label-kicker">Contato</p>
-        <h1 className="display-title mt-3 max-w-4xl text-[clamp(2.5rem,4vw,4.25rem)] font-semibold leading-[0.95] tracking-tight text-balance">
+        <h1 className="display-title mt-3 max-w-4xl text-[clamp(2.5rem,4vw,4.25rem)] font-semibold leading-[0.95] tracking-tight text-balance text-white">
           Atendimento comercial e suporte com presença institucional real.
         </h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-black/68">
+        <p className="mt-4 max-w-3xl text-base leading-7 text-white/70">
           Fale com a Prismarq para briefing, orçamento, pedido online, revisão de arte e acompanhamento de produção.
         </p>
       </section>
@@ -28,10 +28,10 @@ export default function ContactPage() {
               href={channel.href}
               target={channel.href.startsWith("http") ? "_blank" : undefined}
               rel={channel.href.startsWith("http") ? "noreferrer" : undefined}
-              className="panel p-5 shadow-[0_10px_24px_rgba(15,15,15,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,15,15,0.08)]"
+              className="panel p-5 shadow-[0_10px_24px_rgba(0,0,0,0.25)] transition hover:-translate-y-0.5 hover:border-white/16 hover:shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
             >
               <p className="label-kicker">{channel.title}</p>
-              <p className="mt-4 text-lg font-semibold leading-7 text-ink">{channel.value}</p>
+              <p className="mt-4 text-lg font-semibold leading-7 text-white">{channel.value}</p>
             </Link>
           ))}
         </div>
@@ -44,24 +44,24 @@ export default function ContactPage() {
             <h2 className="display-title mt-3 text-[clamp(2rem,3vw,3rem)] font-semibold tracking-tight text-balance">
               {companyProfile.legalName}
             </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-black/64">{companyProfile.supportLine}</p>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/65">{companyProfile.supportLine}</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="surface-soft p-5">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/46">Endereço</p>
-              <p className="mt-3 text-sm font-medium leading-6 text-ink">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Endereço</p>
+              <p className="mt-3 text-sm font-medium leading-6 text-white">
                 {companyProfile.addressLine}
                 <br />
                 {companyProfile.cityState}
               </p>
-              <p className="mt-2 text-xs text-black/54">CEP {companyProfile.postalCode}</p>
+              <p className="mt-2 text-xs text-white/55">CEP {companyProfile.postalCode}</p>
             </div>
 
             <div className="surface-soft p-5">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/46">Contato direto</p>
-              <p className="mt-3 text-sm font-medium text-ink">{companyProfile.phoneDisplay}</p>
-              <p className="mt-2 break-all text-sm text-black/62">{companyProfile.email}</p>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Contato direto</p>
+              <p className="mt-3 text-sm font-medium text-white">{companyProfile.phoneDisplay}</p>
+              <p className="mt-2 break-all text-sm text-white/65">{companyProfile.email}</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link href={companyLinks.whatsapp} target="_blank" rel="noreferrer" className="btn btn-primary focus-ring">
                   WhatsApp

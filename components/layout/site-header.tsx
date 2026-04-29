@@ -10,8 +10,21 @@ import { HeaderSearch } from "@/components/layout/header-search";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { companyLinks, companyProfile } from "@/lib/company";
 import { cn } from "@/lib/utils";
-import headerLogoImage from "@/public/logo header.png";
 import type { SessionUser } from "@/types";
+
+const HEADER_LOGO_SRC = "/logo header (2).png";
+
+function TinyDot() {
+  return <span className="h-1 w-1 rounded-full bg-white/35" aria-hidden />;
+}
+
+function ChevronDown() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-3.5 w-3.5">
+      <path d="m6 8 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 function MenuIcon() {
   return (
@@ -36,15 +49,33 @@ function HeaderNavLink({
   href,
   children,
   className,
+  homeUnderline = false,
+  plain = false,
+  active = false,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
+  /** Sublinhado em gradiente no hover (home premium). */
+  homeUnderline?: boolean;
+  /** Estilo totalmente controlado por `className` (ex.: Pedido online). */
+  plain?: boolean;
+  active?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className={cn("btn-ghost focus-ring rounded-full px-4 py-2.5 text-[0.92rem] font-semibold text-black/70", className)}
+      className={cn(
+        "focus-ring relative rounded-full px-4 py-2.5 text-[0.92rem] font-semibold transition",
+        plain
+          ? null
+          : homeUnderline
+            ? "home-nav-link text-white/90 hover:bg-white/[0.06] hover:text-white"
+            : "btn-ghost text-black/70",
+        active &&
+          "text-white after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-[5px] after:h-px after:rounded-full after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-cyan-400",
+        className,
+      )}
     >
       {children}
     </Link>
@@ -56,11 +87,13 @@ function DrawerLink({
   children,
   highlighted = false,
   onNavigate,
+  storefront,
 }: {
   href: string;
   children: ReactNode;
   highlighted?: boolean;
   onNavigate?: () => void;
+  storefront: boolean;
 }) {
   return (
     <Link
@@ -69,12 +102,16 @@ function DrawerLink({
       className={cn(
         "focus-ring flex min-h-[52px] items-center justify-between rounded-[20px] border px-4 py-3 text-sm font-semibold transition",
         highlighted
-          ? "border-ink bg-ink text-white shadow-[0_16px_34px_rgba(15,15,15,0.18)]"
-          : "border-black/10 bg-white text-ink hover:border-black/18 hover:bg-black/[0.03]",
+          ? storefront
+            ? "border-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_32px_rgba(168,85,247,0.4),0_0_40px_rgba(56,189,248,0.15)]"
+            : "border-ink bg-ink text-white shadow-[0_16px_34px_rgba(15,15,15,0.18)]"
+          : storefront
+            ? "border-white/12 bg-white/[0.05] text-white hover:border-white/20 hover:bg-white/[0.08]"
+            : "border-black/10 bg-white text-ink hover:border-black/18 hover:bg-black/[0.03]",
       )}
     >
       <span>{children}</span>
-      <span className={cn("text-sm", highlighted ? "text-white/72" : "text-black/34")}>{">"}</span>
+      <span className={cn("text-sm", highlighted ? "text-white/72" : storefront ? "text-white/40" : "text-black/34")}>{">"}</span>
     </Link>
   );
 }
@@ -83,10 +120,12 @@ function HeaderBrand({
   mobile = false,
   priority = false,
   onClick,
+  homePremium = false,
 }: {
   mobile?: boolean;
   priority?: boolean;
   onClick?: () => void;
+  homePremium?: boolean;
 }) {
   return (
     <Link
@@ -94,22 +133,38 @@ function HeaderBrand({
       onClick={onClick}
       aria-label="Ir para a home da Prismarq"
       className={cn(
-        "focus-ring inline-flex max-w-full shrink-0 items-center rounded-md transition hover:opacity-90",
-        mobile
-          ? "max-w-[min(248px,calc(100vw-6.75rem))] py-1 sm:max-w-[260px]"
-          : "py-1",
+        "focus-ring inline-flex max-w-full shrink-0 items-center rounded-none border-none bg-transparent shadow-none transition hover:opacity-90",
+        mobile ? "max-w-[min(220px,calc(100vw-6.75rem))]" : "max-w-[280px]",
       )}
     >
       <Image
-        src={headerLogoImage}
-        alt="Prismarq Comunicacao Visual"
+        src={HEADER_LOGO_SRC}
+        alt="Prismarq Comunicação Visual"
+        width={1536}
+        height={1024}
         priority={priority}
-        sizes={mobile ? "(max-width: 640px) 248px, 260px" : "(max-width: 1280px) 252px, 288px"}
+        sizes={mobile ? "(max-width: 640px) 220px, 240px" : "(max-width: 1280px) 260px, 280px"}
         className={cn(
-          "h-auto w-full object-contain object-left",
-          mobile ? "max-h-8 w-auto max-w-[min(200px,calc(100vw-7rem))] sm:max-h-none sm:max-w-none" : "w-[252px] xl:w-[276px] 2xl:w-[296px]",
+          "h-auto border-none bg-transparent object-contain object-left shadow-none",
+          homePremium ? "mix-blend-lighten contrast-[1.06] [isolation:isolate]" : "",
+          mobile
+            ? "max-h-8 w-auto max-w-[min(200px,calc(100vw-7rem))] sm:max-h-9 sm:max-w-[220px]"
+            : "w-[230px] sm:w-[250px] lg:w-[260px] xl:w-[280px]",
         )}
       />
+    </Link>
+  );
+}
+
+function HomePedidoOnlineLink() {
+  return (
+    <Link
+      href="/order"
+      className="focus-ring rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 p-[1px] shadow-[0_0_24px_rgba(168,85,247,0.25)] transition hover:brightness-110"
+    >
+      <span className="flex min-h-[44px] items-center justify-center rounded-full bg-[#05070d]/95 px-4 py-2.5 text-[0.92rem] font-semibold text-white">
+        Pedido online
+      </span>
     </Link>
   );
 }
@@ -134,30 +189,46 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
     };
   }, [isMobileMenuOpen]);
 
+  const isStorefront = !pathname.startsWith("/admin");
+
   const isAdmin = session?.role === "admin";
   const accountHref = "/dashboard";
   const accountLabel = session ? "Minha conta" : "Login / Cadastro";
+  const isHomeActive = pathname === "/";
+  const isProdutosActive = pathname === "/produtos" || pathname === "/products";
+  const isContatoActive = pathname === "/contact";
 
   return (
     <>
-      <header className="relative z-40 border-b border-[#E5E7EB]">
-        <div className="relative overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-[#ECEBED] px-2.5 py-1.5 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7">
-
+      <header className={cn("relative z-40 w-full max-w-full", !isStorefront && "border-b border-[#E5E7EB]")}>
+        <div
+          className={cn(
+            "relative w-full max-w-full overflow-hidden rounded-[20px] px-3 py-2 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7",
+            isStorefront
+              ? "border border-white/8 bg-[#05070d]/95 shadow-[0_24px_80px_rgba(0,0,0,0.45),0_0_56px_rgba(168,85,247,0.08)] backdrop-blur-xl"
+              : "header-home-shell border border-[#E5E7EB] bg-[#ECEBED]",
+          )}
+        >
           <div className="relative lg:hidden">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="flex min-w-0 flex-1 items-center">
-                <HeaderBrand mobile priority />
+                <HeaderBrand mobile priority homePremium={isStorefront} />
               </div>
 
               <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 self-center">
-                <CartNavLink compact className="shrink-0" />
+                <CartNavLink compact headerOnDark={isStorefront} className="shrink-0" />
                 <button
                   type="button"
                   aria-expanded={isMobileMenuOpen}
                   aria-controls="mobile-drawer"
                   aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
                   onClick={() => setIsMobileMenuOpen((current) => !current)}
-                  className="focus-ring inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F3F4F6] text-ink transition hover:bg-white sm:h-11 sm:w-11"
+                  className={cn(
+                    "focus-ring inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition sm:h-11 sm:w-11",
+                    isStorefront
+                      ? "border-white/15 bg-white/5 text-white hover:bg-white/10"
+                      : "border-[#E5E7EB] bg-[#F3F4F6] text-ink hover:bg-white",
+                  )}
                 >
                   {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
                 </button>
@@ -166,63 +237,141 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
           </div>
 
           <div className="relative hidden lg:grid lg:grid-cols-[auto,minmax(0,1fr)] lg:items-center lg:gap-6 xl:gap-8">
-            <HeaderBrand priority />
+            <HeaderBrand priority homePremium={isStorefront} />
 
             <div className="flex min-w-0 flex-col gap-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold text-black/52">
-                  <span className="rounded-full border border-cyan/14 bg-cyan/[0.07] px-3 py-1 text-[0.66rem] uppercase tracking-[0.18em] text-ink">
-                    Producao propria
-                  </span>
-                  <a
-                    href={companyLinks.phone}
-                    className="rounded-full border border-black/8 bg-white/88 px-3 py-1.5 transition hover:border-black/14 hover:text-ink"
-                  >
+              <div className={cn("flex flex-wrap items-center justify-between gap-x-4 gap-y-2", !isStorefront && "rounded-2xl border border-black/8 bg-white/80 px-3 py-2.5")}>
+                <div
+                  className={cn(
+                    "flex flex-wrap items-center gap-2.5 text-[0.72rem] font-semibold",
+                    isStorefront ? "text-white/80" : "text-black/52",
+                  )}
+                >
+                  <a href={companyLinks.phone} className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white" : "border-black/8 bg-white/88 hover:border-black/14 hover:text-ink")}>
+                    <span aria-hidden>✆</span>
                     {companyProfile.phoneDisplay}
                   </a>
-                  <a
-                    href={companyLinks.email}
-                    className="rounded-full border border-black/8 bg-white/88 px-3 py-1.5 transition hover:border-black/14 hover:text-ink"
-                  >
+                  <TinyDot />
+                  <a href={companyLinks.email} className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white" : "border-black/8 bg-white/88 hover:border-black/14 hover:text-ink")}>
+                    <span aria-hidden>✉</span>
                     {companyProfile.email}
                   </a>
-                  <span className="rounded-full border border-black/8 bg-white/88 px-3 py-1.5">{companyProfile.cityState}</span>
+                  <TinyDot />
+                  <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70" : "border-black/8 bg-white/88")}>
+                    <span aria-hidden>⌖</span>
+                    {companyProfile.cityState}
+                  </span>
                 </div>
-                <p className="text-[0.72rem] font-medium text-black/46">Impressao profissional com pedido online mais direto.</p>
+                <p className={cn("max-w-xl text-[0.72rem] font-medium leading-snug", isStorefront ? "text-white/70" : "text-black/46")}>
+                  Impressão profissional com pedido online.
+                </p>
               </div>
 
-              <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-[24px] border border-[#E5E7EB] bg-[#ECEBED] p-1.5">
+              <div
+                className={cn(
+                  "flex min-w-0 flex-wrap items-center justify-between gap-3 border-t pt-3",
+                  isStorefront ? "border-white/[0.08]" : "border-[#E5E7EB]",
+                )}
+              >
                 <nav className="flex min-w-0 flex-wrap items-center gap-1.5">
-                  <HeaderNavLink href="/">Home</HeaderNavLink>
-                  <HeaderNavLink href="/products">Produtos</HeaderNavLink>
-                  <HeaderNavLink
-                    href="/order"
-                    className="border border-cyan/20 bg-cyan/[0.14] text-ink shadow-[0_10px_24px_rgba(0,181,255,0.12)] hover:border-cyan/26 hover:bg-cyan/[0.18]"
-                  >
-                    Pedido online
+                  <HeaderNavLink href="/" homeUnderline={isStorefront} active={isHomeActive}>
+                    {isStorefront ? "Início" : "Home"}
                   </HeaderNavLink>
-                  <HeaderNavLink href="/contact">Contato</HeaderNavLink>
+                  {isStorefront ? (
+                    <div className="group relative">
+                      <Link
+                        href="/produtos"
+                        className={cn(
+                          "focus-ring home-nav-link inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[0.92rem] font-semibold text-white/90 transition hover:bg-white/[0.06] hover:text-white",
+                          isProdutosActive &&
+                            "text-white after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-[5px] after:h-px after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-cyan-400",
+                        )}
+                      >
+                        Produtos
+                        <ChevronDown />
+                      </Link>
+                      <div className="invisible absolute left-0 top-[calc(100%+0.4rem)] z-30 min-w-[13rem] translate-y-1 rounded-2xl border border-white/8 bg-white/[0.04] p-2 opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                        <Link href="/produtos" className="focus-ring block rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition hover:bg-white/[0.08] hover:text-white">
+                          Ver todos os produtos
+                        </Link>
+                        <Link href="/produtos?categoria=banners" className="focus-ring block rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition hover:bg-white/[0.08] hover:text-white">
+                          Banners
+                        </Link>
+                        <Link href="/produtos?categoria=papelaria" className="focus-ring block rounded-xl px-3 py-2 text-sm font-medium text-white/80 transition hover:bg-white/[0.08] hover:text-white">
+                          Papelaria
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <HeaderNavLink href="/produtos" homeUnderline={isStorefront} active={isProdutosActive}>
+                      Produtos
+                    </HeaderNavLink>
+                  )}
+                  {isStorefront ? (
+                    <HomePedidoOnlineLink />
+                  ) : (
+                    <HeaderNavLink
+                      href="/order"
+                      plain
+                      className="border border-cyan/20 bg-cyan/[0.14] text-ink shadow-[0_10px_24px_rgba(0,181,255,0.12)] hover:border-cyan/26 hover:bg-cyan/[0.18]"
+                    >
+                      Pedido online
+                    </HeaderNavLink>
+                  )}
+                  <HeaderNavLink href="/contact" homeUnderline={isStorefront} active={isContatoActive}>
+                    Contato
+                  </HeaderNavLink>
                 </nav>
 
                 <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
-                  <HeaderSearch className="w-[18rem] xl:w-[20rem]" />
-                  <div className="hidden h-8 w-px bg-black/8 xl:block" />
-                  <CartNavLink />
+                  <HeaderSearch className="w-[18rem] xl:w-[20rem]" tone={isStorefront ? "dark" : "light"} />
+                  <div className={cn("hidden h-8 w-px xl:block", isStorefront ? "bg-white/12" : "bg-black/8")} />
+                  <CartNavLink headerOnDark={isStorefront} />
                   {session ? (
                     <>
                       {!isAdmin ? (
-                        <Link href={accountHref} className="btn btn-primary focus-ring px-4 py-2.5">
+                        <Link
+                          href={accountHref}
+                          className={cn(
+                            "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition",
+                            isStorefront
+                              ? "bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white shadow-[0_8px_28px_rgba(168,85,247,0.35)] hover:brightness-110"
+                              : "btn btn-primary",
+                          )}
+                        >
                           {accountLabel}
                         </Link>
                       ) : null}
-                      <LogoutButton />
+                      <LogoutButton
+                        className={
+                          isStorefront
+                            ? "!border-white/20 !bg-transparent !text-white hover:!bg-white/10"
+                            : undefined
+                        }
+                      />
                     </>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <Link href="/login" className="btn btn-secondary focus-ring px-4 py-2.5">
-                        Login
+                      <Link
+                        href="/login"
+                        className={cn(
+                          "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition",
+                          isStorefront
+                            ? "border-white/30 bg-transparent text-white hover:border-white/45 hover:bg-white/[0.06]"
+                            : "btn btn-secondary",
+                        )}
+                      >
+                        {isStorefront ? "Entrar" : "Login"}
                       </Link>
-                      <Link href="/order" className="btn btn-primary focus-ring px-4 py-2.5">
+                      <Link
+                        href="/order"
+                        className={cn(
+                          "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition",
+                          isStorefront
+                            ? "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_30px_rgba(168,85,247,0.38),0_0_32px_rgba(56,189,248,0.2)] hover:scale-[1.03] hover:brightness-110"
+                            : "btn btn-primary",
+                        )}
+                      >
                         Pedir agora
                       </Link>
                     </div>
@@ -251,44 +400,62 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
         <aside
           id="mobile-drawer"
           className={cn(
-            "absolute inset-y-0 right-0 flex w-full max-w-[22rem] flex-col bg-white px-4 pb-6 pt-4 shadow-[0_26px_72px_rgba(15,15,15,0.18)] transition-transform duration-300 ease-out sm:px-5 sm:pt-5",
+            "absolute inset-y-0 right-0 flex w-full max-w-[22rem] flex-col border-l px-4 pb-6 pt-4 shadow-[0_26px_72px_rgba(0,0,0,0.45)] transition-transform duration-300 ease-out sm:px-5 sm:pt-5",
+            isStorefront
+              ? "border-white/8 bg-[#05070d]/96 backdrop-blur-xl"
+              : "border-transparent bg-white shadow-[0_26px_72px_rgba(15,15,15,0.18)]",
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full",
           )}
           aria-hidden={!isMobileMenuOpen}
         >
-          <div className="flex items-center justify-between gap-3 border-b border-black/8 pb-4">
+          <div
+            className={cn(
+              "flex items-center justify-between gap-3 border-b pb-4",
+              isStorefront ? "border-white/8" : "border-black/8",
+            )}
+          >
             <HeaderBrand mobile onClick={() => setIsMobileMenuOpen(false)} />
             <button
               type="button"
               aria-label="Fechar menu"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition hover:bg-black/[0.03]"
+              className={cn(
+                "focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border transition",
+                isStorefront
+                  ? "border-white/15 bg-white/[0.06] text-white hover:bg-white/10"
+                  : "border-black/10 bg-white text-ink hover:bg-black/[0.03]",
+              )}
             >
               <CloseIcon />
             </button>
           </div>
 
-          <HeaderSearch mobile className="mt-5" onNavigate={() => setIsMobileMenuOpen(false)} />
+          <HeaderSearch
+            mobile
+            className="mt-5"
+            tone={isStorefront ? "dark" : "light"}
+            onNavigate={() => setIsMobileMenuOpen(false)}
+          />
 
           <div className="mt-5 flex flex-col gap-3">
-            <DrawerLink href="/">
-              Home
+            <DrawerLink href="/" storefront={isStorefront}>
+              Início
             </DrawerLink>
-            <DrawerLink href="/products">
+            <DrawerLink href="/produtos" storefront={isStorefront}>
               Produtos
             </DrawerLink>
-            <DrawerLink href="/order">
+            <DrawerLink href="/order" storefront={isStorefront}>
               Pedido online
             </DrawerLink>
-            <DrawerLink href="/contact">
+            <DrawerLink href="/contact" storefront={isStorefront}>
               Contato
             </DrawerLink>
             {session && !isAdmin ? (
-              <DrawerLink href={accountHref} highlighted>
+              <DrawerLink href={accountHref} highlighted storefront={isStorefront}>
                 {accountLabel}
               </DrawerLink>
             ) : !session ? (
-              <DrawerLink href="/login" highlighted>
+              <DrawerLink href="/login" highlighted storefront={isStorefront}>
                 {accountLabel}
               </DrawerLink>
             ) : null}
@@ -296,29 +463,47 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
               <Link
                 href="/order"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="btn btn-primary focus-ring mt-1 w-full justify-center"
+                className="home-btn-gradient focus-ring mt-1 w-full justify-center"
               >
-                Comecar pedido agora
+                Começar pedido agora
               </Link>
             ) : null}
           </div>
 
-          <div className="mt-5 rounded-[24px] border border-black/10 bg-black/[0.02] p-4">
+          <div
+            className={cn(
+              "mt-5 rounded-[24px] border p-4",
+              isStorefront ? "border-white/8 bg-white/[0.04] backdrop-blur-xl" : "border-black/10 bg-black/[0.02]",
+            )}
+          >
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/46">Carrinho</p>
-                <p className="mt-2 text-sm leading-6 text-black/62">Acesse seus itens configurados antes de fechar.</p>
+                <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.22em]", isStorefront ? "text-white/50" : "text-black/46")}>
+                  Carrinho
+                </p>
+                <p className={cn("mt-2 text-sm leading-6", isStorefront ? "text-white/65" : "text-black/62")}>
+                  Acesse seus itens configurados antes de fechar.
+                </p>
               </div>
-              <CartNavLink compact />
+              <CartNavLink compact headerOnDark={isStorefront} />
             </div>
           </div>
 
-          <div className="mt-4 rounded-[24px] border border-black/10 bg-white p-4 shadow-[0_12px_28px_rgba(15,15,15,0.04)]">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/46">Contato direto</p>
-            <a href={companyLinks.phone} className="mt-3 block text-base font-semibold text-ink">
+          <div
+            className={cn(
+              "mt-4 rounded-[24px] border p-4",
+              isStorefront
+                ? "border-white/8 bg-white/[0.04] shadow-[0_12px_28px_rgba(0,0,0,0.3)] backdrop-blur-xl"
+                : "border-black/10 bg-white shadow-[0_12px_28px_rgba(15,15,15,0.04)]",
+            )}
+          >
+            <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.22em]", isStorefront ? "text-white/50" : "text-black/46")}>
+              Contato direto
+            </p>
+            <a href={companyLinks.phone} className={cn("mt-3 block text-base font-semibold", isStorefront ? "text-white" : "text-ink")}>
               {companyProfile.phoneDisplay}
             </a>
-            <a href={companyLinks.email} className="mt-2 block break-all text-sm text-black/62">
+            <a href={companyLinks.email} className={cn("mt-2 block break-all text-sm", isStorefront ? "text-white/65" : "text-black/62")}>
               {companyProfile.email}
             </a>
           </div>

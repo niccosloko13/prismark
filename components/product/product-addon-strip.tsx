@@ -34,7 +34,7 @@ export function ProductAddonStrip({
   return (
     <section className="panel p-2.5 sm:p-3" aria-label="Servicos opcionais">
       <p className="label-kicker text-[0.58rem] tracking-[0.2em]">Servicos opcionais</p>
-      <p className="mt-0.5 text-[0.72rem] leading-snug text-black/52">Marque abaixo — soma no total.</p>
+      <p className="mt-0.5 text-[0.72rem] leading-snug text-white/58">Marque abaixo — soma no total.</p>
 
       <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
         {addons.map((addon) => {
@@ -52,14 +52,14 @@ export function ProductAddonStrip({
               className={cn(
                 "focus-ring flex min-h-[2.85rem] items-center gap-2.5 rounded-[14px] border px-3 py-2 text-left transition duration-200 sm:min-h-[2.65rem] sm:rounded-[16px]",
                 selected
-                  ? "scale-[1.01] border-cyan/40 bg-[linear-gradient(180deg,rgba(0,181,255,0.12),rgba(255,255,255,0.98))] shadow-[0_10px_24px_rgba(0,181,255,0.12)]"
-                  : "border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(248,249,250,0.94))] hover:border-black/16",
+                  ? "scale-[1.01] border-cyan/45 bg-cyan/[0.14] shadow-[0_10px_24px_rgba(0,181,255,0.2)]"
+                  : "border-white/12 bg-white/[0.05] hover:border-white/20 hover:bg-white/[0.07]",
               )}
             >
               <span
                 className={cn(
                   "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition sm:h-5 sm:w-5",
-                  selected ? "border-ink bg-ink text-white" : "border-black/18 bg-white text-transparent",
+                  selected ? "border-ink bg-ink text-white" : "border-white/20 bg-white/[0.08] text-transparent",
                 )}
                 aria-hidden="true"
               >
@@ -67,11 +67,11 @@ export function ProductAddonStrip({
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-                  <span className="min-w-0 flex-1 text-[clamp(0.72rem,3.4vw,0.875rem)] font-semibold leading-tight text-ink sm:flex-none">
+                  <span className="min-w-0 flex-1 text-[clamp(0.72rem,3.4vw,0.875rem)] font-semibold leading-tight text-white sm:flex-none">
                     {addon.label}
                   </span>
                   {priceHint ? (
-                    <span className="shrink-0 text-[clamp(0.62rem,2.9vw,0.72rem)] font-semibold tabular-nums tracking-tight text-cyan-800">
+                    <span className="shrink-0 text-[clamp(0.62rem,2.9vw,0.72rem)] font-semibold tabular-nums tracking-tight text-cyan-300">
                       {priceHint}
                     </span>
                   ) : null}

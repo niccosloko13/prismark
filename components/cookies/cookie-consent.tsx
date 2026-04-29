@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
 import {
@@ -21,29 +22,38 @@ type CookieToggleCardProps = {
   disabled?: boolean;
   onChange?: (checked: boolean) => void;
   title: string;
+  dark?: boolean;
 };
 
-function CookieToggleCard({ checked, description, disabled = false, onChange, title }: CookieToggleCardProps) {
+function CookieToggleCard({ checked, description, disabled = false, onChange, title, dark = false }: CookieToggleCardProps) {
   const inputId = useId();
 
   return (
     <label
       htmlFor={inputId}
       className={cn(
-        "surface-card flex items-start justify-between gap-4 p-4 sm:p-5",
+        "flex items-start justify-between gap-4 p-4 sm:p-5",
         disabled ? "cursor-default" : "cursor-pointer",
+        dark
+          ? "rounded-[22px] border border-white/8 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+          : "surface-card",
       )}
     >
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-semibold text-ink sm:text-[0.98rem]">{title}</span>
+          <span className={cn("text-sm font-semibold sm:text-[0.98rem]", dark ? "text-white" : "text-ink")}>{title}</span>
           {disabled ? (
-            <span className="rounded-full border border-black/10 bg-black/[0.04] px-2.5 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-black/52">
+            <span
+              className={cn(
+                "rounded-full border px-2.5 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.2em]",
+                dark ? "border-white/12 bg-white/[0.06] text-white/55" : "border-black/10 bg-black/[0.04] text-black/52",
+              )}
+            >
               Sempre ativo
             </span>
           ) : null}
         </div>
-        <p className="max-w-[42rem] text-sm leading-6 text-black/62">{description}</p>
+        <p className={cn("max-w-[42rem] text-sm leading-6", dark ? "text-white/65" : "text-black/62")}>{description}</p>
       </div>
 
       <span className="relative mt-0.5 shrink-0">
@@ -60,9 +70,10 @@ function CookieToggleCard({ checked, description, disabled = false, onChange, ti
         <span
           aria-hidden="true"
           className={cn(
-            "flex h-8 w-14 items-center rounded-full border border-black/10 p-1 transition duration-200",
-            checked ? "bg-ink shadow-[0_14px_30px_rgba(15,15,15,0.16)]" : "bg-black/[0.08]",
-            !disabled && "peer-focus-visible:outline peer-focus-visible:outline-4 peer-focus-visible:outline-cyan/15",
+            "flex h-8 w-14 items-center rounded-full border p-1 transition duration-200",
+            dark ? "border-white/12" : "border-black/10",
+            checked ? "bg-ink shadow-[0_14px_30px_rgba(15,15,15,0.16)]" : dark ? "bg-white/[0.08]" : "bg-black/[0.08]",
+            !disabled && "peer-focus-visible:outline peer-focus-visible:outline-4 peer-focus-visible:outline-cyan/25",
             disabled && "opacity-90",
           )}
         >
@@ -79,6 +90,8 @@ function CookieToggleCard({ checked, description, disabled = false, onChange, ti
 }
 
 export function CookieConsent() {
+  const pathname = usePathname();
+  const isStorefront = !pathname.startsWith("/admin");
   const [mounted, setMounted] = useState(false);
   const [hasSavedConsent, setHasSavedConsent] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -170,9 +183,9 @@ export function CookieConsent() {
   if (preferences.marketing && preferences.analytics) {
     consentSummary = "marketing e analytics ativos";
   } else if (preferences.marketing) {
-    consentSummary = "marketing ativo e analytics desativado";
+    consentSummary = "marketing ativo; analytics desativado";
   } else if (preferences.analytics) {
-    consentSummary = "analytics ativo e marketing desativado";
+    consentSummary = "analytics ativo; marketing desativado";
   }
 
   function saveConsent(nextPreferences: EditableCookiePreferences) {
@@ -197,28 +210,38 @@ export function CookieConsent() {
       {shouldShowBanner ? (
         <section
           aria-label="Consentimento de cookies"
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-4 pb-4 sm:px-5 sm:pb-5 lg:px-8"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-3 pb-3 sm:px-5 sm:pb-5 lg:px-8"
         >
           <div className="pointer-events-auto mx-auto max-w-[1600px]">
-            <div className="panel relative overflow-hidden rounded-[30px] border-black/12 px-5 py-4 shadow-[0_24px_60px_rgba(15,15,15,0.12)] sm:px-6 sm:py-5">
+            <div className="relative overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.04] px-4 py-3 text-white shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:rounded-[28px] sm:px-6 sm:py-5">
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan via-magenta to-yellow" />
 
-              <div className="relative flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                <div className="max-w-3xl space-y-2">
-                  <p className="label-kicker">Privacidade Prismarq</p>
-                  <h2 className="display-title text-xl font-semibold tracking-[-0.04em] text-ink sm:text-[1.65rem]">
-                    Usamos cookies para deixar sua navegacao mais fluida, segura e relevante.
+              <div className="relative flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl space-y-1.5 sm:space-y-2">
+                  <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-cyan-300/85 sm:text-[0.68rem]">
+                    Privacidade Prismarq
+                  </p>
+                  <h2 className="display-title text-lg font-semibold tracking-[-0.04em] text-white sm:text-[1.55rem] lg:text-[1.65rem]">
+                    Usamos cookies para deixar sua navegação mais fluida, segura e relevante.
                   </h2>
-                  <p className="text-sm leading-6 text-black/62 sm:text-[0.96rem]">
-                    Os cookies essenciais mantem o site funcionando. Com sua autorizacao, tambem ativamos recursos de marketing e analytics para aprimorar campanhas e entender melhor o uso da plataforma.
+                  <p className="text-sm leading-snug text-white/72 sm:text-[0.96rem] sm:leading-6">
+                    Os cookies essenciais mantêm o site funcionando. Com sua autorização, também ativamos recursos de marketing e analytics para aprimorar campanhas e entender melhor o uso da plataforma.
                   </p>
                 </div>
 
                 <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:justify-end">
-                  <button type="button" onClick={() => setIsModalOpen(true)} className="btn btn-secondary focus-ring w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(true)}
+                    className="focus-ring inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+                  >
                     Configurar
                   </button>
-                  <button type="button" onClick={handleAcceptAll} className="btn btn-primary focus-ring w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={handleAcceptAll}
+                    className="home-btn-gradient focus-ring w-full justify-center sm:w-auto"
+                  >
                     Aceitar
                   </button>
                 </div>
@@ -230,7 +253,12 @@ export function CookieConsent() {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="focus-ring fixed bottom-24 left-3 z-[60] rounded-full border border-black/10 bg-white/95 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black/58 shadow-[0_12px_28px_rgba(15,15,15,0.08)] transition hover:-translate-y-0.5 hover:text-ink sm:bottom-4 sm:left-4 sm:px-4"
+          className={cn(
+            "focus-ring fixed bottom-24 left-3 z-[60] rounded-full border px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:-translate-y-0.5 sm:bottom-4 sm:left-4 sm:px-4",
+            isStorefront
+              ? "border-white/8 bg-white/[0.04] text-white/80 backdrop-blur-xl hover:border-white/25 hover:text-white"
+              : "border-black/10 bg-white/95 text-black/58 hover:text-ink",
+          )}
         >
           Cookies
         </button>
@@ -259,7 +287,7 @@ export function CookieConsent() {
               aria-labelledby="cookie-consent-title"
               aria-describedby="cookie-consent-description"
               className={cn(
-                "panel relative w-full overflow-hidden rounded-[32px] border-black/12 p-5 shadow-[0_32px_90px_rgba(15,15,15,0.18)] transition duration-200 sm:p-6",
+                "relative w-full overflow-hidden rounded-[28px] border border-white/8 bg-white/[0.04] p-5 text-white shadow-[0_32px_90px_rgba(0,0,0,0.5)] backdrop-blur-xl transition duration-200 sm:rounded-[32px] sm:p-6",
                 isModalOpen ? "translate-y-0 scale-100" : "translate-y-4 scale-[0.98]",
               )}
             >
@@ -268,20 +296,25 @@ export function CookieConsent() {
               <div className="relative">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-2">
-                    <p className="label-kicker">Preferencias de cookies</p>
-                    <h2 id="cookie-consent-title" className="display-title text-2xl font-semibold tracking-[-0.05em] text-ink sm:text-[2rem]">
-                      Ajuste sua experiencia com total clareza.
+                    <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-cyan-300/85 sm:text-[0.68rem]">
+                      Preferências de cookies
+                    </p>
+                    <h2
+                      id="cookie-consent-title"
+                      className="display-title text-2xl font-semibold tracking-[-0.05em] text-white sm:text-[2rem]"
+                    >
+                      Ajuste sua experiência com total clareza.
                     </h2>
-                    <p id="cookie-consent-description" className="max-w-2xl text-sm leading-6 text-black/62 sm:text-[0.96rem]">
-                      Voce decide quais categorias opcionais a Prismarq pode usar. Os cookies essenciais permanecem ativos para garantir autenticacao, seguranca e continuidade dos fluxos atuais.
+                    <p id="cookie-consent-description" className="max-w-2xl text-sm leading-6 text-white/68 sm:text-[0.96rem]">
+                      Você decide quais categorias opcionais a Prismarq pode usar. Os cookies essenciais permanecem ativos para garantir autenticação, segurança e continuidade dos fluxos atuais.
                     </p>
                   </div>
 
                   <button
                     type="button"
-                    aria-label="Fechar configuracao"
+                    aria-label="Fechar configuração de cookies"
                     onClick={() => setIsModalOpen(false)}
-                    className="focus-ring inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition hover:bg-black/[0.03]"
+                    className="focus-ring inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white transition hover:bg-white/12"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
                       <path d="m6 6 12 12" strokeLinecap="round" />
@@ -293,34 +326,41 @@ export function CookieConsent() {
                 <div className="mt-6 space-y-3">
                   <CookieToggleCard
                     title="Essenciais"
-                    description="Necessarios para autenticacao, estabilidade da navegacao, seguranca e funcionamento basico do carrinho, pedidos e demais fluxos ja existentes."
+                    description="Necessários para autenticação, estabilidade da navegação, segurança e funcionamento básico do carrinho, pedidos e demais fluxos já existentes."
                     checked
                     disabled
+                    dark
                   />
                   <CookieToggleCard
                     title="Marketing"
-                    description="Permite ativar recursos voltados a campanhas, remarketing e comunicacao mais alinhada ao seu interesse."
+                    description="Permite ativar recursos voltados a campanhas, remarketing e comunicação mais alinhada ao seu interesse."
                     checked={preferences.marketing}
                     onChange={(checked) => setPreferences((current) => ({ ...current, marketing: checked }))}
+                    dark
                   />
                   <CookieToggleCard
                     title="Analytics"
-                    description="Ajuda a entender como o site e os fluxos sao utilizados, apoiando melhorias continuas sem alterar a experiencia atual."
+                    description="Ajuda a entender como o site e os fluxos são utilizados, apoiando melhorias contínuas sem alterar a experiência atual."
                     checked={preferences.analytics}
                     onChange={(checked) => setPreferences((current) => ({ ...current, analytics: checked }))}
+                    dark
                   />
                 </div>
 
-                <div className="surface-soft mt-6 flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-sm leading-6 text-black/62">
-                    Selecao atual: <span className="font-semibold text-ink">{consentSummary}</span>.
+                <div className="mt-6 flex flex-col gap-3 rounded-[22px] border border-white/8 bg-white/[0.04] p-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm leading-6 text-white/68">
+                    Seleção atual: <span className="font-semibold text-white">{consentSummary}</span>.
                   </p>
                   <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:justify-end">
-                    <button type="button" onClick={handleAcceptAll} className="btn btn-secondary focus-ring w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={handleAcceptAll}
+                      className="focus-ring inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+                    >
                       Aceitar todos
                     </button>
-                    <button type="button" onClick={() => saveConsent(preferences)} className="btn btn-primary focus-ring w-full sm:w-auto">
-                      Salvar preferencias
+                    <button type="button" onClick={() => saveConsent(preferences)} className="home-btn-gradient focus-ring w-full sm:w-auto">
+                      Salvar preferências
                     </button>
                   </div>
                 </div>

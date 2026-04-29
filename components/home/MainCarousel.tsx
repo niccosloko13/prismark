@@ -176,9 +176,9 @@ export function MainCarousel({ slides, autoPlayMs = 5200 }: { slides: MainCarous
                     </p>
 
                     {slide.cta ? (
-                      <span className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-ink shadow-[0_16px_36px_rgba(0,0,0,0.18)] sm:mt-5">
+                      <span className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_16px_36px_rgba(168,85,247,0.35)] sm:mt-5">
                         {slide.cta}
-                        <span className="text-black/38">{">"}</span>
+                        <span className="text-white/80">{">"}</span>
                       </span>
                     ) : null}
                   </div>

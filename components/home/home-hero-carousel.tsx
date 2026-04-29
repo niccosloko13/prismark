@@ -66,18 +66,18 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
               {activeSlide.badge ? <Badge tone={activeSlide.tone ?? "cyan"}>{activeSlide.badge}</Badge> : null}
             </div>
 
-            <h1 className="display-title mt-5 max-w-2xl break-words text-[clamp(2.2rem,6.8vw,4.9rem)] font-semibold leading-[1.03] tracking-tight text-balance text-ink">
+            <h1 className="display-title mt-5 max-w-2xl break-words text-[clamp(2.2rem,6.8vw,4.9rem)] font-semibold leading-[1.03] tracking-tight text-balance text-white">
               {activeSlide.title}
             </h1>
-            <p className="mt-5 max-w-xl text-[0.97rem] leading-7 text-black/64 sm:text-[1.02rem]">
+            <p className="mt-5 max-w-xl text-[0.97rem] leading-7 text-white/70 sm:text-[1.02rem]">
               {activeSlide.description}
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href={activeSlide.primaryHref} className="btn btn-primary focus-ring">
+              <Link href={activeSlide.primaryHref} className="home-btn-gradient focus-ring">
                 {activeSlide.primaryLabel}
               </Link>
-              <Link href={activeSlide.secondaryHref} className="btn btn-secondary focus-ring">
+              <Link href={activeSlide.secondaryHref} className="home-btn-outline focus-ring">
                 {activeSlide.secondaryLabel}
               </Link>
             </div>
@@ -88,14 +88,14 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
               {activeSlide.highlights.map((highlight) => (
                 <div
                   key={highlight}
-                  className="rounded-[24px] border border-black/10 bg-white/76 px-4 py-3 text-sm font-medium leading-6 text-black/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
+                  className="rounded-[24px] border border-white/12 bg-white/[0.06] px-4 py-3 text-sm font-medium leading-6 text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                 >
                   {highlight}
                 </div>
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-black/8 pt-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/8 pt-5">
               <div className="flex items-center gap-2">
                 {slides.map((slide, index) => (
                   <button
@@ -107,8 +107,8 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
                     className={cn(
                       "focus-ring flex h-10 items-center rounded-full border px-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition-all duration-300",
                       index === activeIndex
-                        ? "border-black bg-black text-white shadow-[0_12px_24px_rgba(15,15,15,0.16)]"
-                        : "border-black/10 bg-white text-black/54 hover:border-black/20 hover:text-black/72",
+                        ? "border-cyan-400/50 bg-gradient-to-r from-cyan-500/30 to-blue-500/25 text-white shadow-[0_12px_24px_rgba(0,181,255,0.2)]"
+                        : "border-white/12 bg-white/[0.06] text-white/55 hover:border-white/22 hover:text-white/85",
                     )}
                   >
                     {String(index + 1).padStart(2, "0")}
@@ -121,7 +121,7 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
                   type="button"
                   aria-label="Slide anterior"
                   onClick={() => setActiveIndex((current) => (current - 1 + slides.length) % slides.length)}
-                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 transition hover:-translate-y-0.5 hover:border-black/20 hover:text-ink"
+                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.08] text-white/80 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/12 hover:text-white"
                 >
                   <Arrow direction="left" />
                 </button>
@@ -129,7 +129,7 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
                   type="button"
                   aria-label="Próximo slide"
                   onClick={() => setActiveIndex((current) => (current + 1) % slides.length)}
-                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 transition hover:-translate-y-0.5 hover:border-black/20 hover:text-ink"
+                  className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.08] text-white/80 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/12 hover:text-white"
                 >
                   <Arrow direction="right" />
                 </button>
@@ -138,17 +138,17 @@ export function HomeHeroCarousel({ slides }: { slides: HomeHeroSlide[] }) {
           </div>
         </div>
 
-        <div className="relative border-t border-black/8 lg:border-l lg:border-t-0">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(0,181,255,0.035),rgba(255,255,255,0.92),rgba(255,46,191,0.03))]" />
+        <div className="relative border-t border-white/8 lg:border-l lg:border-t-0">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(0,181,255,0.08),rgba(5,7,13,0.4),rgba(255,46,191,0.06))]" />
           <div className="relative h-full min-h-[310px] p-3 sm:p-5 lg:p-6">
-            <div className="relative h-full overflow-hidden rounded-[32px] border border-black/10 bg-white/88 shadow-[0_26px_64px_rgba(15,15,15,0.08)]">
+            <div className="relative h-full overflow-hidden rounded-[32px] border border-white/8 bg-white/[0.04] shadow-[0_26px_64px_rgba(0,0,0,0.45)] backdrop-blur-xl">
               <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 p-4 sm:p-5">
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full bg-cyan" />
                   <span className="h-2.5 w-2.5 rounded-full bg-magenta" />
                   <span className="h-2.5 w-2.5 rounded-full bg-yellow" />
                 </div>
-                <span className="rounded-full border border-black/10 bg-white/88 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-black/62">
+                <span className="rounded-full border border-white/15 bg-white/[0.08] px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">
                   Banner principal
                 </span>
               </div>

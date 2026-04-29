@@ -107,7 +107,7 @@ export function AuthForm() {
 
   return (
     <div className="panel p-6 sm:p-8">
-      <div className="grid grid-cols-2 gap-3 rounded-full border border-black/10 bg-black/[0.03] p-1">
+      <div className="grid grid-cols-2 gap-3 rounded-full border border-white/12 bg-white/[0.05] p-1">
         <button
           type="button"
           onClick={() => setMode("login")}
@@ -129,20 +129,20 @@ export function AuthForm() {
       <div className="mt-6 space-y-4">
         <a
           href={googleLoginHref}
-          className="focus-ring inline-flex w-full items-center justify-center gap-3 rounded-full border border-black/12 bg-white px-5 py-3.5 text-sm font-semibold text-ink shadow-[0_16px_34px_rgba(15,15,15,0.06)] transition hover:-translate-y-0.5 hover:border-black/16 hover:shadow-[0_22px_44px_rgba(15,15,15,0.1)]"
+          className="focus-ring inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/15 bg-white/[0.08] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(0,0,0,0.3)] transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.12] hover:shadow-[0_22px_44px_rgba(0,0,0,0.35)]"
         >
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/8 bg-white shadow-[0_8px_18px_rgba(15,15,15,0.08)]">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/[0.1] shadow-[0_8px_18px_rgba(0,0,0,0.25)]">
             <GoogleMark />
           </span>
           <span>Entrar com Google</span>
         </a>
 
         <div className="flex items-center gap-3">
-          <span className="h-px flex-1 bg-black/10" />
-          <span className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-black/42">
+          <span className="h-px flex-1 bg-white/12" />
+          <span className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/45">
             ou continue com e-mail
           </span>
-          <span className="h-px flex-1 bg-black/10" />
+          <span className="h-px flex-1 bg-white/12" />
         </div>
       </div>
 
@@ -150,11 +150,11 @@ export function AuthForm() {
         {mode === "register" ? (
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-2">
-              <span className="text-sm font-medium text-ink">Nome</span>
+              <span className="text-sm font-medium text-white">Nome</span>
               <input name="name" required className="field" placeholder="Seu nome" />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-medium text-ink">Empresa</span>
+              <span className="text-sm font-medium text-white">Empresa</span>
               <input name="company" required className="field" placeholder="Nome da empresa" />
             </label>
           </div>
@@ -162,19 +162,19 @@ export function AuthForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="space-y-2">
-            <span className="text-sm font-medium text-ink">E-mail</span>
+            <span className="text-sm font-medium text-white">E-mail</span>
             <input name="email" type="email" required className="field" placeholder="voce@empresa.com.br" />
           </label>
           {mode === "register" ? (
             <label className="space-y-2">
-              <span className="text-sm font-medium text-ink">Telefone</span>
+              <span className="text-sm font-medium text-white">Telefone</span>
               <input name="phone" required className="field" placeholder="(11) 99999-9999" />
             </label>
           ) : null}
         </div>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium text-ink">Senha</span>
+          <span className="text-sm font-medium text-white">Senha</span>
           <input
             name="password"
             type="password"
@@ -186,8 +186,8 @@ export function AuthForm() {
         </label>
 
         <div aria-live="polite" className="min-h-6 text-sm">
-          {feedbackError ? <p className="font-medium text-red-600">{feedbackError}</p> : null}
-          {!feedbackError && message ? <p className="font-medium text-emerald-700">{message}</p> : null}
+          {feedbackError ? <p className="font-medium text-red-300">{feedbackError}</p> : null}
+          {!feedbackError && message ? <p className="font-medium text-emerald-300">{message}</p> : null}
         </div>
 
         <button type="submit" disabled={isPending} className="btn btn-primary focus-ring w-full">

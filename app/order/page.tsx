@@ -60,10 +60,10 @@ export default async function OrderPage({
         <h1 className="display-title mt-4 max-w-4xl text-[clamp(2.5rem,4vw,4.15rem)] font-semibold leading-[0.94] tracking-tight text-balance">
           Finalize seu pedido com produ&ccedil;&atilde;o profissional e entrega garantida
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-black/66">
+        <p className="mt-4 max-w-2xl text-base leading-7 text-white/68">
           Revise os dados, confira o frete, escolha o pagamento e conclua sem sair do fluxo.
         </p>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-black/52">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">
           Seu arquivo, carrinho e dados de contato continuam preservados durante a revis&atilde;o.
         </p>
       </section>

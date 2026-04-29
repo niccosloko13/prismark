@@ -61,8 +61,8 @@ function FieldGroup({
   return (
     <section className={className}>
       <div className="mb-3 sm:mb-4">
-        <h3 className="display-title text-[1.05rem] font-semibold tracking-tight text-ink sm:text-[1.2rem]">{title}</h3>
-        <p className="mt-1.5 text-sm leading-6 text-black/60 sm:mt-2">{description}</p>
+        <h3 className="display-title text-[1.05rem] font-semibold tracking-tight text-white sm:text-[1.2rem]">{title}</h3>
+        <p className="mt-1.5 text-sm leading-6 text-white/65 sm:mt-2">{description}</p>
       </div>
       <div className="surface-card p-4 shadow-[0_18px_38px_rgba(15,15,15,0.05)] sm:p-6">{children}</div>
     </section>
@@ -70,7 +70,7 @@ function FieldGroup({
 }
 
 function FieldLabel({ children }: { children: ReactNode }) {
-  return <span className="text-sm font-medium text-black/60">{children}</span>;
+  return <span className="text-sm font-medium text-white/65">{children}</span>;
 }
 
 function FieldHint({
@@ -91,7 +91,7 @@ function FieldHint({
           ? "font-medium text-red-600"
           : tone === "success"
             ? "font-medium text-emerald-700"
-            : "text-black/52",
+            : "text-white/55",
       )}
     >
       {children}
@@ -108,8 +108,8 @@ function SummaryStat({
 }) {
   return (
     <div className="surface-muted px-4 py-3.5 shadow-[0_12px_28px_rgba(15,15,15,0.04)]">
-      <p className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-black/42">{label}</p>
-      <strong className="mt-2 block truncate text-base font-semibold text-ink">{value}</strong>
+      <p className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-white/50">{label}</p>
+      <strong className="mt-2 block truncate text-base font-semibold text-white">{value}</strong>
     </div>
   );
 }
@@ -139,14 +139,14 @@ function ChoiceCard({
         selected
           ? tone === "pix"
             ? "border-cyan bg-cyan/8 shadow-[0_18px_34px_rgba(0,181,255,0.1)]"
-            : "border-black/18 bg-black/[0.03] shadow-[0_18px_34px_rgba(15,15,15,0.06)]"
-          : "border-black/10 bg-white hover:border-black/16 hover:shadow-[0_18px_34px_rgba(15,15,15,0.05)]",
+            : "border-white/22 bg-white/[0.08] shadow-[0_18px_34px_rgba(0,0,0,0.25)]"
+          : "border-white/8 bg-white/[0.04] hover:border-white/18 hover:shadow-[0_18px_34px_rgba(0,0,0,0.2)]",
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <strong className="block text-sm font-semibold text-ink">{title}</strong>
-          <p className="mt-2 text-sm leading-6 text-black/58">{description}</p>
+          <strong className="block text-sm font-semibold text-white">{title}</strong>
+          <p className="mt-2 text-sm leading-6 text-white/65">{description}</p>
         </div>
         {badge ? (
           <span className="rounded-full bg-ink px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white">
@@ -738,13 +738,13 @@ export function OrderBuilder({
     <>
     <div className="grid gap-4 pb-[8.5rem] sm:gap-5 sm:pb-28 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-6 lg:pb-6">
       <div className="panel p-4 sm:p-8 lg:p-10">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/8 pb-5 sm:gap-4 sm:pb-7">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/8 pb-5 sm:gap-4 sm:pb-7">
           <div className="max-w-3xl">
             <p className="label-kicker">Checkout Prismarq</p>
             <h2 className="display-title mt-3 text-[clamp(2rem,3vw,3.2rem)] font-semibold leading-[0.98] tracking-tight text-balance">
               Seu pedido em um fluxo simples, rapido e seguro.
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-black/62 sm:text-base">
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
               Revise os detalhes, escolha o pagamento e conclua sem etapas desnecessarias.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -762,7 +762,7 @@ export function OrderBuilder({
               Entrar para finalizar
             </Link>
           ) : (
-            <div className="surface-muted px-4 py-3 text-sm font-medium text-black/70">Cliente logado: {session.name}</div>
+            <div className="surface-muted px-4 py-3 text-sm font-medium text-white/80">Cliente logado: {session.name}</div>
           )}
         </div>
 
@@ -819,8 +819,8 @@ export function OrderBuilder({
               </label>
               <div className="surface-muted p-5">
                 <p className="label-kicker">Seu pedido</p>
-                <strong className="mt-2 block text-xl font-semibold text-ink">{currentProduct.name}</strong>
-                <p className="mt-3 text-sm leading-6 text-black/60">{currentProduct.lead}</p>
+                <strong className="mt-2 block text-xl font-semibold text-white">{currentProduct.name}</strong>
+                <p className="mt-3 text-sm leading-6 text-white/65">{currentProduct.lead}</p>
               </div>
 
               <label className="space-y-2">
@@ -856,26 +856,26 @@ export function OrderBuilder({
 
               <label className="space-y-3 sm:col-span-2">
                 <FieldLabel>Arquivo da arte</FieldLabel>
-                <div className="rounded-[30px] border border-dashed border-black/16 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,247,248,0.92))] p-5">
+                <div className="rounded-[30px] border border-dashed border-white/15 bg-white/[0.04] p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                     <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ink text-white">
                       <UploadIcon />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <strong className="block truncate text-lg font-semibold text-ink sm:text-[1.05rem]">
+                      <strong className="block truncate text-lg font-semibold text-white sm:text-[1.05rem]">
                         {file ? file.name : "Envie sua arte para anexar ao pedido"}
                       </strong>
-                      <p className="mt-2 text-sm leading-6 text-black/60">
+                      <p className="mt-2 text-sm leading-6 text-white/65">
                         Aceitamos PDF, PNG, JPG, SVG, ZIP, CDR e AI. Se preferir, finalize agora e envie a arte depois com o atendimento.
                       </p>
                       <input
                         type="file"
                         accept=".pdf,.png,.jpg,.jpeg,.svg,.zip,.cdr,.ai"
                         onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-                        className="focus-ring mt-4 w-full rounded-[24px] border border-black/10 bg-white px-4 py-3 text-sm outline-none file:mr-4 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                        className="focus-ring mt-4 w-full rounded-[24px] border border-white/8 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none backdrop-blur-xl file:mr-4 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
                       />
                       <div className="mt-3 flex flex-wrap gap-2">
-                        <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/52">
+                        <span className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/60">
                           {file ? "Arte pronta para envio" : "Arte opcional nesta etapa"}
                         </span>
                         {!file ? (
@@ -974,7 +974,7 @@ export function OrderBuilder({
               </label>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/52">
+              <span className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/60">
                 {completedFieldCount}/{requiredFieldCount} dados essenciais preenchidos
               </span>
               <span className="rounded-full border border-cyan/20 bg-cyan/8 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-cyan-700">
@@ -1055,7 +1055,7 @@ export function OrderBuilder({
                   </label>
                 </div>
               ) : (
-                <div className="rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.98),rgba(246,247,248,0.92))] p-4 text-sm leading-6 text-black/62">
+                <div className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4 text-sm leading-6 text-white/70 backdrop-blur-xl">
                   Retirada na Prismarq selecionada. O endereco e as orientacoes de retirada seguem na confirmacao do pedido.
                 </div>
               )}
@@ -1104,31 +1104,31 @@ export function OrderBuilder({
         <div aria-live="polite" className="mt-5 min-h-6 text-sm">
           {error ? <p className="font-medium text-red-600">{error}</p> : null}
           {!error && message ? <p className="font-medium text-emerald-700">{message}</p> : null}
-          {!error && !message ? <p className="text-black/52">{primaryActionHelper}</p> : null}
+          {!error && !message ? <p className="text-white/55">{primaryActionHelper}</p> : null}
         </div>
 
-        <div className="mt-6 rounded-[32px] border border-black/10 bg-[linear-gradient(145deg,rgba(255,255,255,1),rgba(246,248,250,0.95))] p-5 shadow-[0_22px_48px_rgba(15,15,15,0.06)]">
+        <div className="mt-6 rounded-[32px] border border-white/8 bg-white/[0.04] p-5 shadow-[0_22px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="max-w-xl">
               <p className="label-kicker">Etapa final</p>
-              <strong className="mt-2 block text-2xl font-semibold text-ink">Revise seu pedido e siga para o pagamento com seguranca.</strong>
-              <p className="mt-3 text-sm leading-6 text-black/60">
+              <strong className="mt-2 block text-2xl font-semibold text-white">Revise seu pedido e siga para o pagamento com seguranca.</strong>
+              <p className="mt-3 text-sm leading-6 text-white/65">
                 Tudo o que importa esta aqui: detalhes do pedido, entrega, pagamento e arquivo em um so lugar.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-emerald-700">
+                <span className="rounded-full border border-emerald-300/35 bg-emerald-400/15 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-emerald-200">
                   Confirmacao imediata apos finalizar
                 </span>
-                <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/52">
+                <span className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/60">
                   {deliveryMode === "pickup" ? "Retirada sem custo de entrega" : "Entrega validada com CEP"}
                 </span>
               </div>
             </div>
-            <div className="rounded-[28px] border border-cyan/20 bg-[linear-gradient(180deg,rgba(0,181,255,0.08),rgba(255,255,255,0.98))] px-4 py-4 shadow-[0_18px_36px_rgba(0,181,255,0.12)]">
+            <div className="rounded-[28px] border border-cyan/25 bg-[linear-gradient(135deg,rgba(236,72,153,0.2),rgba(168,85,247,0.18),rgba(56,189,248,0.18))] px-4 py-4 shadow-[0_18px_36px_rgba(0,181,255,0.12)] backdrop-blur-xl">
               <p className="label-kicker">Resumo do pedido</p>
-              <strong className="mt-2 block text-3xl font-semibold tracking-tight text-ink">{formatCurrencyBRL(quote.total)}</strong>
-              <p className="mt-2 text-sm font-semibold text-cyan-700">Economize {formatCurrencyBRL(pixSavings)} pagando no Pix</p>
-              <p className="mt-1 text-sm font-medium text-black/60">{formatCurrencyBRL(pixTotal)} no Pix (15% de desconto)</p>
+              <strong className="mt-2 block text-3xl font-semibold tracking-tight text-white">{formatCurrencyBRL(quote.total)}</strong>
+              <p className="mt-2 text-sm font-semibold text-cyan-200">Economize {formatCurrencyBRL(pixSavings)} pagando no Pix</p>
+              <p className="mt-1 text-sm font-medium text-white/65">{formatCurrencyBRL(pixTotal)} no Pix (15% de desconto)</p>
             </div>
           </div>
 
@@ -1137,7 +1137,7 @@ export function OrderBuilder({
               type="button"
               onClick={handleSubmit}
               disabled={isPending}
-              className="focus-ring inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-6 text-base font-semibold text-white shadow-[0_22px_46px_rgba(0,103,255,0.28)] transition duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+              className="home-btn-gradient focus-ring inline-flex h-14 w-full items-center justify-center gap-2 px-6 text-base font-semibold transition duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {primaryActionLabel}
               <ArrowRight />
@@ -1150,83 +1150,83 @@ export function OrderBuilder({
               Adicionar ao carrinho
             </button>
           </div>
-          <p className="mt-3 text-center text-sm font-medium text-black/58">{primaryActionHelper}</p>
+          <p className="mt-3 text-center text-sm font-medium text-white/65">{primaryActionHelper}</p>
         </div>
 
         {pixCheckout ? (
           pixCheckout.available ? (
-            <section className="mt-6 rounded-[32px] border border-cyan/24 bg-[linear-gradient(180deg,rgba(0,181,255,0.08),rgba(255,255,255,0.98))] p-5 shadow-[0_22px_44px_rgba(0,181,255,0.1)] sm:p-6">
+            <section className="mt-6 rounded-[32px] border border-cyan/24 bg-[linear-gradient(135deg,rgba(236,72,153,0.16),rgba(168,85,247,0.14),rgba(56,189,248,0.14))] p-5 shadow-[0_22px_44px_rgba(0,181,255,0.1)] backdrop-blur-xl sm:p-6">
               <p className="label-kicker">Pagamento via Pix</p>
-              <h3 className="display-title mt-2 text-[1.4rem] font-semibold tracking-tight text-ink sm:text-[1.55rem]">
+              <h3 className="display-title mt-2 text-[1.4rem] font-semibold tracking-tight text-white sm:text-[1.55rem]">
                 Pagamento via Pix
               </h3>
-              <p className="mt-2 text-sm leading-6 text-black/66">
+              <p className="mt-2 text-sm leading-6 text-white/70">
                 Para finalizar seu pedido, realize o pagamento via Pix utilizando o QR Code ou o código abaixo. Assim
                 que o pagamento for identificado, seu pedido será confirmado em instantes.
               </p>
 
-              <div className="mt-4 rounded-[22px] border border-black/10 bg-white p-4 shadow-[0_14px_30px_rgba(15,15,15,0.05)]">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/44">Resumo do pedido</p>
+              <div className="mt-4 rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_14px_30px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/50">Resumo do pedido</p>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Produto principal</p>
-                    <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.productName}</strong>
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Produto principal</p>
+                    <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.productName}</strong>
                   </div>
                   <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Quantidade</p>
-                    <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.measures.quantity} un.</strong>
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Quantidade</p>
+                    <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.measures.quantity} un.</strong>
                   </div>
                   <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Configuração principal</p>
-                    <strong className="mt-1 block text-sm font-semibold text-ink">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Configuração principal</p>
+                    <strong className="mt-1 block text-sm font-semibold text-white">
                       {pixCheckout.order.measures.width} x {pixCheckout.order.measures.height} cm · {pixCheckout.order.material}
                     </strong>
-                    <p className="mt-1 text-xs text-black/54">Acabamento: {pixCheckout.order.finishing}</p>
+                    <p className="mt-1 text-xs text-white/60">Acabamento: {pixCheckout.order.finishing}</p>
                   </div>
                   <div className="surface-muted px-4 py-3">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Prazo escolhido</p>
-                    <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.deadline}</strong>
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Prazo escolhido</p>
+                    <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.deadline}</strong>
                   </div>
                   <div className="surface-muted px-4 py-3 sm:col-span-2">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Serviços adicionais</p>
-                    <strong className="mt-1 block text-sm font-semibold text-ink">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Serviços adicionais</p>
+                    <strong className="mt-1 block text-sm font-semibold text-white">
                       {extractAdditionalServices(pixCheckout.order.notes).length > 0
                         ? extractAdditionalServices(pixCheckout.order.notes).join(" · ")
                         : "Nenhum serviço adicional"}
                     </strong>
                   </div>
                   <div className="surface-muted px-4 py-3 sm:col-span-2">
-                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Total do pedido</p>
-                    <strong className="mt-1 block text-lg font-semibold text-ink">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Total do pedido</p>
+                    <strong className="mt-1 block text-lg font-semibold text-white">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
                   </div>
                 </div>
               </div>
 
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
                 <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Pedido</p>
-                  <strong className="mt-1 block text-sm font-semibold text-ink">#{pixCheckout.order.id}</strong>
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Pedido</p>
+                  <strong className="mt-1 block text-sm font-semibold text-white">#{pixCheckout.order.id}</strong>
                 </div>
                 <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Código Pix / txid</p>
-                  <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.payment.txid}</strong>
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Código Pix / txid</p>
+                  <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.payment.txid}</strong>
                 </div>
                 <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Cliente</p>
-                  <strong className="mt-1 block text-sm font-semibold text-ink">{pixCheckout.order.clientName}</strong>
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Cliente</p>
+                  <strong className="mt-1 block text-sm font-semibold text-white">{pixCheckout.order.clientName}</strong>
                 </div>
                 <div className="surface-muted px-4 py-3">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Data de criação do pedido</p>
-                  <strong className="mt-1 block text-sm font-semibold text-ink">{formatDateBR(pixCheckout.order.createdAt)}</strong>
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Data de criação do pedido</p>
+                  <strong className="mt-1 block text-sm font-semibold text-white">{formatDateBR(pixCheckout.order.createdAt)}</strong>
                 </div>
                 <div className="surface-muted px-4 py-3 sm:col-span-2">
-                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-black/44">Status</p>
+                  <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-white/50">Status</p>
                   <strong className="mt-1 block text-sm font-semibold text-amber-800">Aguardando pagamento</strong>
                 </div>
               </div>
 
               <div className="mt-4 grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-                <div className="rounded-[22px] border border-black/10 bg-white p-3 shadow-[0_14px_32px_rgba(15,15,15,0.06)]">
+                <div className="rounded-[22px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_14px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl">
                   {pixQrCodeUrl ? (
                     <Image
                       src={pixQrCodeUrl}
@@ -1237,14 +1237,14 @@ export function OrderBuilder({
                       className="h-full w-full rounded-[14px]"
                     />
                   ) : (
-                    <div className="flex aspect-square items-center justify-center rounded-[14px] bg-black/[0.03] text-sm text-black/56">
+                    <div className="flex aspect-square items-center justify-center rounded-[14px] bg-black/[0.03] text-sm text-white/60">
                       Gerando QR Code...
                     </div>
                   )}
                 </div>
 
-                <div className="rounded-[22px] border border-black/10 bg-white p-4 shadow-[0_14px_32px_rgba(15,15,15,0.06)]">
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-black/44">Código Pix copia-e-cola</p>
+                <div className="rounded-[22px] border border-white/8 bg-white/[0.04] p-4 shadow-[0_14px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/50">Código Pix copia-e-cola</p>
                   <textarea
                     readOnly
                     value={pixCheckout.payment.pixCopyPaste ?? ""}
@@ -1256,26 +1256,26 @@ export function OrderBuilder({
                 </div>
               </div>
 
-              <p className="mt-4 text-sm leading-6 text-black/62">
+              <p className="mt-4 text-sm leading-6 text-white/70">
                 O valor do Pix já está vinculado a este pedido. Após a identificação do pagamento, iniciaremos a
                 próxima etapa de produção.
               </p>
-              <p className="mt-2 text-sm leading-6 text-black/62">
+              <p className="mt-2 text-sm leading-6 text-white/70">
                 Caso deseje agilizar o processo, você pode enviar o comprovante de pagamento. Isso nos ajuda a
                 localizar sua transação mais rapidamente.
               </p>
-              <p className="mt-2 text-sm font-medium text-ink/80">
+              <p className="mt-2 text-sm font-medium text-white/80">
                 Ambiente seguro — seu pedido só é confirmado após a identificação do pagamento.
               </p>
-              <p className="mt-2 text-sm font-medium text-ink/80">
+              <p className="mt-2 text-sm font-medium text-white/80">
                 Após realizar o pagamento, acompanhe o status do seu pedido pelo painel ou aguarde a atualização da
                 equipe Prismarq.
               </p>
             </section>
           ) : (
-            <section className="mt-6 rounded-[30px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,248,249,0.95))] p-5 shadow-[0_16px_34px_rgba(15,15,15,0.05)] sm:p-6">
-              <h3 className="display-title text-[1.3rem] font-semibold tracking-tight text-ink">Pix indisponível no momento.</h3>
-              <p className="mt-2 text-sm leading-6 text-black/62">
+            <section className="mt-6 rounded-[30px] border border-white/8 bg-white/[0.04] p-5 shadow-[0_16px_34px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-6">
+              <h3 className="display-title text-[1.3rem] font-semibold tracking-tight text-white">Pix indisponível no momento.</h3>
+              <p className="mt-2 text-sm leading-6 text-white/70">
                 Escolha outro método de pagamento ou entre em contato com a Prismarq.
               </p>
             </section>
@@ -1288,15 +1288,15 @@ export function OrderBuilder({
           <p className="label-kicker">Resumo do pedido</p>
           <Badge tone={paymentMethod === "pix" ? "yellow" : "cyan"}>{paymentMethod === "pix" ? "Pix 15% OFF" : "Cartao"}</Badge>
         </div>
-        <h3 className="display-title mt-3 text-[clamp(1.75rem,4vw,2.2rem)] font-semibold tracking-tight text-ink">{currentProduct.name}</h3>
-        <p className="mt-3 text-sm leading-6 text-black/62">{currentProduct.lead}</p>
+        <h3 className="display-title mt-3 text-[clamp(1.75rem,4vw,2.2rem)] font-semibold tracking-tight text-white">{currentProduct.name}</h3>
+        <p className="mt-3 text-sm leading-6 text-white/70">{currentProduct.lead}</p>
 
-        <div className="mt-6 rounded-[30px] border border-cyan/20 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(240,250,255,0.98))] p-5 shadow-[0_22px_48px_rgba(0,181,255,0.12)]">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-black/44">Total estimado</p>
-          <strong className="mt-3 block text-[clamp(2.6rem,8vw,3.35rem)] font-semibold tracking-tight text-ink">{formatCurrencyBRL(quote.total)}</strong>
+        <div className="mt-6 rounded-[30px] border border-cyan/25 bg-white/[0.06] p-5 shadow-[0_22px_48px_rgba(0,181,255,0.15)]">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/50">Total estimado</p>
+          <strong className="mt-3 block text-[clamp(2.6rem,8vw,3.35rem)] font-semibold tracking-tight text-white">{formatCurrencyBRL(quote.total)}</strong>
           <div className="mt-4 rounded-[24px] border border-cyan/18 bg-cyan/10 p-4">
             <p className="text-sm font-semibold text-cyan-800">Economize {formatCurrencyBRL(pixSavings)} pagando no Pix</p>
-            <p className="mt-1 text-base font-semibold text-ink">{formatCurrencyBRL(pixTotal)} no Pix (15% de desconto)</p>
+            <p className="mt-1 text-base font-semibold text-white">{formatCurrencyBRL(pixTotal)} no Pix (15% de desconto)</p>
           </div>
         </div>
 
@@ -1307,37 +1307,37 @@ export function OrderBuilder({
           <SummaryStat label="Prazo" value={deadline} />
         </div>
 
-        <div className="mt-4 rounded-[28px] border border-black/10 bg-white p-5 shadow-[0_18px_34px_rgba(15,15,15,0.04)]">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-black/44">Cliente e entrega</p>
+        <div className="mt-4 rounded-[28px] border border-white/8 bg-white/[0.04] p-5 shadow-[0_18px_34px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/50">Cliente e entrega</p>
           <div className="mt-4 space-y-3">
             <div className="surface-muted px-4 py-3">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/44">Contato</p>
-              <strong className="mt-2 block text-sm font-semibold text-ink">{customerName || "Nome do cliente"}</strong>
-              <p className="mt-1 text-sm text-black/58">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/50">Contato</p>
+              <strong className="mt-2 block text-sm font-semibold text-white">{customerName || "Nome do cliente"}</strong>
+              <p className="mt-1 text-sm text-white/65">
                 {customerEmail || "E-mail"} {customerPhone ? `| ${customerPhone}` : ""}
               </p>
             </div>
             <div className="surface-muted px-4 py-3">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/44">Entrega</p>
-              <strong className="mt-2 block text-sm font-semibold text-ink">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/50">Entrega</p>
+              <strong className="mt-2 block text-sm font-semibold text-white">
                 {deliveryMode === "pickup" ? "Retirada na Prismarq" : "Entrega no endereco"}
               </strong>
-              <p className="mt-1 break-words text-sm text-black/58">
+              <p className="mt-1 break-words text-sm text-white/65">
                 {deliveryMode === "pickup" ? "Coleta combinada com a equipe Prismarq." : `${cep || "CEP"} | ${address || "Endereco"}`}
               </p>
             </div>
             <div className="surface-muted px-4 py-3">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/44">Status do checkout</p>
-              <strong className="mt-2 block text-sm font-semibold text-ink">{completionLabel}</strong>
-              <p className="mt-1 text-sm text-black/58">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/50">Status do checkout</p>
+              <strong className="mt-2 block text-sm font-semibold text-white">{completionLabel}</strong>
+              <p className="mt-1 text-sm text-white/65">
                 {file ? "Arte anexada ao pedido." : "Arte opcional neste momento. Voce pode concluir sem anexar agora."}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-4 rounded-[28px] border border-black/10 bg-white p-5 shadow-[0_18px_34px_rgba(15,15,15,0.04)]">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-black/44">Detalhes do pedido</p>
+        <div className="mt-4 rounded-[28px] border border-white/8 bg-white/[0.04] p-5 shadow-[0_18px_34px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/50">Detalhes do pedido</p>
           <div className="mt-4 space-y-3">
             {[
               { label: "Medidas", value: `${width} x ${height} cm` },
@@ -1346,21 +1346,21 @@ export function OrderBuilder({
               { label: "Prazo", value: deadline },
             ].map((item) => (
               <div key={item.label} className="surface-muted px-4 py-3">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-black/44">{item.label}</p>
-                <strong className="mt-2 block text-sm font-semibold text-ink">{item.value}</strong>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/50">{item.label}</p>
+                <strong className="mt-2 block text-sm font-semibold text-white">{item.value}</strong>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="mt-4 rounded-[28px] border border-emerald-200 bg-[linear-gradient(180deg,rgba(236,253,245,0.96),rgba(255,255,255,0.98))] p-5 shadow-[0_16px_32px_rgba(16,185,129,0.08)]">
+        <div className="mt-4 rounded-[28px] border border-emerald-300/30 bg-[linear-gradient(180deg,rgba(16,185,129,0.14),rgba(16,185,129,0.08))] p-5 shadow-[0_16px_32px_rgba(16,185,129,0.08)] backdrop-blur-xl">
           <div className="flex items-start gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-ink shadow-[0_10px_22px_rgba(15,15,15,0.08)]">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/8 bg-white/[0.08] text-white shadow-[0_10px_22px_rgba(0,0,0,0.3)]">
               <CheckIcon />
             </span>
             <div className="min-w-0">
-              <strong className="block text-sm font-semibold text-ink">Compra com mais confianca</strong>
-              <div className="mt-3 grid gap-2 text-sm text-black/64">
+              <strong className="block text-sm font-semibold text-white">Compra com mais confianca</strong>
+              <div className="mt-3 grid gap-2 text-sm text-white/70">
                 <p>Producao propria Prismarq</p>
                 <p>+1.500 pedidos produzidos</p>
                 <p>Entrega no prazo</p>
@@ -1372,18 +1372,18 @@ export function OrderBuilder({
       </aside>
     </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-black/10 bg-white/97 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(15,15,15,0.12)] backdrop-blur-md sm:px-4 lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-white/8 bg-[#05070d]/96 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-4 lg:hidden">
         <div className="mx-auto w-full max-w-[1600px]">
           {pixCheckout?.available ? (
             <>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-black/45">Pagamento Pix</p>
-                <strong className="text-sm font-semibold tabular-nums text-ink">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-white/50">Pagamento Pix</p>
+                <strong className="text-sm font-semibold tabular-nums text-white">{formatCurrencyBRL(pixCheckout.order.value)}</strong>
               </div>
               <button
                 type="button"
                 onClick={handleCopyPixCode}
-                className="focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)]"
+                className="home-btn-gradient focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center px-4 text-[0.9375rem] font-semibold"
               >
                 {pixCopied ? "Codigo copiado!" : "Copiar codigo Pix"}
               </button>
@@ -1392,16 +1392,16 @@ export function OrderBuilder({
             <>
               <div className="flex items-end justify-between gap-3">
                 <div className="min-w-0 shrink">
-                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-black/42">Total</p>
-                  <strong className="mt-0.5 block text-base font-semibold tabular-nums text-ink">{formatCurrencyBRL(quote.total)}</strong>
-                  <p className="text-[0.72rem] font-medium text-cyan-800">{formatCurrencyBRL(pixTotal)} no Pix</p>
+                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total</p>
+                  <strong className="mt-0.5 block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
+                  <p className="text-[0.72rem] font-medium text-cyan-200">{formatCurrencyBRL(pixTotal)} no Pix</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={isPending}
-                className="focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)] transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
+                className="home-btn-gradient focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center gap-2 px-4 text-[0.9375rem] font-semibold transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {primaryActionLabel}
                 <ArrowRight />
@@ -1409,7 +1409,7 @@ export function OrderBuilder({
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="focus-ring mt-2 flex min-h-[44px] w-full items-center justify-center rounded-full border border-black/12 bg-white text-sm font-semibold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                className="focus-ring mt-2 flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
               >
                 Adicionar ao carrinho
               </button>

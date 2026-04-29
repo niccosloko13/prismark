@@ -43,9 +43,9 @@ function CartStatCard({
 }) {
   return (
     <div className="metric-card p-4">
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/48">{label}</p>
-      <strong className="mt-2 block text-2xl font-semibold tracking-tight text-ink">{value}</strong>
-      {note ? <p className="mt-1 text-xs leading-5 text-black/52">{note}</p> : null}
+      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/50">{label}</p>
+      <strong className="mt-2 block text-2xl font-semibold tracking-tight text-white">{value}</strong>
+      {note ? <p className="mt-1 text-xs leading-5 text-white/55">{note}</p> : null}
     </div>
   );
 }
@@ -59,8 +59,8 @@ function CartSpecCard({
 }) {
   return (
     <div className="surface-muted p-4">
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-black/46">{label}</p>
-      <p className="mt-2 text-sm font-medium leading-6 text-black/80">{value}</p>
+      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/48">{label}</p>
+      <p className="mt-2 text-sm font-medium leading-6 text-white/80">{value}</p>
     </div>
   );
 }
@@ -189,15 +189,15 @@ export function CartPage({ session }: { session: SessionUser | null }) {
         <div className="panel relative overflow-hidden p-8 sm:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(0,181,255,0.12),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(255,46,191,0.1),_transparent_40%)]" />
           <div className="relative flex flex-col items-center text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-3xl border border-black/10 bg-white shadow-[0_14px_32px_rgba(15,15,15,0.08)]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl border border-white/12 bg-white/[0.06] text-white shadow-[0_14px_32px_rgba(0,0,0,0.35)]">
               <CartGlyph />
             </div>
-            <p className="mt-5 text-lg font-semibold text-ink">Nenhum item adicionado ainda.</p>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-black/64">
+            <p className="mt-5 text-lg font-semibold text-white">Nenhum item adicionado ainda.</p>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-white/65">
               Volte ao catalogo ou abra um produto para montar a primeira configuracao.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Link href="/products" className="btn btn-primary focus-ring">
+              <Link href="/produtos" className="btn btn-primary focus-ring">
                 Ver produtos
               </Link>
               <Link href="/" className="btn btn-secondary focus-ring">
@@ -227,20 +227,20 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                 </span>
                 <div>
                   <p className="label-kicker">Resumo final</p>
-                  <p className="mt-1 text-lg font-semibold text-ink">
+                  <p className="mt-1 text-lg font-semibold text-white">
                     {createdOrders.length} pedido(s) criado(s) com sucesso.
                   </p>
                 </div>
               </div>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-black/64">
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-white/65">
                 Os itens foram enviados com a configuracao atual preservada. Voce pode acompanhar tudo no painel
                 do cliente.
               </p>
             </div>
             <div className="surface-card p-5">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/48">Status</p>
-              <strong className="mt-3 block text-2xl font-semibold text-ink">Pronto para acompanhamento</strong>
-              <p className="mt-2 text-sm leading-6 text-black/60">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/50">Status</p>
+              <strong className="mt-3 block text-2xl font-semibold text-white">Pronto para acompanhamento</strong>
+              <p className="mt-2 text-sm leading-6 text-white/62">
                 A producao ja recebeu a sequencia de pedidos gerados.
               </p>
             </div>
@@ -249,7 +249,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
             <Link href="/dashboard" className="btn btn-primary focus-ring">
               Ver painel
             </Link>
-            <Link href="/products" className="btn btn-secondary focus-ring">
+            <Link href="/produtos" className="btn btn-secondary focus-ring">
               Continuar comprando
             </Link>
             <button
@@ -258,7 +258,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                 setMessage("");
                 setCreatedOrders([]);
               }}
-              className="btn btn-ghost focus-ring border border-black/10 bg-white px-4 py-2"
+              className="btn btn-ghost focus-ring border border-white/15 bg-white/[0.06] px-4 py-2 text-white"
             >
               Fechar mensagem
             </button>
@@ -283,12 +283,12 @@ export function CartPage({ session }: { session: SessionUser | null }) {
             <h1 className="display-title max-w-3xl text-[clamp(2.4rem,4vw,4.2rem)] font-semibold leading-[0.95] tracking-tight text-balance">
               Revise, ajuste e feche seus pedidos com mais clareza.
             </h1>
-            <p className="max-w-2xl text-base leading-7 text-black/66 sm:text-lg">
+            <p className="max-w-2xl text-base leading-7 text-white/68 sm:text-lg">
               Cada item mantem sua configuracao, imagem e preco estimado. O fluxo segue pronto para producao,
               com leitura rapida e acabamento comercial.
             </p>
             <div className="flex flex-wrap gap-3 pt-1">
-              <Link href="/products" className="btn btn-secondary focus-ring">
+              <Link href="/produtos" className="btn btn-secondary focus-ring">
                 Continuar comprando
               </Link>
               <Link href="/order" className="btn btn-primary focus-ring">
@@ -325,8 +325,8 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                 <article
                   key={item.id}
                   className={cn(
-                    "overflow-hidden rounded-[34px] border border-black/10 bg-white shadow-[0_20px_56px_rgba(15,15,15,0.07)] transition duration-300",
-                    "hover:-translate-y-0.5 hover:shadow-[0_26px_72px_rgba(15,15,15,0.1)]",
+                    "overflow-hidden rounded-[34px] border border-white/8 bg-white/[0.04] backdrop-blur-xl shadow-[0_20px_56px_rgba(0,0,0,0.35)] transition duration-300",
+                    "hover:-translate-y-0.5 hover:border-white/16 hover:shadow-[0_26px_72px_rgba(0,0,0,0.42)]",
                   )}
                 >
                   <div className="h-1 bg-gradient-to-r from-cyan via-magenta to-yellow" />
@@ -341,7 +341,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-transparent" />
                       <div className="absolute left-4 top-4">
-                        <span className="rounded-full border border-white/18 bg-white/92 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink shadow-[0_10px_24px_rgba(15,15,15,0.12)]">
+                        <span className="rounded-full border border-white/20 bg-white/[0.12] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white shadow-[0_10px_24px_rgba(0,0,0,0.3)]">
                           Item {String(index + 1).padStart(2, "0")}
                         </span>
                       </div>
@@ -349,7 +349,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                         <span className="rounded-full bg-ink px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_10px_22px_rgba(15,15,15,0.16)]">
                           {item.selection.quantity} un.
                         </span>
-                        <span className="rounded-full bg-white/92 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-ink shadow-[0_10px_22px_rgba(15,15,15,0.12)]">
+                        <span className="rounded-full bg-white/[0.12] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_10px_22px_rgba(0,0,0,0.28)]">
                           {formatCurrencyBRL(item.unitPrice)}/un.
                         </span>
                       </div>
@@ -365,17 +365,17 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                           <h2 className="display-title text-[1.65rem] font-semibold leading-[1.05] tracking-tight text-balance sm:text-[1.9rem]">
                             {item.productName}
                           </h2>
-                          <p className="max-w-2xl text-sm leading-6 text-black/62">{item.summary}</p>
+                          <p className="max-w-2xl text-sm leading-6 text-white/65">{item.summary}</p>
                         </div>
 
                         <div className="metric-card px-4 py-3 text-right">
-                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/46">
+                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">
                             Total do item
                           </p>
-                          <strong className="mt-2 block text-2xl font-semibold tracking-tight text-ink">
+                          <strong className="mt-2 block text-2xl font-semibold tracking-tight text-white">
                             {formatCurrencyBRL(item.totalPrice)}
                           </strong>
-                          <p className="mt-1 text-xs font-medium text-black/52">{formatCurrencyBRL(item.unitPrice)}/un.</p>
+                          <p className="mt-1 text-xs font-medium text-white/55">{formatCurrencyBRL(item.unitPrice)}/un.</p>
                         </div>
                       </div>
 
@@ -387,15 +387,15 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                       </div>
 
                       {addonCount > 0 ? (
-                        <div className="mt-4 rounded-[26px] border border-cyan/12 bg-cyan/6 p-4">
-                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-black/46">
+                        <div className="mt-4 rounded-[26px] border border-cyan/20 bg-cyan/[0.08] p-4">
+                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/50">
                             Servicos adicionais
                           </p>
                           <div className="mt-3 flex flex-wrap gap-2">
                             {item.addons.map((addon) => (
                               <span
                                 key={addon.id}
-                                className="rounded-full border border-cyan/18 bg-white px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/68"
+                                className="rounded-full border border-cyan/25 bg-white/[0.08] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/75"
                               >
                                 {addon.label}
                               </span>
@@ -406,7 +406,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
                       <div className="mt-5 grid gap-4 lg:grid-cols-[170px_minmax(0,1fr)] lg:items-end">
                         <label className="space-y-2">
-                          <span className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/48">
+                          <span className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/50">
                             Quantidade
                           </span>
                           <input
@@ -414,7 +414,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                             min={minQuantity}
                             value={item.quantity}
                             onChange={(event) => updateQuantity(item.id, Number(event.target.value))}
-                            className="focus-ring w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none shadow-[0_10px_22px_rgba(15,15,15,0.04)]"
+                            className="focus-ring w-full rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none backdrop-blur-xl shadow-[0_10px_22px_rgba(0,0,0,0.25)] placeholder:text-white/40"
                           />
                         </label>
 
@@ -428,7 +428,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                           <button
                             type="button"
                             onClick={() => removeItem(item.id)}
-                            className="focus-ring inline-flex w-full items-center justify-center rounded-full border border-red-500/15 bg-red-500/6 px-4 py-3 text-sm font-semibold text-red-700 transition hover:-translate-y-0.5 hover:bg-red-500/10 sm:w-auto"
+                            className="focus-ring inline-flex w-full items-center justify-center rounded-full border border-red-400/25 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300 transition hover:-translate-y-0.5 hover:bg-red-500/15 sm:w-auto"
                           >
                             Remover
                           </button>
@@ -444,38 +444,38 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
         <aside className="panel h-fit p-6 sm:p-8 lg:sticky lg:top-8">
           <p className="label-kicker">Resumo do carrinho</p>
-          <h3 className="display-title mt-3 text-[2rem] font-semibold tracking-tight text-ink">
+          <h3 className="display-title mt-3 text-[2rem] font-semibold tracking-tight text-white">
             Fechamento claro e pronto para pedido.
           </h3>
-          <p className="mt-2 text-sm leading-6 text-black/62">
+          <p className="mt-2 text-sm leading-6 text-white/65">
             O resumo concentra total, Pix, status e o proximo passo para transformar os itens em pedidos reais.
           </p>
 
           <div className="mt-6 space-y-3">
-            <div className="rounded-[30px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(246,247,249,0.94))] p-5 shadow-[0_22px_48px_rgba(15,15,15,0.06)]">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/44">Total estimado</p>
-              <strong className="mt-2 block text-[2.55rem] font-semibold tracking-tight text-ink">
+            <div className="rounded-[30px] border border-white/8 bg-white/[0.04] p-5 backdrop-blur-xl shadow-[0_22px_48px_rgba(0,0,0,0.3)]">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Total estimado</p>
+              <strong className="mt-2 block text-[2.55rem] font-semibold tracking-tight text-white">
                 {formatCurrencyBRL(subtotal)}
               </strong>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(15,15,15,0.14)]">
                   {formatCurrencyBRL(pixSubtotal)} no Pix
                 </span>
-                <span className="text-sm font-medium text-black/54">15% OFF no Pix</span>
+                <span className="text-sm font-medium text-white/60">15% OFF no Pix</span>
               </div>
-              <p className="mt-3 text-xs leading-5 text-black/52">
+              <p className="mt-3 text-xs leading-5 text-white/55">
                 Frete e ajustes extras seguem por item gerado no fechamento final.
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               <div className="surface-card p-4">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/45">Itens</p>
-                <strong className="mt-2 block text-2xl font-semibold text-ink">{itemCount}</strong>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Itens</p>
+                <strong className="mt-2 block text-2xl font-semibold text-white">{itemCount}</strong>
               </div>
               <div className="surface-card p-4">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-black/45">Status</p>
-                <strong className="mt-2 block text-lg font-semibold text-ink">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Status</p>
+                <strong className="mt-2 block text-lg font-semibold text-white">
                   {session ? "Pronto para finalizar" : "Login necessario"}
                 </strong>
               </div>
@@ -484,14 +484,14 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
           <div className="mt-4 grid gap-2">
             {["Producao propria", "Suporte comercial", "Checagem antes da producao"].map((item) => (
-              <div key={item} className="surface-muted px-4 py-3 text-sm font-medium text-black/70">
+              <div key={item} className="surface-muted px-4 py-3 text-sm font-medium text-white/72">
                 {item}
               </div>
             ))}
           </div>
 
           {message ? (
-            <div className="mt-6 rounded-[24px] border border-emerald-500/18 bg-emerald-500/8 p-4 text-sm leading-6 text-emerald-700">
+            <div className="mt-6 rounded-[24px] border border-emerald-400/25 bg-emerald-500/10 p-4 text-sm leading-6 text-emerald-200">
               {message}
               {createdOrders.length > 0 ? (
                 <div className="mt-3">
@@ -504,7 +504,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           ) : null}
 
           {error ? (
-            <div className="mt-6 rounded-[24px] border border-red-500/18 bg-red-500/8 p-4 text-sm leading-6 text-red-700">
+            <div className="mt-6 rounded-[24px] border border-red-400/25 bg-red-500/10 p-4 text-sm leading-6 text-red-200">
               {error}
             </div>
           ) : null}
@@ -525,14 +525,14 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               </Link>
             )}
 
-            <Link href="/products" className="btn btn-secondary focus-ring h-12 justify-center text-sm">
+            <Link href="/produtos" className="btn btn-secondary focus-ring h-12 justify-center text-sm">
               Continuar comprando
             </Link>
 
             <button
               type="button"
               onClick={clearCart}
-              className="focus-ring inline-flex h-12 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-black/[0.03]"
+              className="focus-ring inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
             >
               Limpar carrinho
             </button>
@@ -540,12 +540,12 @@ export function CartPage({ session }: { session: SessionUser | null }) {
         </aside>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-black/10 bg-white/97 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(15,15,15,0.12)] backdrop-blur-md sm:px-4 lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-white/8 bg-[#05070d]/96 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-4 lg:hidden">
         <div className="mx-auto flex w-full max-w-[1600px] items-end gap-3">
           <div className="min-w-0 shrink">
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-black/42">Total</p>
-            <strong className="block text-base font-semibold tabular-nums text-ink">{formatCurrencyBRL(subtotal)}</strong>
-            <p className="text-[0.72rem] font-medium text-cyan-800">{formatCurrencyBRL(pixSubtotal)} no Pix</p>
+            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/45">Total</p>
+            <strong className="block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(subtotal)}</strong>
+            <p className="text-[0.72rem] font-medium text-cyan-300">{formatCurrencyBRL(pixSubtotal)} no Pix</p>
           </div>
           <div className="min-w-0 flex-1">
             {session ? (
@@ -553,14 +553,14 @@ export function CartPage({ session }: { session: SessionUser | null }) {
                 type="button"
                 onClick={handleFinalize}
                 disabled={isPending}
-                className="focus-ring flex min-h-[52px] w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)] transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-65"
+                className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center px-4 text-[0.9375rem] font-semibold transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-65"
               >
                 {isPending ? "Finalizando..." : "Finalizar carrinho"}
               </button>
             ) : (
               <Link
                 href="/login?returnTo=/cart"
-                className="focus-ring flex min-h-[52px] w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#00a6ff,#0067ff)] px-4 text-[0.9375rem] font-semibold text-white shadow-[0_20px_44px_rgba(0,103,255,0.3)]"
+                className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center px-4 text-[0.9375rem] font-semibold"
               >
                 Entrar para finalizar
               </Link>
@@ -568,7 +568,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           </div>
         </div>
         <div className="mx-auto mt-2 flex max-w-[1600px] justify-center gap-3 text-[0.72rem] font-semibold">
-          <Link href="/products" className="text-black/55 underline-offset-2 hover:text-ink hover:underline">
+          <Link href="/produtos" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
             Continuar comprando
           </Link>
         </div>

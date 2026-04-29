@@ -25,23 +25,23 @@ export default async function DashboardPage() {
         <div className="panel p-6 sm:p-8 lg:p-10">
           <BrandLogo size="sm" priority className="focus-ring rounded-full" />
           <p className="label-kicker mt-5">Painel do cliente</p>
-          <h1 className="display-title mt-3 text-[clamp(2.5rem,4vw,4.25rem)] font-semibold leading-[0.95] tracking-tight">
+          <h1 className="display-title mt-3 text-[clamp(2.5rem,4vw,4.25rem)] font-semibold leading-[0.95] tracking-tight text-white">
             {session.name}
           </h1>
-          <p className="mt-3 text-base text-black/68">
+          <p className="mt-3 text-base text-white/70">
             {session.company} · {session.email}
           </p>
         </div>
         <div className="panel-dark p-6 sm:p-8 lg:p-10">
           <p className="label-kicker text-white/58">Resumo</p>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[28px] border border-white/10 bg-white/6 p-5">
+            <div className="rounded-[28px] border border-white/8 bg-white/[0.04] p-5 backdrop-blur-xl">
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-white/46">Pedidos</p>
-              <strong className="mt-2 block text-3xl font-semibold">{orders.length}</strong>
+              <strong className="mt-2 block text-3xl font-semibold text-white">{orders.length}</strong>
             </div>
-            <div className="rounded-[28px] border border-white/10 bg-white/6 p-5">
+            <div className="rounded-[28px] border border-white/8 bg-white/[0.04] p-5 backdrop-blur-xl">
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-white/46">Em andamento</p>
-              <strong className="mt-2 block text-3xl font-semibold">{activeOrders}</strong>
+              <strong className="mt-2 block text-3xl font-semibold text-white">{activeOrders}</strong>
             </div>
           </div>
         </div>

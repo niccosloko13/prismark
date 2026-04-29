@@ -75,14 +75,14 @@ function CatalogProductCard({ product }: { product: Product }) {
   return (
     <article
       className={cn(
-        "group flex h-full flex-col overflow-hidden rounded-[28px] border border-black/[0.08] bg-white",
-        "shadow-[0_8px_30px_rgba(15,15,15,0.06)] transition duration-300",
-        "hover:-translate-y-1 hover:border-black/12 hover:shadow-[0_22px_48px_rgba(15,15,15,0.11)]",
+        "group flex h-full flex-col overflow-hidden rounded-[28px] border border-white/8 bg-white/[0.04] backdrop-blur-xl",
+        "shadow-[0_8px_30px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] transition duration-300",
+        "hover:-translate-y-1 hover:border-cyan-400/20 hover:shadow-[0_22px_48px_rgba(0,181,255,0.12)]",
       )}
     >
       <Link
         href={detailHref}
-        className="focus-ring relative mx-3 mt-3 block overflow-hidden rounded-[18px] bg-[#F3F4F6] ring-1 ring-black/[0.06] transition group-hover:ring-black/10 sm:mx-4 sm:mt-4 sm:rounded-[22px]"
+        className="focus-ring relative mx-3 mt-3 block overflow-hidden rounded-[18px] bg-white/[0.04] ring-1 ring-white/8 transition group-hover:ring-cyan-400/25 sm:mx-4 sm:mt-4 sm:rounded-[22px]"
         aria-label={`Ver ${product.name}`}
       >
         <div className="relative aspect-[1/1] w-full max-h-[260px] sm:aspect-[1/1] sm:max-h-[280px]">
@@ -95,7 +95,7 @@ function CatalogProductCard({ product }: { product: Product }) {
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 320px"
             />
           ) : (
-            <div className="flex h-full items-center justify-center p-8 text-center text-sm font-medium text-black/45">
+            <div className="flex h-full items-center justify-center p-8 text-center text-sm font-medium text-white/45">
               Imagem em breve
             </div>
           )}
@@ -104,11 +104,11 @@ function CatalogProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col p-3.5 pt-4 sm:p-5 sm:pt-6">
         <div className="min-h-0 flex-1 space-y-2.5 sm:space-y-3">
-          <h3 className="display-title text-balance text-[1.28rem] font-semibold leading-[1.08] tracking-tight text-ink sm:text-[1.55rem]">
+          <h3 className="display-title text-balance text-[1.28rem] font-semibold leading-[1.08] tracking-tight text-white sm:text-[1.55rem]">
             {product.name}
           </h3>
           <p
-            className="text-balance text-[0.9375rem] font-medium leading-relaxed text-black/65 sm:text-[1rem]"
+            className="text-balance text-[0.9375rem] font-medium leading-relaxed text-white/70 sm:text-[1rem]"
             style={{
               display: "-webkit-box",
               WebkitBoxOrient: "vertical",
@@ -122,7 +122,7 @@ function CatalogProductCard({ product }: { product: Product }) {
             {chips.map((chip, index) => (
               <li
                 key={`${product.slug}-${index}-${chip}`}
-                className="rounded-full border border-black/[0.08] bg-[#F9FAFB] px-3 py-1.5 text-[0.78rem] font-semibold text-black/70 sm:text-[0.8rem]"
+                className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[0.78rem] font-semibold text-white/75 sm:text-[0.8rem]"
               >
                 {chip}
               </li>
@@ -130,24 +130,24 @@ function CatalogProductCard({ product }: { product: Product }) {
           </ul>
         </div>
 
-        <div className="mt-4 rounded-[18px] border border-black/[0.08] bg-[linear-gradient(180deg,#FAFAFB,#F3F4F6)] p-3.5 sm:mt-5 sm:rounded-[20px] sm:p-5">
+        <div className="mt-4 rounded-[18px] border border-white/8 bg-white/[0.04] p-3.5 backdrop-blur-xl sm:mt-5 sm:rounded-[20px] sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-black/50">A partir de (Pix)</p>
-              <p className="display-title mt-1 text-[1.72rem] font-semibold tracking-tight text-ink sm:text-[2.1rem]">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white/50">A partir de (Pix)</p>
+              <p className="display-title mt-1 text-[1.72rem] font-semibold tracking-tight text-white sm:text-[2.1rem]">
                 {formatCurrencyBRL(pixPrice)}
               </p>
-              <p className="mt-0.5 text-[0.8125rem] font-medium leading-snug text-black/55 sm:text-sm">
+              <p className="mt-0.5 text-[0.8125rem] font-medium leading-snug text-white/60 sm:text-sm">
                 por m² · 15% de desconto no Pix
               </p>
             </div>
-            <span className="inline-flex w-fit shrink-0 self-start rounded-full bg-ink px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-white sm:self-end">
+            <span className="inline-flex w-fit shrink-0 self-start rounded-full bg-gradient-to-r from-pink-500 to-cyan-400 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_rgba(236,72,153,0.35)] sm:self-end">
               Oferta Pix
             </span>
           </div>
-          <div className="mt-3 flex flex-col gap-1.5 border-t border-black/[0.08] pt-3 text-[0.8125rem] font-medium leading-snug text-black/58 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:text-sm">
+          <div className="mt-3 flex flex-col gap-1.5 border-t border-white/8 pt-3 text-[0.8125rem] font-medium leading-snug text-white/65 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:text-sm">
             <span className="min-w-0 break-words">Cartão: {formatCurrencyBRL(product.basePriceM2)}/m²</span>
-            <span className="text-black/52">{secondaryInfo}</span>
+            <span className="text-white/55">{secondaryInfo}</span>
           </div>
         </div>
 
@@ -161,14 +161,14 @@ function CatalogProductCard({ product }: { product: Product }) {
           </Link>
           <Link
             href={`/order?product=${product.slug}`}
-            className="btn btn-secondary focus-ring min-h-[48px] w-full justify-center px-4 text-center text-[0.9rem] font-semibold text-black/80 sm:min-h-[52px] sm:w-auto sm:min-w-[10.5rem] sm:shrink-0 sm:text-[0.95rem]"
+            className="btn btn-secondary focus-ring min-h-[48px] w-full justify-center px-4 text-center text-[0.9rem] font-semibold sm:min-h-[52px] sm:w-auto sm:min-w-[10.5rem] sm:shrink-0 sm:text-[0.95rem]"
           >
             Fazer pedido
           </Link>
         </div>
         <Link
           href={detailHref}
-          className="focus-ring mt-2.5 block text-center text-sm font-semibold text-black/45 underline-offset-4 transition hover:text-ink hover:underline sm:mt-3 sm:text-left"
+          className="focus-ring mt-2.5 block text-center text-sm font-semibold text-white/50 underline-offset-4 transition hover:text-white hover:underline sm:mt-3 sm:text-left"
         >
           Ver detalhes do produto
         </Link>
@@ -181,10 +181,13 @@ export function ProductCard({
   product,
   compact = false,
   variant = "default",
+  premiumDark = false,
 }: {
   product: Product;
   compact?: boolean;
   variant?: "default" | "home" | "catalog";
+  /** Legado: landing já usa cartão escuro; vitrine única é escura. */
+  premiumDark?: boolean;
 }) {
   if (variant === "catalog") {
     return <CatalogProductCard product={product} />;
@@ -192,6 +195,7 @@ export function ProductCard({
 
   const imageSrc = getProductPrimaryImagePath(product.slug);
   const isHomeVariant = variant === "home";
+  void premiumDark;
   const pixPrice = product.basePriceM2 * 0.85;
   const secondaryInfo =
     product.minQuantity > 1 ? `Pedido min. ${product.minQuantity}` : `Area min. ${product.minimumArea.toFixed(2)} m2`;
@@ -200,10 +204,10 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden border border-black/10 bg-white/98 transition duration-300",
+        "group relative flex h-full flex-col overflow-hidden border border-white/8 bg-white/[0.04] shadow-[0_12px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl transition duration-300",
         isCompactRelated
-          ? "rounded-[20px] hover:-translate-y-0.5 hover:border-black/14 hover:shadow-[0_14px_36px_rgba(15,15,15,0.08)]"
-          : "rounded-[34px] hover:-translate-y-1 hover:border-black/16 hover:shadow-[0_30px_72px_rgba(15,15,15,0.12)]",
+          ? "rounded-[20px] hover:-translate-y-0.5 hover:border-cyan-400/25 hover:shadow-[0_16px_48px_rgba(0,181,255,0.12)]"
+          : "rounded-[34px] hover:-translate-y-1 hover:border-cyan-400/20 hover:shadow-[0_24px_56px_rgba(0,181,255,0.1)]",
       )}
     >
       {!isCompactRelated ? (
@@ -212,14 +216,16 @@ export function ProductCard({
           <div className="pointer-events-none absolute -right-14 -top-16 h-28 w-28 rounded-full bg-cyan/10 blur-2xl transition duration-500 group-hover:bg-cyan/14" />
           <div className="pointer-events-none absolute -bottom-16 -left-12 h-24 w-24 rounded-full bg-magenta/10 blur-2xl transition duration-500 group-hover:bg-magenta/14" />
         </>
-      ) : null}
+      ) : (
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent opacity-80" />
+      )}
 
       <div className={cn("relative flex h-full flex-col justify-between", isCompactRelated ? "p-3.5 sm:p-4" : "p-5 sm:p-6")}>
         <div className={cn("space-y-4", isCompactRelated && "space-y-2.5")}>
           <div
             className={cn(
-              "relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.96),rgba(244,245,247,0.88))]",
-              isCompactRelated ? "rounded-[14px]" : "rounded-[30px]",
+              "relative overflow-hidden rounded-[14px] border border-white/8 bg-white/[0.04]",
+              !isCompactRelated ? "rounded-[30px]" : null,
             )}
           >
             {!isCompactRelated ? (
@@ -227,7 +233,7 @@ export function ProductCard({
                 <Badge tone="cyan" className="shadow-[0_10px_24px_rgba(0,181,255,0.08)]">
                   {product.badge}
                 </Badge>
-                <span className="rounded-full border border-black/10 bg-white/88 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-black/52">
+                <span className="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/65">
                   {isHomeVariant ? "15% Pix" : product.category}
                 </span>
               </div>
@@ -244,29 +250,33 @@ export function ProductCard({
                 />
               ) : null}
               {!isCompactRelated ? (
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0)_28%,rgba(15,15,15,0.16))]" />
-              ) : null}
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,7,13,0.35),transparent_40%,rgba(0,0,0,0.2))]" />
+              ) : (
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#05070d]/40 to-transparent" />
+              )}
             </div>
           </div>
 
           <div className={cn("space-y-3", isHomeVariant && "space-y-2.5", isCompactRelated && "space-y-1.5")}>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-black/44 sm:text-[0.68rem]">
+              <p
+                className={cn("text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cyan-300/80 sm:text-[0.68rem]")}
+              >
                 {product.category}
               </p>
               {!isCompactRelated ? (
-                <span className="rounded-full border border-black/10 bg-black/[0.03] px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-black/56">
+                <span className="rounded-full border border-white/12 bg-white/[0.06] px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/60">
                   Alta procura
                 </span>
               ) : (
-                <span className="rounded-full border border-black/10 bg-black/[0.03] px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-black/52">
+                <span className="rounded-full border border-pink-400/30 bg-pink-500/10 px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-pink-200">
                   15% Pix
                 </span>
               )}
             </div>
             <h3
               className={cn(
-                "display-title font-semibold tracking-tight text-balance text-ink",
+                "display-title font-semibold tracking-tight text-balance text-white",
                 isCompactRelated ? "text-[1.08rem] leading-tight sm:text-[1.2rem]" : "text-[1.52rem] leading-[0.98] sm:text-[1.72rem]",
               )}
             >
@@ -275,9 +285,8 @@ export function ProductCard({
 
             <p
               className={cn(
-                "max-w-[34ch] text-sm leading-6 text-black/62",
-                isHomeVariant && "text-black/56",
-                isCompactRelated && "text-[0.8125rem] leading-snug text-black/58",
+                "max-w-[34ch] text-sm leading-6 text-white/65",
+                isCompactRelated && "text-[0.8125rem] leading-snug",
               )}
               style={{
                 display: "-webkit-box",
@@ -293,12 +302,12 @@ export function ProductCard({
           {!isHomeVariant && !isCompactRelated ? (
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="surface-muted px-4 py-3">
-                <p className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-black/42">Material base</p>
-                <p className="mt-2 text-sm font-medium text-ink">{product.materials[0]?.label ?? "Material comercial"}</p>
+                <p className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/45">Material base</p>
+                <p className="mt-2 text-sm font-medium text-white">{product.materials[0]?.label ?? "Material comercial"}</p>
               </div>
               <div className="surface-muted px-4 py-3">
-                <p className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-black/42">Prazo comercial</p>
-                <p className="mt-2 text-sm font-medium text-ink">{product.deadlines[0]?.label ?? "Sob consulta"}</p>
+                <p className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/45">Prazo comercial</p>
+                <p className="mt-2 text-sm font-medium text-white">{product.deadlines[0]?.label ?? "Sob consulta"}</p>
               </div>
             </div>
           ) : null}
@@ -307,29 +316,33 @@ export function ProductCard({
         <div className={cn("space-y-4", isCompactRelated ? "mt-3 space-y-2.5" : "mt-5")}>
           <div
             className={cn(
-              "border border-black/10 bg-[linear-gradient(180deg,rgba(250,250,251,0.99),rgba(245,246,248,0.92))] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]",
-              isCompactRelated ? "rounded-[14px] p-3" : "rounded-[30px] p-4",
+              "rounded-[14px] border border-white/8 bg-white/[0.04] shadow-none",
+              isCompactRelated ? "p-3" : "rounded-[30px] p-4",
             )}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <span className={cn("label-kicker block", isCompactRelated && "text-[0.6rem]")}>Preco no Pix</span>
+                <span
+                  className={cn("block font-mono text-[0.68rem] uppercase tracking-[0.22em] text-white/45", isCompactRelated && "text-[0.6rem]")}
+                >
+                  Preco no Pix
+                </span>
                 <strong
                   className={cn(
-                    "mt-1 block font-semibold tracking-tight text-ink sm:mt-2",
+                    "mt-1 block font-semibold tracking-tight text-white sm:mt-2",
                     isCompactRelated ? "text-[1.35rem] sm:text-[1.5rem]" : "text-[2.05rem]",
                   )}
                 >
                   {formatCurrencyBRL(pixPrice)}
                 </strong>
-                <span className={cn("mt-0.5 block font-medium text-black/48", isCompactRelated ? "text-xs" : "text-sm")}>
+                <span className={cn("mt-0.5 block font-medium text-white/50", isCompactRelated ? "text-xs" : "text-sm")}>
                   por m2
                 </span>
               </div>
               <span
                 className={cn(
-                  "shrink-0 rounded-full bg-ink font-semibold uppercase tracking-[0.14em] text-white",
-                  isCompactRelated ? "px-2 py-1 text-[0.58rem]" : "px-3 py-1.5 text-[0.68rem] tracking-[0.18em] shadow-[0_14px_30px_rgba(15,15,15,0.16)]",
+                  "shrink-0 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-white shadow-[0_8px_20px_rgba(236,72,153,0.35)]",
+                  !isCompactRelated && "px-3 py-1.5 text-[0.68rem] tracking-[0.18em]",
                 )}
               >
                 15% OFF
@@ -338,7 +351,7 @@ export function ProductCard({
 
             <div
               className={cn(
-                "flex flex-wrap items-center justify-between gap-2 border-t border-black/8 text-black/58",
+                "flex flex-wrap items-center justify-between gap-2 border-t border-white/8 text-white/55",
                 isCompactRelated ? "mt-2 pt-2 text-[0.7rem] sm:text-xs" : "mt-4 gap-3 pt-4 text-sm",
               )}
             >
@@ -348,7 +361,7 @@ export function ProductCard({
           </div>
 
           {!isCompactRelated ? (
-            <div className="rounded-[22px] border border-cyan/16 bg-cyan/[0.06] px-4 py-3 text-[0.8rem] font-medium text-black/64">
+            <div className="rounded-[22px] border border-cyan/25 bg-cyan/[0.08] px-4 py-3 text-[0.8rem] font-medium text-white/75">
               Compra guiada: configuracao clara, validacao da arte e fechamento com mais seguranca.
             </div>
           ) : null}
@@ -357,7 +370,7 @@ export function ProductCard({
             <Link
               href={`/products/${product.slug}`}
               className={cn(
-                "btn btn-primary focus-ring",
+                "focus-ring inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-sm font-semibold text-white shadow-[0_8px_28px_rgba(236,72,153,0.35)] transition hover:brightness-110",
                 isHomeVariant || isCompactRelated ? "w-full justify-center" : "flex-1",
                 isCompactRelated && "min-h-[44px] py-2.5 text-sm",
               )}

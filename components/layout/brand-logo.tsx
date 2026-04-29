@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import logoHeaderImage from "@/public/logo header.png";
 import { cn } from "@/lib/utils";
+
+const LOGO_SRC = "/logo header (2).png";
+const LOGO_WIDTH = 1536;
+const LOGO_HEIGHT = 1024;
 
 const sizeMap = {
   sm: {
@@ -33,10 +36,13 @@ export function BrandLogo({
   className,
   priority = false,
   size = "md",
+  onDark = false,
 }: {
   className?: string;
   priority?: boolean;
   size?: BrandLogoSize;
+  /** Fundo escuro: reduz caixa branca em PNG sem canal alpha. */
+  onDark?: boolean;
 }) {
   const variant = sizeMap[size];
 
@@ -47,13 +53,17 @@ export function BrandLogo({
       className={cn("inline-flex shrink-0 items-center transition hover:opacity-90", className)}
     >
       <Image
-        src={logoHeaderImage}
-        alt="Prismarq Comunicacao Visual"
-        width={logoHeaderImage.width}
-        height={logoHeaderImage.height}
+        src={LOGO_SRC}
+        alt="Prismarq Comunicação Visual"
+        width={LOGO_WIDTH}
+        height={LOGO_HEIGHT}
         priority={priority}
         sizes={variant.sizes}
-        className={cn("max-w-full select-none object-contain object-left", variant.imageClassName)}
+        className={cn(
+          "max-w-full select-none object-contain object-left",
+          variant.imageClassName,
+          onDark && "mix-blend-lighten contrast-[1.06] [isolation:isolate]",
+        )}
       />
     </Link>
   );

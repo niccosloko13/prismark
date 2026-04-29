@@ -31,7 +31,7 @@ export function ClientOrdersPanel({ orders }: { orders: OrderRecord[] }) {
       </div>
 
       {filteredOrders.length === 0 ? (
-        <div className="panel p-8 text-center text-black/62">
+        <div className="panel p-8 text-center text-white/65">
           Nenhum pedido encontrado para o filtro selecionado.
         </div>
       ) : (
@@ -41,38 +41,38 @@ export function ClientOrdersPanel({ orders }: { orders: OrderRecord[] }) {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="display-title text-2xl font-semibold tracking-tight">{order.productName}</h3>
-                    <StatusPill status={order.status} />
+                    <h3 className="display-title text-2xl font-semibold tracking-tight text-white">{order.productName}</h3>
+                    <StatusPill status={order.status} tone="dark" />
                   </div>
-                  <p className="mt-2 text-sm text-black/62">
+                  <p className="mt-2 text-sm text-white/65">
                     {order.id} · criado em {formatDateBR(order.createdAt)}
                   </p>
                 </div>
-                <strong className="text-xl font-semibold text-ink">{formatCurrencyBRL(order.value)}</strong>
+                <strong className="text-xl font-semibold text-white">{formatCurrencyBRL(order.value)}</strong>
               </div>
               <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <div className="surface-soft p-4 text-sm">
                   <span className="label-kicker block">medidas</span>
-                  <strong className="mt-2 block text-base text-ink">
+                  <strong className="mt-2 block text-base text-white">
                     {order.measures.width} x {order.measures.height} cm
                   </strong>
                 </div>
                 <div className="surface-soft p-4 text-sm">
                   <span className="label-kicker block">quantidade</span>
-                  <strong className="mt-2 block text-base text-ink">{order.measures.quantity} un.</strong>
+                  <strong className="mt-2 block text-base text-white">{order.measures.quantity} un.</strong>
                 </div>
                 <div className="surface-soft p-4 text-sm">
                   <span className="label-kicker block">material</span>
-                  <strong className="mt-2 block text-base text-ink">{order.material}</strong>
+                  <strong className="mt-2 block text-base text-white">{order.material}</strong>
                 </div>
                 <div className="surface-soft p-4 text-sm">
                   <span className="label-kicker block">prazo</span>
-                  <strong className="mt-2 block text-base text-ink">{order.deadline}</strong>
+                  <strong className="mt-2 block text-base text-white">{order.deadline}</strong>
                 </div>
               </div>
-              {order.notes ? <p className="mt-4 text-sm leading-6 text-black/66">{order.notes}</p> : null}
+              {order.notes ? <p className="mt-4 text-sm leading-6 text-white/68">{order.notes}</p> : null}
               {order.statusHistory?.[0] ? (
-                <p className="mt-3 text-sm text-black/56">
+                <p className="mt-3 text-sm text-white/58">
                   Última movimentação: {order.statusHistory[0].changedByName ?? "Sistema"} em{" "}
                   {formatDateBR(order.statusHistory[0].createdAt)}
                 </p>
