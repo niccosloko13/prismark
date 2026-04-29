@@ -119,11 +119,14 @@ function DrawerLink({
 
 function HeaderBrand({
   mobile = false,
+  mobilePremium = false,
   priority = false,
   onClick,
   homePremium = false,
 }: {
   mobile?: boolean;
+  /** Header mobile storefront: logo grande alinhado ao mockup (só com `mobile`). */
+  mobilePremium?: boolean;
   priority?: boolean;
   onClick?: () => void;
   homePremium?: boolean;
@@ -135,7 +138,11 @@ function HeaderBrand({
       aria-label="Ir para a home da Prismarq"
       className={cn(
         "focus-ring inline-flex max-w-full shrink-0 items-center rounded-none border-none bg-transparent shadow-none transition hover:opacity-90",
-        mobile ? "max-w-[min(220px,calc(100vw-6.75rem))]" : "max-w-[280px]",
+        mobile && mobilePremium
+          ? "min-w-0 max-w-[min(230px,calc(100vw-9.75rem))] flex-1"
+          : mobile
+            ? "max-w-[min(220px,calc(100vw-6.75rem))]"
+            : "max-w-[280px]",
       )}
     >
       <Image
@@ -144,13 +151,21 @@ function HeaderBrand({
         width={1536}
         height={1024}
         priority={priority}
-        sizes={mobile ? "(max-width: 640px) 220px, 240px" : "(max-width: 1280px) 260px, 280px"}
+        sizes={
+          mobile && mobilePremium
+            ? "(max-width: 360px) 176px, (max-width: 430px) 210px, 230px"
+            : mobile
+              ? "(max-width: 640px) 220px, 240px"
+              : "(max-width: 1280px) 260px, 280px"
+        }
         className={cn(
           "h-auto border-none bg-transparent object-contain object-left shadow-none",
           homePremium ? "mix-blend-lighten contrast-[1.06] [isolation:isolate]" : "",
-          mobile
-            ? "max-h-8 w-auto max-w-[min(200px,calc(100vw-7rem))] sm:max-h-9 sm:max-w-[220px]"
-            : "w-[230px] sm:w-[250px] lg:w-[260px] xl:w-[280px]",
+          mobile && mobilePremium
+            ? "max-h-[52px] w-[min(230px,calc(100vw-9.75rem))] min-w-[168px] sm:max-h-[54px]"
+            : mobile
+              ? "max-h-8 w-auto max-w-[min(200px,calc(100vw-7rem))] sm:max-h-9 sm:max-w-[220px]"
+              : "w-[230px] sm:w-[250px] lg:w-[260px] xl:w-[280px]",
         )}
       />
     </Link>
@@ -206,20 +221,41 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
       <header className={cn("relative z-40 w-full max-w-full", !isStorefront && "border-b border-[#E5E7EB]")}>
         <div
           className={cn(
-            "relative w-full max-w-full overflow-hidden rounded-[20px] px-3 py-2 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7",
+            "relative w-full max-w-full overflow-x-hidden rounded-[20px] px-3 py-2 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7",
             isStorefront
-              ? "border border-white/8 bg-[#05070d]/95 shadow-[0_24px_80px_rgba(0,0,0,0.45),0_0_56px_rgba(168,85,247,0.08)] backdrop-blur-xl"
+              ? "border border-white/8 bg-[#05070d]/95 shadow-[0_24px_80px_rgba(0,0,0,0.45),0_0_56px_rgba(168,85,247,0.08)] backdrop-blur-xl max-lg:border-white/10 max-lg:bg-[#05060b] max-lg:px-5 max-lg:py-2.5 max-lg:shadow-[0_20px_56px_rgba(0,0,0,0.55),0_0_48px_rgba(168,85,247,0.1),inset_0_1px_0_rgba(255,255,255,0.05)] max-lg:ring-1 max-lg:ring-fuchsia-500/10"
               : "header-home-shell border border-[#E5E7EB] bg-[#ECEBED]",
           )}
         >
           <div className="relative lg:hidden">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="flex min-w-0 flex-1 items-center">
-                <HeaderBrand mobile priority homePremium={isStorefront} />
+            <div
+              className={cn(
+                "flex max-w-full items-center overflow-x-hidden",
+                isStorefront
+                  ? "min-h-[92px] max-h-[116px] justify-between gap-2.5 sm:gap-3"
+                  : "gap-2 sm:gap-3",
+              )}
+            >
+              <div className={cn("flex min-w-0 items-center", isStorefront && "min-h-0 flex-1 pr-0.5")}>
+                <HeaderBrand
+                  mobile
+                  mobilePremium={isStorefront}
+                  priority
+                  homePremium={isStorefront}
+                />
               </div>
 
-              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 self-center">
-                <CartNavLink compact headerOnDark={isStorefront} className="shrink-0" />
+              <div
+                className={cn(
+                  "flex shrink-0 items-center self-center",
+                  isStorefront ? "gap-2.5 sm:gap-3" : "gap-1.5 sm:gap-2",
+                )}
+              >
+                {isStorefront ? (
+                  <CartNavLink mobileHeaderPill headerOnDark className="shrink-0" />
+                ) : (
+                  <CartNavLink compact headerOnDark={isStorefront} className="shrink-0" />
+                )}
                 <button
                   type="button"
                   aria-expanded={isMobileMenuOpen}
@@ -227,10 +263,10 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
                   onClick={() => setIsMobileMenuOpen((current) => !current)}
                   className={cn(
-                    "focus-ring inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition sm:h-11 sm:w-11",
+                    "focus-ring inline-flex shrink-0 items-center justify-center rounded-full border transition",
                     isStorefront
-                      ? "border-white/15 bg-white/5 text-white hover:bg-white/10"
-                      : "border-[#E5E7EB] bg-[#F3F4F6] text-ink hover:bg-white",
+                      ? "h-14 w-14 border-white/18 bg-white/[0.07] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md hover:border-white/28 hover:bg-white/[0.11] max-lg:[&_svg]:h-[1.35rem] max-lg:[&_svg]:w-[1.35rem]"
+                      : "h-10 w-10 border-[#E5E7EB] bg-[#F3F4F6] text-ink hover:bg-white sm:h-11 sm:w-11",
                   )}
                 >
                   {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}

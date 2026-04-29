@@ -26,14 +26,39 @@ export function CartNavLink({
   className,
   compact = false,
   headerOnDark = false,
+  /** Pill do mockup mobile: ícone | divisor | contador, altura ~52–56px. Só use no header mobile storefront. */
+  mobileHeaderPill = false,
 }: {
   className?: string;
   compact?: boolean;
   /** Header da home escura: contraste no estado vazio. */
   headerOnDark?: boolean;
+  mobileHeaderPill?: boolean;
 }) {
   const { itemCount, isReady } = useCart();
   const hasItems = isReady && itemCount > 0;
+
+  if (mobileHeaderPill && headerOnDark) {
+    return (
+      <Link
+        href="/cart"
+        className={cn(
+          "focus-ring inline-flex h-[52px] max-h-[60px] shrink-0 items-center gap-2.5 rounded-full border border-white/18 bg-white/[0.07] px-3.5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md transition hover:border-white/28 hover:bg-white/[0.1]",
+          hasItems && "border-fuchsia-400/25 shadow-[0_0_24px_rgba(168,85,247,0.18),inset_0_1px_0_rgba(255,255,255,0.08)]",
+          className,
+        )}
+        aria-label={`Abrir carrinho com ${isReady ? itemCount : 0} item(ns)`}
+      >
+        <span className="inline-flex h-7 w-7 items-center justify-center text-white [&>svg]:h-[1.15rem] [&>svg]:w-[1.15rem]">
+          <CartIcon />
+        </span>
+        <span className="h-5 w-px shrink-0 bg-white/22" aria-hidden />
+        <span className="min-w-[1.25rem] text-center text-[0.9375rem] font-semibold tabular-nums text-white">
+          {isReady ? itemCount : "0"}
+        </span>
+      </Link>
+    );
+  }
 
   return (
     <Link
