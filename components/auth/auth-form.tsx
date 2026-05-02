@@ -4,25 +4,25 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 
-import { defaultPostAuthPath } from "@/lib/safe-return-to";
+import { defaultPostAuthPath, sanitizeReturnTo } from "@/lib/safe-return-to";
 
 type AuthMode = "login" | "register";
 
 const GOOGLE_AUTH_ERRORS: Record<string, string> = {
-  access_denied: "O acesso com Google foi cancelado antes da conclusÃ£o.",
-  google_access_denied: "O acesso com Google foi cancelado antes da conclusÃ£o.",
-  google_auth_failed: "NÃ£o foi possÃ­vel concluir o login com Google.",
-  google_auth_unavailable: "O login com Google nÃ£o estÃ¡ disponÃ­vel nesta instalaÃ§Ã£o.",
-  google_code_missing: "O Google nÃ£o retornou um cÃ³digo vÃ¡lido para autenticaÃ§Ã£o.",
-  google_discovery_failed: "NÃ£o foi possÃ­vel iniciar o login com Google agora.",
-  google_link_failed: "A conta Google foi validada, mas nÃ£o foi possÃ­vel vinculÃ¡-la.",
-  google_oauth_not_configured: "O login com Google ainda nÃ£o foi configurado no ambiente.",
-  google_profile_refresh_failed: "A conta Google foi validada, mas nÃ£o foi possÃ­vel concluir a sessÃ£o.",
-  google_state_missing: "A sessÃ£o de login com Google expirou. Tente novamente.",
-  google_state_mismatch: "A sessÃ£o de login com Google expirou. Tente novamente.",
-  invalid_google_oauth_state: "A sessÃ£o de login com Google expirou. Tente novamente.",
-  google_nonce_mismatch: "A resposta do Google nÃ£o corresponde a esta sessÃ£o.",
-  google_token_exchange_failed: "NÃ£o foi possÃ­vel concluir a autenticaÃ§Ã£o com Google.",
+  access_denied: "O acesso com Google foi cancelado antes da conclusão.",
+  google_access_denied: "O acesso com Google foi cancelado antes da conclusão.",
+  google_auth_failed: "Não foi possível concluir o login com Google.",
+  google_auth_unavailable: "O login com Google não está disponível nesta instalação.",
+  google_code_missing: "O Google não retornou um código válido para autenticação.",
+  google_discovery_failed: "Não foi possível iniciar o login com Google agora.",
+  google_link_failed: "A conta Google foi validada, mas não foi possível vinculá-la.",
+  google_oauth_not_configured: "O login com Google ainda não foi configurado no ambiente.",
+  google_profile_refresh_failed: "A conta Google foi validada, mas não foi possível concluir a sessão.",
+  google_state_missing: "A sessão de login com Google expirou. Tente novamente.",
+  google_state_mismatch: "A sessão de login com Google expirou. Tente novamente.",
+  invalid_google_oauth_state: "A sessão de login com Google expirou. Tente novamente.",
+  google_nonce_mismatch: "A resposta do Google não corresponde a esta sessão.",
+  google_token_exchange_failed: "Não foi possível concluir a autenticação com Google.",
 };
 
 function GoogleMark() {
@@ -70,9 +70,10 @@ export function AuthForm({
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const authErrorMessage = authErrorCode ? GOOGLE_AUTH_ERRORS[authErrorCode] ?? "NÃ£o foi possÃ­vel concluir a autenticaÃ§Ã£o." : "";
+  const authErrorMessage = authErrorCode ? GOOGLE_AUTH_ERRORS[authErrorCode] ?? "Não foi possível concluir a autenticação." : "";
   const feedbackError = error || authErrorMessage;
-  const googleLoginHref = `/api/auth/google${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`;
+  const safeGoogleReturn = sanitizeReturnTo(returnTo, "client");
+  const googleLoginHref = `/api/auth/google${safeGoogleReturn ? `?returnTo=${encodeURIComponent(safeGoogleReturn)}` : ""}`;
 
   async function handleSubmit(formData: FormData) {
     setError("");

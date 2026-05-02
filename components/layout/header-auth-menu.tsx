@@ -69,7 +69,7 @@ export function HeaderAuthMenu({
   if (session) {
     const label = session.name?.split(" ")[0] ?? "Conta";
     return (
-      <div className="relative" ref={wrapRef}>
+      <div className="relative min-w-0" ref={wrapRef}>
         <button
           type="button"
           className={triggerClass}
@@ -111,7 +111,7 @@ export function HeaderAuthMenu({
   }
 
   return (
-    <div className="relative" ref={wrapRef}>
+    <div className="relative min-w-0" ref={wrapRef}>
       <button
         type="button"
         className={triggerClass}

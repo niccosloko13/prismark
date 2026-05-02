@@ -12,13 +12,13 @@ const passwordSchema = z
   });
 
 export const loginSchema = z.object({
-  email: z.string().email().transform((value) => value.trim().toLowerCase()),
-  password: z.string().min(8).max(100),
+  email: z.string().email({ message: "E-mail inválido." }).transform((value) => value.trim().toLowerCase()),
+  password: z.string().min(8, { message: "Senha deve ter pelo menos 8 caracteres." }).max(100),
 });
 
 export const registerSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  email: z.string().email().transform((value) => value.trim().toLowerCase()),
+  email: z.string().email({ message: "E-mail inválido." }).transform((value) => value.trim().toLowerCase()),
   company: z
     .string()
     .trim()
@@ -29,23 +29,19 @@ export const registerSchema = z.object({
     .string()
     .trim()
     .max(32)
-    .optional()
     .transform((value) => {
-      if (!value) {
-        return "";
-      }
       const digits = value.replace(/\D/g, "");
       if (digits.length >= 8) {
         return value.trim();
       }
-      return "";
+      return "Não informado";
     }),
   password: passwordSchema,
 });
 
 export const googleIdentitySchema = z.object({
   googleSub: z.string().trim().min(1).max(255),
-  email: z.string().email().transform((value) => value.trim().toLowerCase()),
+  email: z.string().email({ message: "E-mail inválido." }).transform((value) => value.trim().toLowerCase()),
   emailVerified: z.literal(true),
   name: z.string().trim().min(1).max(160).optional(),
   picture: z.string().url().optional(),

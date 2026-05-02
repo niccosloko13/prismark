@@ -9,11 +9,10 @@ import { CartNavLink } from "@/components/cart/cart-nav-link";
 import { HeaderAuthMenu, useEncodedReturnTo } from "@/components/layout/header-auth-menu";
 import { HeaderSearch } from "@/components/layout/header-search";
 import { LogoutButton } from "@/components/layout/logout-button";
+import { HEADER_LOGO_SRC } from "@/lib/brand-assets";
 import { companyLinks, companyProfile } from "@/lib/company";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/types";
-
-const HEADER_LOGO_SRC = "/logo header (2).png";
 
 function TinyDot() {
   return <span className="h-1 w-1 rounded-full bg-white/35" aria-hidden />;
@@ -139,9 +138,9 @@ function HeaderBrand({
       className={cn(
         "focus-ring inline-flex max-w-full shrink-0 items-center rounded-none border-none bg-transparent shadow-none transition hover:opacity-90",
         mobile && mobilePremium
-          ? "min-w-0 max-w-[min(230px,calc(100vw-9.75rem))] flex-1"
+          ? "min-w-0 max-w-[min(230px,100%)] flex-1"
           : mobile
-            ? "max-w-[min(220px,calc(100vw-6.75rem))]"
+            ? "min-w-0 max-w-[min(220px,100%)]"
             : "max-w-[280px]",
       )}
     >
@@ -162,9 +161,9 @@ function HeaderBrand({
           "h-auto border-none bg-transparent object-contain object-left shadow-none",
           homePremium ? "mix-blend-lighten contrast-[1.06] [isolation:isolate]" : "",
           mobile && mobilePremium
-            ? "max-h-[52px] w-[min(230px,calc(100vw-9.75rem))] min-w-[168px] sm:max-h-[54px]"
+            ? "max-h-[52px] w-full min-w-0 max-w-[min(230px,100%)] object-left sm:max-h-[54px]"
             : mobile
-              ? "max-h-8 w-auto max-w-[min(200px,calc(100vw-7rem))] sm:max-h-9 sm:max-w-[220px]"
+              ? "max-h-8 w-auto min-w-0 max-w-[min(200px,100%)] sm:max-h-9 sm:max-w-[220px]"
               : "w-[230px] sm:w-[250px] lg:w-[260px] xl:w-[280px]",
         )}
       />
@@ -218,10 +217,10 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
 
   return (
     <>
-      <header className={cn("relative z-40 w-full max-w-full", !isStorefront && "border-b border-[#E5E7EB]")}>
+      <header className={cn("relative z-40 min-w-0 w-full max-w-full", !isStorefront && "border-b border-[#E5E7EB]")}>
         <div
           className={cn(
-            "relative w-full max-w-full overflow-x-hidden rounded-[20px] px-3 py-2 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7",
+            "relative min-w-0 w-full max-w-full rounded-[20px] px-3 py-2 sm:rounded-[28px] sm:px-6 sm:py-3.5 lg:px-7",
             isStorefront
               ? "border border-white/8 bg-[#05070d]/95 shadow-[0_24px_80px_rgba(0,0,0,0.45),0_0_56px_rgba(168,85,247,0.08)] backdrop-blur-xl max-lg:border-white/10 max-lg:bg-[#05060b] max-lg:px-5 max-lg:py-2.5 max-lg:shadow-[0_20px_56px_rgba(0,0,0,0.55),0_0_48px_rgba(168,85,247,0.1),inset_0_1px_0_rgba(255,255,255,0.05)] max-lg:ring-1 max-lg:ring-fuchsia-500/10"
               : "header-home-shell border border-[#E5E7EB] bg-[#ECEBED]",
@@ -230,9 +229,9 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
           <div className="relative lg:hidden">
             <div
               className={cn(
-                "flex max-w-full items-center overflow-x-hidden",
+                "flex max-w-full min-w-0 items-center",
                 isStorefront
-                  ? "min-h-[92px] max-h-[116px] justify-between gap-2.5 sm:gap-3"
+                  ? "min-h-[92px] justify-between gap-2.5 sm:gap-3"
                   : "gap-2 sm:gap-3",
               )}
             >
@@ -275,25 +274,34 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
             </div>
           </div>
 
-          <div className="relative hidden lg:grid lg:grid-cols-[auto,minmax(0,1fr)] lg:items-center lg:gap-6 xl:gap-8">
-            <HeaderBrand priority homePremium={isStorefront} />
+          <div className="relative hidden min-w-0 lg:grid lg:grid-cols-[auto,minmax(0,1fr)] lg:items-center lg:gap-6 xl:gap-8">
+            <div className="min-w-0 shrink-0">
+              <HeaderBrand priority homePremium={isStorefront} />
+            </div>
 
             <div className="flex min-w-0 flex-col gap-3">
-              <div className={cn("flex flex-wrap items-center justify-between gap-x-4 gap-y-2", !isStorefront && "rounded-2xl border border-black/8 bg-white/80 px-3 py-2.5")}>
+              <div className={cn("flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2", !isStorefront && "rounded-2xl border border-black/8 bg-white/80 px-3 py-2.5")}>
                 <div
                   className={cn(
-                    "flex flex-wrap items-center gap-2.5 text-[0.72rem] font-semibold",
+                    "flex min-w-0 flex-wrap items-center gap-2.5 text-[0.72rem] font-semibold",
                     isStorefront ? "text-white/80" : "text-black/52",
                   )}
                 >
-                  <a href={companyLinks.phone} className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white" : "border-black/8 bg-white/88 hover:border-black/14 hover:text-ink")}>
+                  <a href={companyLinks.phone} className={cn("inline-flex max-w-full shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 transition", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white" : "border-black/8 bg-white/88 hover:border-black/14 hover:text-ink")}>
                     <span aria-hidden>✆</span>
                     {companyProfile.phoneDisplay}
                   </a>
                   <TinyDot />
-                  <a href={companyLinks.email} className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white" : "border-black/8 bg-white/88 hover:border-black/14 hover:text-ink")}>
+                  <a
+                    href={companyLinks.email}
+                    className={cn(
+                      "inline-flex min-w-0 max-w-[min(100%,14rem)] items-center gap-1.5 truncate rounded-full border px-3 py-1.5 transition sm:max-w-[min(100%,18rem)]",
+                      isStorefront ? "border-white/8 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white" : "border-black/8 bg-white/88 hover:border-black/14 hover:text-ink",
+                    )}
+                    title={companyProfile.email ?? undefined}
+                  >
                     <span aria-hidden>✉</span>
-                    {companyProfile.email}
+                    <span className="truncate">{companyProfile.email}</span>
                   </a>
                   <TinyDot />
                   <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5", isStorefront ? "border-white/8 bg-white/[0.03] text-white/70" : "border-black/8 bg-white/88")}>
@@ -312,7 +320,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   isStorefront ? "border-white/[0.08]" : "border-[#E5E7EB]",
                 )}
               >
-                <nav className="flex min-w-0 flex-wrap items-center gap-1.5">
+                <nav className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
                   <HeaderNavLink href="/" homeUnderline={isStorefront} active={isHomeActive}>
                     {isStorefront ? "Início" : "Home"}
                   </HeaderNavLink>
@@ -362,36 +370,41 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   </HeaderNavLink>
                 </nav>
 
-                <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
-                  <HeaderSearch className="w-[18rem] xl:w-[20rem]" tone={isStorefront ? "dark" : "light"} />
-                  <div className={cn("hidden h-8 w-px xl:block", isStorefront ? "bg-white/12" : "bg-black/8")} />
-                  <CartNavLink headerOnDark={isStorefront} />
-                  {isAdmin ? (
-                    <LogoutButton
-                      className={
-                        isStorefront
-                          ? "!border-white/20 !bg-transparent !text-white hover:!bg-white/10"
-                          : undefined
-                      }
-                    />
-                  ) : (
-                    <div className="flex flex-wrap items-center justify-end gap-2">
-                      <HeaderAuthMenu session={session} isStorefront={isStorefront} isAdmin={false} />
-                      {!session ? (
-                        <Link
-                          href="/order"
-                          className={cn(
-                            "focus-ring inline-flex min-h-[44px] items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition",
-                            isStorefront
-                              ? "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_30px_rgba(168,85,247,0.38),0_0_32px_rgba(56,189,248,0.2)] hover:scale-[1.03] hover:brightness-110"
-                              : "btn btn-primary",
-                          )}
-                        >
-                          Pedir agora
-                        </Link>
-                      ) : null}
-                    </div>
-                  )}
+                <div className="flex min-w-0 w-full max-w-full flex-wrap items-center justify-end gap-2 lg:w-auto lg:max-w-[min(40rem,50%)] xl:max-w-[min(48rem,58%)] 2xl:max-w-none">
+                  <HeaderSearch
+                    className="w-full min-w-0 max-w-[20rem] shrink sm:max-w-[16rem] lg:max-w-[14rem] xl:max-w-[16rem] 2xl:max-w-[18rem]"
+                    tone={isStorefront ? "dark" : "light"}
+                  />
+                  <div className={cn("hidden h-8 w-px shrink-0 xl:block", isStorefront ? "bg-white/12" : "bg-black/8")} />
+                  <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-end gap-2">
+                    <CartNavLink headerOnDark={isStorefront} className="shrink-0" />
+                    {isAdmin ? (
+                      <LogoutButton
+                        className={
+                          isStorefront
+                            ? "!border-white/20 !bg-transparent !text-white hover:!bg-white/10"
+                            : undefined
+                        }
+                      />
+                    ) : (
+                      <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+                        <HeaderAuthMenu session={session} isStorefront={isStorefront} isAdmin={false} />
+                        {!session ? (
+                          <Link
+                            href="/order"
+                            className={cn(
+                              "focus-ring inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full px-3 py-2.5 text-sm font-semibold transition sm:px-4",
+                              isStorefront
+                                ? "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_30px_rgba(168,85,247,0.38),0_0_32px_rgba(56,189,248,0.2)] hover:scale-[1.03] hover:brightness-110"
+                                : "btn btn-primary",
+                            )}
+                          >
+                            Pedir agora
+                          </Link>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -416,7 +429,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
         <aside
           id="mobile-drawer"
           className={cn(
-            "absolute inset-y-0 right-0 flex w-full max-w-[22rem] flex-col border-l px-4 pb-6 pt-4 shadow-[0_26px_72px_rgba(0,0,0,0.45)] transition-transform duration-300 ease-out sm:px-5 sm:pt-5",
+            "absolute inset-y-0 right-0 flex max-h-[100dvh] w-full max-w-[22rem] flex-col overflow-hidden border-l shadow-[0_26px_72px_rgba(0,0,0,0.45)] transition-transform duration-300 ease-out",
             isStorefront
               ? "border-white/8 bg-[#05070d]/96 backdrop-blur-xl"
               : "border-transparent bg-white shadow-[0_26px_72px_rgba(15,15,15,0.18)]",
@@ -424,36 +437,38 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
           )}
           aria-hidden={!isMobileMenuOpen}
         >
-          <div
-            className={cn(
-              "flex items-center justify-between gap-3 border-b pb-4",
-              isStorefront ? "border-white/8" : "border-black/8",
-            )}
-          >
-            <HeaderBrand mobile onClick={() => setIsMobileMenuOpen(false)} />
-            <button
-              type="button"
-              aria-label="Fechar menu"
-              onClick={() => setIsMobileMenuOpen(false)}
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-6 pt-4 sm:px-5 sm:pt-5">
+            <div
               className={cn(
-                "focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border transition",
-                isStorefront
-                  ? "border-white/15 bg-white/[0.06] text-white hover:bg-white/10"
-                  : "border-black/10 bg-white text-ink hover:bg-black/[0.03]",
+                "flex shrink-0 items-center justify-between gap-3 border-b pb-4",
+                isStorefront ? "border-white/8" : "border-black/8",
               )}
             >
-              <CloseIcon />
-            </button>
-          </div>
+              <HeaderBrand mobile onClick={() => setIsMobileMenuOpen(false)} />
+              <button
+                type="button"
+                aria-label="Fechar menu"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={cn(
+                  "focus-ring inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition",
+                  isStorefront
+                    ? "border-white/15 bg-white/[0.06] text-white hover:bg-white/10"
+                    : "border-black/10 bg-white text-ink hover:bg-black/[0.03]",
+                )}
+              >
+                <CloseIcon />
+              </button>
+            </div>
 
-          <HeaderSearch
-            mobile
-            className="mt-5"
-            tone={isStorefront ? "dark" : "light"}
-            onNavigate={() => setIsMobileMenuOpen(false)}
-          />
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
+              <HeaderSearch
+                mobile
+                className="mt-5"
+                tone={isStorefront ? "dark" : "light"}
+                onNavigate={() => setIsMobileMenuOpen(false)}
+              />
 
-          <div className="mt-5 flex flex-col gap-3">
+              <div className="mt-5 flex flex-col gap-3">
             <DrawerLink href="/" storefront={isStorefront}>
               Início
             </DrawerLink>
@@ -534,23 +549,25 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
             </a>
           </div>
 
-          {session ? (
-            <div className="mt-auto pt-5">
-              <LogoutButton className="w-full justify-center py-3" />
+              {session ? (
+                <div className="mt-6 pt-2">
+                  <LogoutButton className="w-full justify-center py-3" />
+                </div>
+              ) : (
+                <div className="mt-6 pt-2">
+                  <Link
+                    href={companyLinks.whatsapp}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="btn btn-secondary focus-ring w-full justify-center py-3"
+                  >
+                    Falar no WhatsApp
+                  </Link>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="mt-auto pt-5">
-              <Link
-                href={companyLinks.whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="btn btn-secondary focus-ring w-full justify-center py-3"
-              >
-                Falar no WhatsApp
-              </Link>
-            </div>
-          )}
+          </div>
         </aside>
       </div>
     </>

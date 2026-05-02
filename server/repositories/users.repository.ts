@@ -134,8 +134,8 @@ export const usersRepository = {
     const id = `usr_${crypto.randomUUID()}`;
     const result = await executor.query<UserRow>(
       `
-        INSERT INTO users (id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        INSERT INTO users (id, username, name, email, company, phone, role, auth_provider, google_sub, avatar_url, password_hash, is_active)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE)
         RETURNING ${USER_SELECT}
       `,
       [

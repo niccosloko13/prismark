@@ -31,6 +31,7 @@ interface OrderRow extends QueryResultRow {
   status: OrderStatus;
   notes: string | null;
   admin_notes?: string | null;
+  cpf: string | null;
   created_at: Date | string;
   updated_at: Date | string;
   file_id: string | null;
@@ -90,6 +91,7 @@ function mapOrder(row: OrderRow): OrderRecord {
     clientName: row.client_name,
     clientEmail: row.client_email,
     clientPhone: row.client_phone,
+    customerCpf: row.cpf ?? null,
     productSlug: row.product_slug,
     productName: row.product_name,
     measures: {
@@ -156,6 +158,7 @@ async function fetchOrders(whereSql: string, params: unknown[], executor: Querya
         o.status,
         o.notes,
         o.admin_notes,
+        o.cpf,
         o.created_at,
         o.updated_at,
         f.id AS file_id,
@@ -269,6 +272,7 @@ export const ordersRepository = {
       valueTotal: number;
       status: OrderStatus;
       notes?: string | null;
+      cpf?: string | null;
     },
     executor: Queryable = { query },
   ) {
@@ -276,9 +280,9 @@ export const ordersRepository = {
       `
         INSERT INTO orders (
           id, client_id, product_slug, product_name, width_cm, height_cm, area_m2, quantity,
-          material, finishing, deadline, value_total, status, notes
+          material, finishing, deadline, value_total, status, notes, cpf
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       `,
       [
         input.id,
@@ -295,6 +299,7 @@ export const ordersRepository = {
         input.valueTotal,
         input.status,
         input.notes ?? null,
+        input.cpf ?? null,
       ],
     );
 

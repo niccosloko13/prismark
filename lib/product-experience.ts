@@ -1,7 +1,22 @@
-import { getProductBySlug, getProductConfiguration } from "@/lib/catalog";
+import { getActiveProductSnapshotBySlug, type ActiveProduct } from "@/lib/active-product-snapshot";
+import { PRISMARQ_CUSTOM_FORMAT_ID } from "@/lib/custom-product-size";
+import { getProductConfiguration } from "@/lib/catalog";
 import { formatCurrencyBRL, roundTo } from "@/lib/utils";
 import { getDefaultMeasuresForProduct, getPreferredDeadlineLabel } from "@/lib/order-presets";
 import type { Product } from "@/types";
+
+const storeExperienceBySlug = new Map<string, ProductExperience>();
+
+export function setStoreProductExperiences(entries: Array<{ slug: string; experience: ProductExperience }>) {
+  storeExperienceBySlug.clear();
+  for (const { slug, experience } of entries) {
+    storeExperienceBySlug.set(slug.trim().toLowerCase(), experience);
+  }
+}
+
+export function clearStoreProductExperiences() {
+  storeExperienceBySlug.clear();
+}
 
 export type ProductAccent = "cyan" | "magenta" | "yellow";
 
@@ -590,7 +605,25 @@ function inferKindLabel(kind: string) {
   }
 }
 
+function isStoreBackedActiveProduct(product: Product): product is ActiveProduct {
+  return "storeProductId" in product && Boolean((product as ActiveProduct).storeProductId);
+}
+
+/**
+ * Monta a experiência do configurador. Produtos de `store_products` **sempre** usam a experiência
+ * persistida no payload (mapa `storeExperienceBySlug` ou, em último caso, `storeExperience` no objeto).
+ */
 export function buildProductExperience(product: Product): ProductExperience {
+  const storeKey = product.slug.trim().toLowerCase();
+  const stored = storeExperienceBySlug.get(storeKey);
+  if (stored) {
+    return stored;
+  }
+
+  if (isStoreBackedActiveProduct(product) && product.storeExperience) {
+    return product.storeExperience;
+  }
+
   const config = getProductConfiguration(product.slug);
 
   if (config) {
@@ -644,14 +677,49 @@ export function buildProductExperience(product: Product): ProductExperience {
   };
 }
 
-export function getProductExperience(slug: string) {
-  const product = getProductBySlug(slug);
+/** Experiência para produtos cadastrados via admin (sem `productConfigurations` estático). */
+export function buildStoreProductExperienceFromProduct(
+  product: Product,
+  overrides: {
+    gallery: ProductGalleryItem[];
+    formats: ProductFormatOption[];
+    addons: ProductAddonService[];
+  },
+): ProductExperience {
+  const kind = inferVisualKind(product);
+  const colors = buildColors(product);
+  const enhancements = buildEnhancements(product);
+  const models = buildModels(product, overrides.formats, colors, enhancements);
 
-  if (!product) {
+  return {
+    rating: {
+      value: product.featured ? 4.9 : 4.8,
+      reviews: product.featured ? 126 : 89,
+      caption: `${inferKindLabel(kind)} com operação pronta para fechamento`,
+    },
+    gallery: overrides.gallery,
+    models,
+    formats: overrides.formats,
+    colors,
+    enhancements,
+    addons: overrides.addons,
+    specs: buildSpecs(product),
+    downloads: buildDownloads(product),
+    shipping: {
+      placeholder: "Use o CEP do destino para estimar entrega, retirada ou logística regional.",
+      note: "A estimativa combina região do CEP e volume atual do pedido para orientar o fechamento.",
+    },
+    quantityTiers: buildQuantityTiers(product),
+  };
+}
+
+export function getProductExperience(slug: string) {
+  const active = getActiveProductSnapshotBySlug(slug);
+  if (!active) {
     return null;
   }
 
-  return buildProductExperience(product);
+  return buildProductExperience(active);
 }
 
 export function getDefaultSelection(product: Product, experience: ProductExperience): ProductSelectionState {
@@ -673,7 +741,16 @@ export function getDefaultSelection(product: Product, experience: ProductExperie
   };
 }
 
-export function getSelectedFormat(experience: ProductExperience, selection: ProductSelectionState) {
+export function getSelectedFormat(experience: ProductExperience, selection: ProductSelectionState): ProductFormatOption {
+  if (selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID) {
+    return {
+      id: PRISMARQ_CUSTOM_FORMAT_ID,
+      label: "Tamanho personalizado",
+      description: "",
+      width: selection.width,
+      height: selection.height,
+    };
+  }
   return experience.formats.find((item) => item.id === selection.formatId) ?? experience.formats[0];
 }
 
@@ -700,9 +777,14 @@ export function buildSelectionNotes(product: Product, experience: ProductExperie
   const enhancement = getSelectedEnhancement(experience, selection);
   const addons = getSelectedAddons(experience, selection);
 
+  const formatLine =
+    selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID
+      ? `Tamanho personalizado: ${selection.width} x ${selection.height} cm`
+      : `Formato: ${format.label} (${selection.width} x ${selection.height} cm)`;
+
   return [
     `Modelo: ${model.label}`,
-    `Formato: ${format.label} (${selection.width} x ${selection.height} cm)`,
+    formatLine,
     `Cor: ${color.label}`,
     `Enobrecimento: ${enhancement.label}`,
     `Material: ${selection.material}`,
@@ -733,9 +815,14 @@ export function formatSelectionLabel(experience: ProductExperience, selection: P
   const color = getSelectedColor(experience, selection);
   const enhancement = getSelectedEnhancement(experience, selection);
 
+  const formatSummary =
+    selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID
+      ? `Tamanho personalizado · ${selection.width} x ${selection.height} cm`
+      : `${format.label} · ${selection.width} x ${selection.height} cm`;
+
   return {
     model: model.label,
-    format: `${format.label} · ${selection.width} x ${selection.height} cm`,
+    format: formatSummary,
     color: color.label,
     enhancement: enhancement.label,
   };

@@ -1,6 +1,25 @@
 import { buildProductConfiguration } from "@/lib/product-configuration";
 import type { Product, ProductConfiguration } from "@/types";
 
+const dynamicCatalogBySlug = new Map<string, Product>();
+
+/** Sincronizado a partir de `getActiveProducts` (vitória + overrides). */
+export function setDynamicCatalogFromActiveProducts(list: Product[]) {
+  dynamicCatalogBySlug.clear();
+  for (const p of list) {
+    dynamicCatalogBySlug.set(p.slug.trim().toLowerCase(), p);
+  }
+}
+
+export function clearDynamicCatalogFromActiveProducts() {
+  dynamicCatalogBySlug.clear();
+}
+
+export function isStaticCatalogSlug(slug: string) {
+  const key = slug.trim().toLowerCase();
+  return products.some((p) => p.slug === key);
+}
+
 const fastLane = [
   { label: "Expresso · 2 dias", days: 2, multiplier: 1.22 },
   { label: "Standard · 4 dias", days: 4, multiplier: 1 },
@@ -1004,10 +1023,19 @@ export function createFallbackProductFromSlug(slug: string): Product {
   };
 }
 
+/**
+ * Resolução legada (catálogo estático + mapa dinâmico em memória).
+ * Na vitrine, preferir `getActiveProductBySlug` / `getActiveProductSnapshotBySlug` em `@/lib/active-products` e `@/lib/active-product-snapshot`.
+ */
 export function getProductBySlug(slug: string) {
   const normalizedSlug = slug.trim().toLowerCase();
   if (!normalizedSlug) {
     return null;
+  }
+
+  const fromActive = dynamicCatalogBySlug.get(normalizedSlug);
+  if (fromActive) {
+    return fromActive;
   }
 
   return products.find((product) => product.slug === normalizedSlug) ?? createFallbackProductFromSlug(normalizedSlug);

@@ -162,6 +162,12 @@ export function ProductSpecs({
   specs: Array<{ label: string; value: string }>;
   attachBelowGallery?: boolean;
 }) {
+  const filled = specs.filter((item) => item.label?.trim() && item.value?.trim());
+
+  if (filled.length === 0) {
+    return null;
+  }
+
   return (
     <section
       className={cn(
@@ -171,24 +177,73 @@ export function ProductSpecs({
       )}
     >
       <div className="max-w-3xl border-b border-white/8 pb-2 sm:pb-3">
-        <p className="label-kicker text-[0.64rem]">Especificacoes</p>
+        <p className="label-kicker text-[0.64rem]">Informações técnicas</p>
         <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:mt-2 sm:text-xl">
-          Ficha tecnica resumida
+          Detalhes do produto
         </h2>
         <p className="mt-1.5 text-[0.8125rem] leading-snug text-white/65 sm:text-sm sm:leading-6">
-          Producao, acabamento e aprovacao em um unico bloco.
+          Dados objetivos para você decidir com segurança — sem tabelas pesadas.
         </p>
       </div>
 
-      <div className="mt-3 overflow-hidden rounded-[14px] border border-white/8 bg-white/[0.04] backdrop-blur-xl sm:rounded-[18px]">
-        <dl className="divide-y divide-white/[0.08]">
-          {specs.map((item) => (
-            <div key={item.label} className="grid gap-0.5 px-2.5 py-2 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)] sm:gap-3 sm:px-3 sm:py-2.5">
-              <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/50 sm:pt-0.5">{item.label}</dt>
-              <dd className="text-[0.8125rem] font-medium leading-snug text-white/80 sm:text-sm sm:leading-6">{item.value}</dd>
+      <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {filled.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-[18px] border border-white/10 bg-white/[0.04] px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+          >
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/50">{item.label}</p>
+            <p className="mt-1.5 text-sm font-medium leading-relaxed text-white/88">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function ProductInUseGallery({
+  items,
+  productName,
+}: {
+  items: ProductGalleryItem[];
+  productName: string;
+}) {
+  if (items.length < 2) {
+    return null;
+  }
+
+  return (
+    <section id="veja-em-uso" className="scroll-mt-28 rounded-[20px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_20px_56px_rgba(0,0,0,0.32)] backdrop-blur-xl sm:rounded-[24px] sm:p-4 lg:p-5">
+      <div className="max-w-3xl border-b border-white/8 pb-2 sm:pb-3">
+        <p className="label-kicker text-[0.64rem]">Contexto real</p>
+        <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:text-xl">Veja este produto em uso</h2>
+        <p className="mt-1.5 text-[0.8125rem] leading-snug text-white/65 sm:text-sm sm:leading-6">
+          Imagens do catálogo em aplicação — mesmas peças que você está configurando.
+        </p>
+      </div>
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="overflow-hidden rounded-[18px] border border-white/10 bg-[#070a12]/80 shadow-[0_12px_32px_rgba(0,0,0,0.35)]"
+          >
+            <div className="relative aspect-[4/3] w-full">
+              <ProductRasterPicture
+                src={item.src}
+                srcCandidates={item.srcCandidates}
+                alt={`${productName} — ${item.title}`}
+                fill
+                unoptimized
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-contain p-3"
+              />
             </div>
-          ))}
-        </dl>
+            <div className="border-t border-white/8 px-3 py-2.5">
+              <p className="text-sm font-semibold text-white">{item.title}</p>
+              <p className="mt-0.5 line-clamp-2 text-[0.78rem] text-white/60">{item.subtitle}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -199,15 +254,19 @@ export function TemplateDownloads({
 }: {
   downloads: ProductDownloadAsset[];
 }) {
+  if (downloads.length === 0) {
+    return null;
+  }
+
   return (
     <section className="rounded-[20px] border border-white/8 bg-white/[0.04] p-3 shadow-[0_20px_56px_rgba(0,0,0,0.32)] backdrop-blur-xl sm:rounded-[24px] sm:p-4 lg:p-5">
       <div className="max-w-3xl border-b border-white/8 pb-2 sm:pb-3">
-        <p className="label-kicker text-[0.64rem]">Arquivos e gabaritos</p>
+        <p className="label-kicker text-[0.64rem]">Arquivos prontos</p>
         <h2 className="display-title mt-1.5 text-lg font-semibold tracking-tight text-white sm:mt-2 sm:text-xl">
-          Downloads para montar a arte
+          Gabaritos para montar sua arte
         </h2>
         <p className="mt-1.5 text-[0.8125rem] leading-snug text-white/65 sm:text-sm sm:leading-6">
-          Illustrator, Corel e PDF em cards compactos.
+          Baixe o arquivo pronto para Illustrator, Corel ou PDF.
         </p>
       </div>
 
@@ -217,24 +276,24 @@ export function TemplateDownloads({
             key={item.id}
             href={item.href}
             download={item.downloadName}
-            className="surface-card group flex gap-3 p-3 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(15,15,15,0.07)] sm:flex-col sm:p-3.5"
+            className="surface-card group flex flex-col gap-3 p-3 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(15,15,15,0.07)] sm:p-3.5"
           >
-            <div className="flex shrink-0 items-start justify-between gap-2 sm:w-full">
+            <div className="flex items-start justify-between gap-2">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-[14px] bg-black text-xs font-semibold text-white shadow-[0_8px_16px_rgba(15,15,15,0.12)] sm:h-10 sm:w-10 sm:rounded-[16px] sm:text-sm">
                 {item.icon === "illustrator" ? "Ai" : item.icon === "corel" ? "Cdr" : "PDF"}
               </span>
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white transition group-hover:bg-white/10 sm:hidden">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white transition group-hover:bg-white/10">
                 <DownloadIcon />
               </span>
             </div>
             <div className="min-w-0 flex-1">
               <strong className="block text-sm font-semibold text-white sm:text-[0.95rem]">{item.label}</strong>
-              <p className="mt-1 line-clamp-2 text-[0.75rem] leading-snug text-white/60 sm:line-clamp-none sm:text-[0.8125rem] sm:leading-5">
+              <p className="mt-1 line-clamp-3 text-[0.75rem] leading-snug text-white/60 sm:text-[0.8125rem] sm:leading-5">
                 {item.description}
               </p>
             </div>
-            <span className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white transition group-hover:bg-white/10 sm:inline-flex">
-              <DownloadIcon />
+            <span className="home-btn-outline focus-ring inline-flex min-h-[40px] items-center justify-center rounded-full px-3 text-center text-xs font-semibold sm:text-sm">
+              Baixar gabarito
             </span>
           </Link>
         ))}

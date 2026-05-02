@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 
 import { AdminPixSettingsForm } from "@/components/admin/admin-pix-settings-form";
+import { PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
 import type { PaymentSettingsRecord } from "@/types";
 
 export type SiteSettingsFormState = {
@@ -55,7 +56,6 @@ export function AdminSettingsTabs({
             shortTrustLine: site.shortTrustLine,
             supportLine: site.supportLine,
             shippingFreeMinBrl: site.shippingFreeMinBrl ? Number(site.shippingFreeMinBrl) : null,
-            pixDiscountPercent: Number(site.pixDiscountPercent) || 15,
             siteWhatsappDigits: site.siteWhatsappDigits || null,
           }),
         });
@@ -63,7 +63,7 @@ export function AdminSettingsTabs({
         if (!res.ok) {
           throw new Error(data.message ?? "Falha ao salvar.");
         }
-        setMsg("Dados da empresa e contatos salvos.");
+        setMsg("Configurações salvas.");
       } catch (e) {
         setErr(e instanceof Error ? e.message : "Erro.");
       }
@@ -86,7 +86,7 @@ export function AdminSettingsTabs({
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
         {tabBtn("empresa", "Empresa e contatos")}
-        {tabBtn("frete", "Frete e desconto Pix")}
+        {tabBtn("frete", "Frete e WhatsApp")}
         {tabBtn("pix", "Chave Pix")}
       </div>
 
@@ -137,8 +137,7 @@ export function AdminSettingsTabs({
       {tab === "frete" ? (
         <section className="rounded-[22px] border border-white/10 bg-[#0d1019]/92 p-5 backdrop-blur-xl">
           <p className="text-sm text-white/60">
-            Frete grátis a partir do valor informado (uso em regras de checkout quando integrado). Desconto Pix em % para
-            referência comercial.
+            Frete grátis a partir do valor informado (uso em regras de checkout quando integrado). WhatsApp exibido no site.
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="space-y-1 text-sm text-white/75">
@@ -150,14 +149,22 @@ export function AdminSettingsTabs({
                 placeholder="ex: 350"
               />
             </label>
-            <label className="space-y-1 text-sm text-white/75">
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/45">Desconto Pix (%)</span>
+            <div className="space-y-2 sm:col-span-1">
+              <span className="block text-xs font-semibold uppercase tracking-wider text-white/45">
+                Desconto Pix (%) — legado
+              </span>
               <input
-                className="focus-ring w-full rounded-xl border border-white/12 bg-black/30 px-3 py-2 text-white"
+                readOnly
+                disabled
+                aria-readonly="true"
+                title="Campo legado — não usado pela vitrine"
+                className="focus-ring w-full cursor-not-allowed rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-white/50 opacity-70"
                 value={site.pixDiscountPercent}
-                onChange={(e) => setSite((s) => ({ ...s, pixDiscountPercent: e.target.value }))}
               />
-            </label>
+              <p className="rounded-xl border border-amber-400/25 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-100/95">
+                Campo legado: o desconto Pix da loja está fixo no código em {PIX_DISCOUNT_PERCENT}%.
+              </p>
+            </div>
             <label className="space-y-1 text-sm text-white/75 sm:col-span-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-white/45">WhatsApp site (só dígitos)</span>
               <input
@@ -173,7 +180,7 @@ export function AdminSettingsTabs({
             onClick={saveSite}
             className="focus-ring mt-4 rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 px-6 py-2.5 text-sm font-semibold text-white"
           >
-            {pending ? "Salvando..." : "Salvar frete e Pix"}
+            {pending ? "Salvando..." : "Salvar frete e contatos"}
           </button>
           {err ? <p className="mt-3 text-sm text-red-300">{err}</p> : null}
           {msg ? <p className="mt-3 text-sm text-emerald-300">{msg}</p> : null}

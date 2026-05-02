@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { Badge } from "@/components/common/badge";
 import { ProductRasterPicture } from "@/components/common/product-raster-picture";
+import { pixOffNoPixLabel } from "@/lib/copy";
 import { getProductPrimaryImagePath } from "@/lib/product-images";
+import { applyPixDiscount } from "@/lib/pix-discount";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -58,14 +60,15 @@ function getCatalogChips(product: Product): string[] {
   if (materialShort && chips.length < 3) {
     chips.push(materialShort.length > 28 ? `${materialShort.slice(0, 26)}…` : materialShort);
   } else if (chips.length < 3) {
-    chips.push("15% no Pix");
+    chips.push(pixOffNoPixLabel());
   }
   return chips.slice(0, 3);
 }
 
 function CatalogProductCard({ product }: { product: Product }) {
   const imageSrc = getProductPrimaryImagePath(product.slug);
-  const pixPrice = product.basePriceM2 * 0.85;
+  const pixPrice = applyPixDiscount(product.basePriceM2);
+  const pixBadge = pixOffNoPixLabel();
   const secondaryInfo =
     product.minQuantity > 1 ? `Pedido mín. ${product.minQuantity} un.` : `Área mín. ${product.minimumArea.toFixed(2)} m²`;
   const detailHref = `/products/${product.slug}`;
@@ -138,7 +141,7 @@ function CatalogProductCard({ product }: { product: Product }) {
                 {formatCurrencyBRL(pixPrice)}
               </p>
               <p className="mt-0.5 text-[0.8125rem] font-medium leading-snug text-white/60 sm:text-sm">
-                por m² · 15% de desconto no Pix
+                por m² · {pixBadge}
               </p>
             </div>
             <span className="inline-flex w-fit shrink-0 self-start rounded-full bg-gradient-to-r from-pink-500 to-cyan-400 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_rgba(236,72,153,0.35)] sm:self-end">
@@ -198,7 +201,8 @@ export function ProductCard({
   const imageSrc = imageSrcOverride ?? getProductPrimaryImagePath(product.slug);
   const isHomeVariant = variant === "home";
   void premiumDark;
-  const pixPrice = product.basePriceM2 * 0.85;
+  const pixPrice = applyPixDiscount(product.basePriceM2);
+  const pixBadgeShort = pixOffNoPixLabel();
   const secondaryInfo =
     product.minQuantity > 1 ? `Pedido min. ${product.minQuantity}` : `Area min. ${product.minimumArea.toFixed(2)} m2`;
   const isCompactRelated = compact && !isHomeVariant;
@@ -236,7 +240,7 @@ export function ProductCard({
                   {product.badge}
                 </Badge>
                 <span className="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/65">
-                  {isHomeVariant ? "15% Pix" : product.category}
+                  {isHomeVariant ? pixBadgeShort : product.category}
                 </span>
               </div>
             ) : null}
@@ -271,8 +275,8 @@ export function ProductCard({
                   Alta procura
                 </span>
               ) : (
-                <span className="rounded-full border border-pink-400/30 bg-pink-500/10 px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-pink-200">
-                  15% Pix
+                <span className="max-w-[10rem] truncate rounded-full border border-pink-400/30 bg-pink-500/10 px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-pink-200">
+                  {pixBadgeShort}
                 </span>
               )}
             </div>
@@ -341,13 +345,13 @@ export function ProductCard({
                   por m2
                 </span>
               </div>
-              <span
+                <span
                 className={cn(
-                  "shrink-0 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-white shadow-[0_8px_20px_rgba(236,72,153,0.35)]",
-                  !isCompactRelated && "px-3 py-1.5 text-[0.68rem] tracking-[0.18em]",
+                  "max-w-[7.5rem] shrink-0 truncate rounded-full bg-gradient-to-r from-pink-500 to-blue-500 px-2 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-white shadow-[0_8px_20px_rgba(236,72,153,0.35)]",
+                  !isCompactRelated && "max-w-[9rem] px-3 py-1.5 text-[0.68rem] tracking-[0.18em]",
                 )}
               >
-                15% OFF
+                {pixBadgeShort}
               </span>
             </div>
 

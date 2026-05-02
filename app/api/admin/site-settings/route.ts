@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { companyProfile } from "@/lib/company";
+import { PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
 import { requireAdminApi } from "@/lib/require-admin-api";
 import { siteSettingsRepository } from "@/server/repositories/site-settings.repository";
 
@@ -20,7 +21,7 @@ function defaults() {
     shortTrustLine: companyProfile.shortTrustLine,
     supportLine: companyProfile.supportLine,
     shippingFreeMinBrl: null as number | null,
-    pixDiscountPercent: 15,
+    pixDiscountPercent: PIX_DISCOUNT_PERCENT,
     siteWhatsappDigits: companyProfile.phoneDigits,
   };
 }
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
       shortTrustLine: row.shortTrustLine ?? base.shortTrustLine,
       supportLine: row.supportLine ?? base.supportLine,
       shippingFreeMinBrl: row.shippingFreeMinBrl,
-      pixDiscountPercent: row.pixDiscountPercent ?? 15,
+      pixDiscountPercent: row.pixDiscountPercent ?? base.pixDiscountPercent,
       siteWhatsappDigits: row.siteWhatsappDigits ?? base.siteWhatsappDigits,
     },
   });
@@ -74,7 +75,8 @@ export async function PUT(request: NextRequest) {
     shortTrustLine: string;
     supportLine: string;
     shippingFreeMinBrl: number | null;
-    pixDiscountPercent: number;
+    /** Legado; opcional — ignorado se omitido (mantém valor no banco). */
+    pixDiscountPercent?: number | null;
     siteWhatsappDigits: string;
   }>;
 
@@ -93,6 +95,7 @@ export async function PUT(request: NextRequest) {
     supportLine: body.supportLine ?? current?.supportLine ?? base.supportLine,
     shippingFreeMinBrl:
       body.shippingFreeMinBrl !== undefined ? body.shippingFreeMinBrl : (current?.shippingFreeMinBrl ?? null),
+    /** Legado no banco; omitido no PUT admin — preserva `current` quando ausente no body. */
     pixDiscountPercent: body.pixDiscountPercent ?? current?.pixDiscountPercent ?? base.pixDiscountPercent,
     siteWhatsappDigits: body.siteWhatsappDigits ?? current?.siteWhatsappDigits ?? base.siteWhatsappDigits,
   };

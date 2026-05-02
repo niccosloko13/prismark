@@ -1,7 +1,8 @@
 import { withTransaction } from "@/server/db";
 import { AppError } from "@/server/errors/app-error";
 import { getActiveProductBySlug } from "@/lib/active-products";
-import { calculateQuote } from "@/lib/pricing";
+import { applyPixDiscount } from "@/lib/pix-discount";
+import { calculateQuoteForProduct } from "@/lib/pricing";
 import { buildProductExperience, getAddonsFeeTotalByIds } from "@/lib/product-experience";
 import { filesRepository } from "@/server/repositories/files.repository";
 import { ordersRepository } from "@/server/repositories/orders.repository";
@@ -47,8 +48,7 @@ export const ordersService = {
     const experience = buildProductExperience(product);
     const addonsTotal = getAddonsFeeTotalByIds(experience, input.selectedAddonIds ?? []);
 
-    const quote = calculateQuote({
-      productSlug: input.productSlug,
+    const quote = calculateQuoteForProduct(product, {
       width: input.width,
       height: input.height,
       quantity: input.quantity,
@@ -57,6 +57,9 @@ export const ordersService = {
       deadline: input.deadline,
       addonsTotal,
     });
+
+    /** Único método ativo na loja: PIX com desconto fixo (ignora `paymentMethod` do cliente). */
+    const valueTotal = applyPixDiscount(quote.total);
 
     const order = await withTransaction(async (client) => {
       const orderId = await ordersRepository.nextOrderId(client);
@@ -73,9 +76,10 @@ export const ordersService = {
           material: input.material,
           finishing: input.finishing,
           deadline: input.deadline,
-          valueTotal: quote.total,
+          valueTotal,
           status: "novo",
           notes: input.notes?.trim() || null,
+          cpf: input.cpf,
         },
         client,
       );
@@ -121,7 +125,9 @@ export const ordersService = {
           payload: {
             productSlug: input.productSlug,
             quantity: input.quantity,
-            value: quote.total,
+            value: valueTotal,
+            quoteFull: quote.total,
+            paymentMethod: "pix",
           },
         },
         client,

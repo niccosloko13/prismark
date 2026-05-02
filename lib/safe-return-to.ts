@@ -50,6 +50,9 @@ export function sanitizeReturnTo(raw: string | null | undefined, role: Role): st
     if (pathOnly === "/admin" || pathOnly.startsWith("/admin/")) {
       return null;
     }
+    if (pathOnly === "/login" || pathOnly === "/cadastro") {
+      return null;
+    }
   }
 
   return pathWithSearch;
@@ -62,4 +65,19 @@ export function defaultPostAuthPath(role: Role, returnTo: string | null | undefi
     return safe ?? "/admin";
   }
   return safe ?? "/";
+}
+
+const AUTH_FORM_PATHS = new Set(["/login", "/cadastro"]);
+
+/**
+ * Redirect após Google OAuth bem-sucedido: vai direto ao returnTo sanitizado,
+ * sem passar por /login ou /cadastro (evita passo extra e perda de conversão no checkout).
+ */
+export function postGoogleOAuthSuccessPath(role: Role, returnTo: string | null | undefined): string {
+  const path = defaultPostAuthPath(role, returnTo);
+  const pathOnly = path.split("?")[0] ?? "";
+  if (AUTH_FORM_PATHS.has(pathOnly)) {
+    return role === "admin" ? "/admin" : "/";
+  }
+  return path;
 }

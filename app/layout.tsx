@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
 
+import { ActiveCatalogHydrator } from "@/components/catalog/active-catalog-hydrator";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { CookieConsent } from "@/components/cookies/cookie-consent";
 import { BodyRouteClass } from "@/components/layout/body-route-class";
@@ -37,6 +38,7 @@ export default async function RootLayout({
           Pular para o conteúdo
         </a>
         <CartProvider>
+          <ActiveCatalogHydrator />
           <BodyRouteClass />
           <div className="mx-auto min-h-screen min-w-0 max-w-[1600px] px-4 pb-32 pt-3 sm:px-6 sm:pb-10 sm:pt-5 lg:px-8">
             <SiteHeader session={session} />

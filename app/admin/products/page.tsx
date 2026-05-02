@@ -1,15 +1,18 @@
 import { AdminProductsPanel } from "@/components/admin/admin-products-panel";
+import { AdminStoreProductsPanel } from "@/components/admin/admin-store-products-panel";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { requireAdminSession } from "@/lib/admin";
 import { products } from "@/lib/catalog";
 import { getOrders } from "@/lib/storage";
 import { productOverridesRepository } from "@/server/repositories/product-overrides.repository";
+import { storeProductsRepository } from "@/server/repositories/store-products.repository";
 
 export default async function AdminProductsPage() {
   await requireAdminSession();
-  const [orders, overrides] = await Promise.all([
+  const [orders, overrides, storeProducts] = await Promise.all([
     getOrders(),
     productOverridesRepository.listAll().catch(() => []),
+    storeProductsRepository.listAllNonDeleted().catch(() => []),
   ]);
 
   const orderCountBySlug = orders.reduce<Record<string, number>>((acc, o) => {
@@ -20,9 +23,12 @@ export default async function AdminProductsPage() {
   return (
     <AdminShell
       title="Produtos"
-      subtitle="Listagem do catálogo base, pedidos por SKU, ativar/desativar na vitrine e ajuste de preço por m²."
+      subtitle="Catálogo estático (pastas em /public/product), produtos cadastrados no admin e overrides de vitrine."
     >
-      <AdminProductsPanel catalog={products} orderCountBySlug={orderCountBySlug} initialOverrides={overrides} />
+      <div className="space-y-8">
+        <AdminStoreProductsPanel initialProducts={storeProducts} />
+        <AdminProductsPanel catalog={products} orderCountBySlug={orderCountBySlug} initialOverrides={overrides} />
+      </div>
     </AdminShell>
   );
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-const LOGO_SRC = "/logo header (2).png";
+import { HEADER_LOGO_SRC } from "@/lib/brand-assets";
 const LOGO_WIDTH = 1536;
 const LOGO_HEIGHT = 1024;
 
@@ -53,7 +53,7 @@ export function BrandLogo({
       className={cn("inline-flex shrink-0 items-center transition hover:opacity-90", className)}
     >
       <Image
-        src={LOGO_SRC}
+        src={HEADER_LOGO_SRC}
         alt="Prismarq Comunicação Visual"
         width={LOGO_WIDTH}
         height={LOGO_HEIGHT}

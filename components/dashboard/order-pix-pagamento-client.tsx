@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { COPY } from "@/lib/copy";
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import type { OrderRecord, PaymentRecord } from "@/types";
 
@@ -82,7 +83,10 @@ export function OrderPixPagamentoClient({
       <p className="mt-6 text-2xl font-semibold tabular-nums text-white">{formatCurrencyBRL(payment.amount)}</p>
       <p className="mt-1 text-sm text-white/60">QR e copia-e-cola com o mesmo payload Pix.</p>
 
-      <p className="mt-6 max-w-2xl text-sm leading-7 text-white/72">
+      <p className="mt-4 max-w-2xl rounded-[18px] border border-emerald-400/25 bg-emerald-500/10 px-4 py-3 text-sm font-medium leading-6 text-emerald-100">
+        {COPY.pixOrderConfirmedAfterPayment}
+      </p>
+      <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72">
         Após o pagamento, sua confirmação será identificada e o pedido seguirá para produção.
       </p>
 

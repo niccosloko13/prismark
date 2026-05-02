@@ -8,9 +8,11 @@ import { useState, useTransition } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { Badge } from "@/components/common/badge";
 import { SectionShell } from "@/components/common/section-shell";
-import { buildCartEditUrl, buildCartOrderNotes } from "@/lib/cart";
-import { getProductBySlug } from "@/lib/catalog";
-import { calculateQuote } from "@/lib/pricing";
+import { buildCartEditUrl, buildCartOrderNotes, resolveProductFromCartItem } from "@/lib/cart";
+import { PRISMARQ_CUSTOM_FORMAT_ID } from "@/lib/custom-product-size";
+import { pixEconomizePagarNoPixLabel, pixOffNoPixLabel } from "@/lib/copy";
+import { applyPixDiscount, PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
+import { calculateQuoteForProduct } from "@/lib/pricing";
 import { buildProductExperience, getAddonsFeeTotalBrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL, roundTo } from "@/lib/utils";
 import type { SessionUser } from "@/types";
@@ -71,7 +73,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const pixSubtotal = subtotal * 0.85;
+  const pixSubtotal = applyPixDiscount(subtotal);
 
   function updateQuantity(itemId: string, quantity: number) {
     const item = items.find((entry) => entry.id === itemId);
@@ -79,7 +81,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
       return;
     }
 
-    const product = getProductBySlug(item.productSlug);
+    const product = resolveProductFromCartItem(item);
     if (!product) {
       return;
     }
@@ -88,8 +90,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
     const nextSelection = { ...item.selection, quantity: nextQuantity };
 
     const experience = buildProductExperience(product);
-    const nextQuote = calculateQuote({
-      productSlug: item.productSlug,
+    const nextQuote = calculateQuoteForProduct(product, {
       width: nextSelection.width,
       height: nextSelection.height,
       quantity: nextSelection.quantity,
@@ -130,10 +131,10 @@ export function CartPage({ session }: { session: SessionUser | null }) {
       try {
         const createdIds: string[] = [];
 
-        const pixNote = "\n\nPagamento: Pix com 15% de desconto";
+        const pixNote = `\n\nPagamento: Pix com ${PIX_DISCOUNT_PERCENT}% de desconto`;
 
         for (const item of items) {
-          const product = getProductBySlug(item.productSlug);
+          const product = resolveProductFromCartItem(item);
           if (!product) {
             throw new Error(`Produto nao encontrado: ${item.productName}.`);
           }
@@ -152,6 +153,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               finishing: item.selection.finishing,
               deadline: item.selection.deadline,
               selectedAddonIds: item.selection.selectedAddonIds,
+              paymentMethod: "pix",
               notes: `${buildCartOrderNotes(item)}${pixNote}`.trim(),
             }),
           });
@@ -281,7 +283,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
         >
           <div className="space-y-4">
             {items.map((item, index) => {
-              const minQuantity = getProductBySlug(item.productSlug)?.minQuantity ?? 1;
+              const minQuantity = resolveProductFromCartItem(item)?.minQuantity ?? 1;
               const addonCount = item.addons.length;
 
               return (
@@ -344,7 +346,14 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
                       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                         <CartSpecCard label="Quantidade" value={`${item.selection.quantity} unidades`} />
-                        <CartSpecCard label="Medidas" value={`${item.selection.width} x ${item.selection.height} cm`} />
+                        <CartSpecCard
+                          label="Medidas"
+                          value={
+                            item.selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID
+                              ? `Tamanho personalizado: ${item.selection.width}x${item.selection.height}cm`
+                              : `${item.selection.width} x ${item.selection.height} cm`
+                          }
+                        />
                         <CartSpecCard label="Material" value={item.selection.material} />
                         <CartSpecCard label="Acabamento" value={item.selection.finishing} />
                       </div>
@@ -420,11 +429,14 @@ export function CartPage({ session }: { session: SessionUser | null }) {
               <strong className="mt-2 block text-[2.55rem] font-semibold tracking-tight text-white">
                 {formatCurrencyBRL(subtotal)}
               </strong>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(15,15,15,0.14)]">
-                  {formatCurrencyBRL(pixSubtotal)} no Pix
+              <div className="mt-3 flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                <span className="inline-flex rounded-full bg-gradient-to-r from-emerald-500/90 via-teal-500/90 to-cyan-500/90 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_6px_20px_rgba(16,185,129,0.35)]">
+                  {pixOffNoPixLabel()}
                 </span>
-                <span className="text-sm font-medium text-white/60">15% OFF no Pix</span>
+                <p className="text-sm font-semibold tabular-nums text-emerald-200/95">
+                  ou {formatCurrencyBRL(pixSubtotal)} no PIX
+                </p>
+                <p className="text-xs font-medium text-white/55">{pixEconomizePagarNoPixLabel()}</p>
               </div>
               <p className="mt-3 text-xs leading-5 text-white/55">
                 Frete e ajustes extras seguem por item gerado no fechamento final.
@@ -501,7 +513,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           <div className="min-w-0 shrink">
             <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/45">Total</p>
             <strong className="block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(subtotal)}</strong>
-            <p className="text-[0.72rem] font-medium text-cyan-300">{formatCurrencyBRL(pixSubtotal)} no Pix</p>
+            <p className="text-[0.72rem] font-medium text-cyan-300">ou {formatCurrencyBRL(pixSubtotal)} no PIX</p>
           </div>
           <div className="min-w-0 flex-1">
             {session ? (

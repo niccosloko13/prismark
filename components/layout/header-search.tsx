@@ -74,7 +74,7 @@ export function HeaderSearch({
   }
 
   return (
-    <div ref={containerRef} className={cn("relative", mobile ? "w-full" : "min-w-[16rem]", className)}>
+    <div ref={containerRef} className={cn("relative min-w-0", mobile ? "w-full" : "w-full", className)}>
       <form onSubmit={handleSubmit} className="relative">
         <label htmlFor={mobile ? "mobile-header-search" : "desktop-header-search"} className="sr-only">
           Buscar produtos

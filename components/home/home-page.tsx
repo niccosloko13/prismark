@@ -5,6 +5,8 @@ import { ProductRasterPicture } from "@/components/common/product-raster-picture
 import { SectionShell } from "@/components/common/section-shell";
 import { HomeFeaturedProductsCarousel } from "@/components/home/home-featured-products-carousel";
 import { getActiveProducts } from "@/lib/active-products";
+import { pixOffNoPixLabel } from "@/lib/copy";
+import { applyPixDiscount } from "@/lib/pix-discount";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import { marketingRepository } from "@/server/repositories/marketing.repository";
 
@@ -413,7 +415,7 @@ export async function HomePage() {
         <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 pt-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-6 lg:grid lg:snap-none lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:pb-0 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
           {quickProducts.map((product) => {
             const image = product.primaryImagePath ?? "/criativo1.png";
-            const pixPrice = product.basePriceM2 * 0.85;
+            const pixPrice = applyPixDiscount(product.basePriceM2);
 
             return (
               <Link
@@ -435,7 +437,7 @@ export async function HomePage() {
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/50">{product.category}</p>
                     <span className="rounded-full border border-pink-400/25 bg-pink-500/10 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-pink-200">
-                      15% Pix
+                      {pixOffNoPixLabel()}
                     </span>
                   </div>
                   <p className="font-display mt-3 text-[1.12rem] font-semibold leading-tight text-white">{product.name}</p>

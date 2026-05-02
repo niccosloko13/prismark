@@ -8,6 +8,9 @@ import { useCart } from "@/components/cart/cart-provider";
 import { Badge } from "@/components/common/badge";
 import { formatAddonPriceHint } from "@/components/product/product-addon-strip";
 import { buildCartItem } from "@/lib/cart";
+import { pixEconomizePagarNoPixLabel, pixOffNoPixLabel } from "@/lib/copy";
+import { applyPixDiscount, PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
+import { isCustomFormatId } from "@/lib/custom-product-size";
 import { buildOrderUrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import type { PriceBreakdown, Product } from "@/types";
@@ -84,10 +87,13 @@ export function ProductSummaryPanel({
   const selectedAddons = experience.addons.filter((item) => selection.selectedAddonIds.includes(item.id));
   const selectedAddonsForSummary = selectedAddonsState.filter((item) => item.selected);
   const color = experience.colors.find((item) => item.id === selection.colorId) ?? experience.colors[0];
-  const pixTotal = quote.total * 0.85;
+  const pixTotal = applyPixDiscount(quote.total);
   const pixDiscount = quote.total - pixTotal;
   const unitAverage = quote.total / Math.max(selection.quantity, 1);
-  const naturalSummary = `${selection.quantity} un. em ${selection.material.toLowerCase()}, ${selection.width} x ${selection.height} cm, ${selection.finishing.toLowerCase()} e ${color?.label ?? "cor padrao"}.`;
+  const sizePhrase = isCustomFormatId(selection.formatId)
+    ? `tamanho personalizado (${selection.width} x ${selection.height} cm)`
+    : `${selection.width} x ${selection.height} cm`;
+  const naturalSummary = `${selection.quantity} un. em ${selection.material.toLowerCase()}, ${sizePhrase}, ${selection.finishing.toLowerCase()} e ${color?.label ?? "cor padrao"}.`;
   const previewImage = experience.gallery[0]?.src ?? "";
 
   useEffect(() => {
@@ -190,8 +196,11 @@ export function ProductSummaryPanel({
           </div>
 
           <div className="mt-2 rounded-lg border border-emerald-400/30 bg-emerald-500/[0.12] p-2 sm:p-2.5">
-            <p className="text-[0.68rem] font-semibold text-emerald-200 sm:text-xs">15% OFF no PIX</p>
-            <p className="text-[0.78rem] text-white/75 sm:text-sm">Pague {formatCurrencyBRL(pixTotal)} com PIX</p>
+            <p className="text-[0.68rem] font-semibold text-emerald-200 sm:text-xs">{pixOffNoPixLabel()}</p>
+            <p className="text-[0.78rem] text-white/75 sm:text-sm">{pixEconomizePagarNoPixLabel()}</p>
+            <p className="mt-0.5 text-[0.78rem] font-semibold tabular-nums text-white/90 sm:text-sm">
+              ou {formatCurrencyBRL(pixTotal)} no PIX
+            </p>
           </div>
 
           <div className="mt-2.5 hidden gap-1.5 lg:grid">
@@ -226,7 +235,7 @@ export function ProductSummaryPanel({
                 <span className="text-white/30">·</span>
                 <span>{selection.quantity} un.</span>
                 <span className="text-white/30">·</span>
-                <span>Pix -15%</span>
+                <span>Pix −{PIX_DISCOUNT_PERCENT}%</span>
               </div>
             </div>
             <div className="shrink-0 text-right">
@@ -241,7 +250,9 @@ export function ProductSummaryPanel({
               </strong>
             </div>
           </div>
-          <p className="mt-1.5 text-center text-[0.78rem] font-semibold tabular-nums text-cyan-300">{formatCurrencyBRL(pixTotal)} no Pix</p>
+          <p className="mt-1.5 text-center text-[0.78rem] font-semibold tabular-nums text-cyan-300">
+            ou {formatCurrencyBRL(pixTotal)} no PIX
+          </p>
           <div className="mt-2.5 grid w-full gap-2">
             {!editingCartItemId ? (
               <button

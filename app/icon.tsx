@@ -14,7 +14,7 @@ export default function Icon() {
   const baseUrl =
     process.env.APP_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  const logoUrl = new URL("/logo%20header%20(2).png", baseUrl).href;
+  const logoUrl = new URL("/prismarq-header-logo.png", baseUrl).href;
 
   return new ImageResponse(
     (

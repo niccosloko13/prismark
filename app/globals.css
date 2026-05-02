@@ -25,12 +25,13 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: clip;
+  overflow-x: hidden;
   overscroll-behavior-x: none;
 }
 
 body {
   min-height: 100vh;
+  overflow-x: hidden;
   overscroll-behavior-x: none;
   color: var(--fg);
   font-family:

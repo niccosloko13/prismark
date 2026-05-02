@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ProductRasterPicture } from "@/components/common/product-raster-picture";
 import { ProdutosSortSelect } from "@/components/produtos/produtos-sort-select";
 import { getActiveProducts } from "@/lib/active-products";
+import { applyPixDiscount } from "@/lib/pix-discount";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -170,7 +171,7 @@ function SearchIcon() {
 
 function ProductListCard({ product, imageSrc }: { product: Product; imageSrc: string | null }) {
   const badgeLabel = product.featured ? "MAIS VENDIDO" : "NOVO";
-  const pixPrice = product.basePriceM2 * 0.85;
+  const pixPrice = applyPixDiscount(product.basePriceM2);
   const installmentText = product.minQuantity > 1 ? `${product.minQuantity}00 un.` : "a partir de";
 
   return (

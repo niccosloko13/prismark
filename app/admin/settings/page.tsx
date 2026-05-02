@@ -2,6 +2,7 @@ import { AdminSettingsTabs, type SiteSettingsFormState } from "@/components/admi
 import { AdminShell } from "@/components/admin/admin-shell";
 import { requireAdminSession } from "@/lib/admin";
 import { companyProfile } from "@/lib/company";
+import { PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
 import { getPaymentSettings } from "@/lib/storage";
 import { siteSettingsRepository } from "@/server/repositories/site-settings.repository";
 
@@ -18,7 +19,7 @@ function buildInitialSite(row: Awaited<ReturnType<typeof siteSettingsRepository.
     shortTrustLine: row?.shortTrustLine ?? companyProfile.shortTrustLine,
     supportLine: row?.supportLine ?? companyProfile.supportLine,
     shippingFreeMinBrl: row?.shippingFreeMinBrl != null ? String(row.shippingFreeMinBrl) : "",
-    pixDiscountPercent: String(row?.pixDiscountPercent ?? 15),
+    pixDiscountPercent: String(row?.pixDiscountPercent ?? PIX_DISCOUNT_PERCENT),
     siteWhatsappDigits: row?.siteWhatsappDigits ?? companyProfile.phoneDigits,
   };
 }
@@ -33,7 +34,7 @@ export default async function AdminSettingsPage() {
   return (
     <AdminShell
       title="Configurações"
-      subtitle="Pix, dados da empresa, frete grátis, desconto Pix e contatos exibidos no site."
+      subtitle="Chave Pix, dados da empresa, frete grátis e contatos. O desconto Pix da vitrine é fixo no código."
     >
       <AdminSettingsTabs initialSite={buildInitialSite(siteRow)} initialPix={pix} />
     </AdminShell>

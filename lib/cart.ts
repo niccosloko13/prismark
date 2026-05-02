@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-import { getProductBySlug } from "@/lib/catalog";
-import { calculateQuote } from "@/lib/pricing";
+import { activeProductToProduct, getActiveProductSnapshotBySlug } from "@/lib/active-product-snapshot";
+import { isCustomFormatId } from "@/lib/custom-product-size";
+import { calculateQuoteForProduct } from "@/lib/pricing";
 import {
   buildSelectionNotes,
   getProductExperience,
@@ -55,6 +56,7 @@ const cartItemSchema = z.object({
   summary: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  productSnapshot: z.any().optional(),
 });
 
 const cartItemsSchema = z.array(cartItemSchema);
@@ -157,6 +159,14 @@ export function resolveCartSelectionFromQuery({
   return buildSelectionFromQuery({ product, experience, params });
 }
 
+export function resolveProductFromCartItem(item: CartItem): Product | null {
+  if (item.productSnapshot) {
+    return item.productSnapshot;
+  }
+  const active = getActiveProductSnapshotBySlug(item.productSlug);
+  return active ? activeProductToProduct(active) : null;
+}
+
 export function buildCartItem({
   product,
   experience,
@@ -170,8 +180,7 @@ export function buildCartItem({
   image?: string;
   notes?: string;
 }): CartItem {
-  const quote = calculateQuote({
-    productSlug: product.slug,
+  const quote = calculateQuoteForProduct(product, {
     width: selection.width,
     height: selection.height,
     quantity: selection.quantity,
@@ -217,11 +226,16 @@ export function buildCartItem({
     })),
     notes: normalizeText(notes) ?? null,
     quantity: selection.quantity,
+    productSnapshot: product,
     unitPrice: roundTo(quote.total / selection.quantity),
     totalPrice: quote.total,
     summary: [
       selectedModel?.label,
-      selectedFormat ? `${selectedFormat.label} · ${selection.width} x ${selection.height} cm` : null,
+      selectedFormat
+        ? isCustomFormatId(selection.formatId)
+          ? `Tamanho personalizado: ${selection.width}x${selection.height}cm`
+          : `${selectedFormat.label} · ${selection.width} x ${selection.height} cm`
+        : null,
       selectedColor?.label,
       selectedEnhancement?.label,
     ]
@@ -258,7 +272,7 @@ export function buildCartEditUrl(item: CartItem) {
 }
 
 export function buildCartOrderNotes(item: CartItem) {
-  const product = getProductBySlug(item.productSlug);
+  const product = resolveProductFromCartItem(item);
   const experience = product ? getProductExperience(product.slug) : null;
 
   if (!product || !experience) {

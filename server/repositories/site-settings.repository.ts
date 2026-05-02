@@ -1,5 +1,6 @@
 import type { QueryResultRow } from "pg";
 
+import { PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
 import { query } from "@/server/db";
 import type { Queryable } from "@/server/db/queryable";
 
@@ -105,7 +106,7 @@ export const siteSettingsRepository = {
       short_trust_line: input.shortTrustLine ?? current?.shortTrustLine ?? null,
       support_line: input.supportLine ?? current?.supportLine ?? null,
       shipping_free_min_brl: input.shippingFreeMinBrl ?? current?.shippingFreeMinBrl ?? null,
-      pix_discount_percent: input.pixDiscountPercent ?? current?.pixDiscountPercent ?? 15,
+      pix_discount_percent: input.pixDiscountPercent ?? current?.pixDiscountPercent ?? PIX_DISCOUNT_PERCENT,
       site_whatsapp_digits: input.siteWhatsappDigits ?? current?.siteWhatsappDigits ?? null,
     };
 

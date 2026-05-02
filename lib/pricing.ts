@@ -1,4 +1,4 @@
-import { getProductBySlug } from "@/lib/catalog";
+import { activeProductToProduct, getActiveProductSnapshotBySlug } from "@/lib/active-product-snapshot";
 import { roundTo } from "@/lib/utils";
 import type { PriceBreakdown, Product, QuoteInput } from "@/types";
 
@@ -47,11 +47,11 @@ export function calculateQuoteForProduct(
 }
 
 export function calculateQuote(input: QuoteInput): PriceBreakdown {
-  const product = getProductBySlug(input.productSlug);
-
-  if (!product) {
+  const active = getActiveProductSnapshotBySlug(input.productSlug);
+  if (!active) {
     throw new Error("Produto não encontrado para precificação.");
   }
+  const product = activeProductToProduct(active);
 
   return calculateForProduct(product, {
     width: input.width,

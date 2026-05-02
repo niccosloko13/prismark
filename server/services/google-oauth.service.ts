@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { SignJWT, createRemoteJWKSet, jwtVerify } from "jose";
 import { z } from "zod";
 
+import { sanitizeReturnTo } from "@/lib/safe-return-to";
 import { env } from "@/server/config/env";
 import { AppError } from "@/server/errors/app-error";
 import { authService } from "@/server/services/auth.service";
@@ -51,19 +52,17 @@ let googleJwks:
 function ensureGoogleOauthConfigured() {
   if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) {
     throw new AppError(
-      "Google OAuth nÃ£o estÃ¡ configurado. Defina GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET.",
+      "Google OAuth não está configurado. Defina GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET.",
       500,
       "google_oauth_not_configured",
     );
   }
 }
 
+/** Antes do login o papel é tratado como cliente (sem área admin). */
 function normalizeReturnTo(returnTo?: string | null) {
-  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) {
-    return "/dashboard";
-  }
-
-  return returnTo;
+  const safe = sanitizeReturnTo(returnTo ?? null, "client");
+  return safe ?? "/";
 }
 
 function getGoogleRedirectUri() {
@@ -79,7 +78,7 @@ async function getGoogleDiscoveryDocument() {
     })
       .then(async (response) => {
         if (!response.ok) {
-          throw new AppError("NÃ£o foi possÃ­vel carregar a configuraÃ§Ã£o do Google OAuth.", 502, "google_discovery_failed");
+          throw new AppError("Não foi possível carregar a configuração do Google OAuth.", 502, "google_discovery_failed");
         }
 
         return googleDiscoverySchema.parse(await response.json());
@@ -120,7 +119,21 @@ async function verifyGoogleStateToken(token: string) {
     const { payload } = await jwtVerify(token, secret);
     return googleStateTokenSchema.parse(payload);
   } catch {
-    throw new AppError("A sessÃ£o de login com Google expirou. Tente novamente.", 401, "invalid_google_oauth_state");
+    throw new AppError("A sessão de login com Google expirou. Tente novamente.", 401, "invalid_google_oauth_state");
+  }
+}
+
+/** returnTo sanitizado a partir do cookie OAuth (ex.: redirect amigável após erro/cancelamento no Google). */
+export async function tryReadGoogleOauthReturnTo(stateCookie?: string | null): Promise<string | null> {
+  if (!stateCookie) {
+    return null;
+  }
+  try {
+    const { payload } = await jwtVerify(stateCookie, secret);
+    const parsed = googleStateTokenSchema.parse(payload);
+    return sanitizeReturnTo(parsed.returnTo, "client");
+  } catch {
+    return null;
   }
 }
 
@@ -142,7 +155,7 @@ async function exchangeCodeForTokens(code: string) {
   });
 
   if (!response.ok) {
-    throw new AppError("NÃ£o foi possÃ­vel concluir a autenticaÃ§Ã£o com Google.", 502, "google_token_exchange_failed");
+    throw new AppError("Não foi possível concluir a autenticação com Google.", 502, "google_token_exchange_failed");
   }
 
   return googleTokenResponseSchema.parse(await response.json());
@@ -158,7 +171,7 @@ async function verifyGoogleIdToken(idToken: string, expectedNonce: string) {
   const parsed = googleIdTokenSchema.parse(payload);
 
   if (parsed.nonce !== expectedNonce) {
-    throw new AppError("Resposta do Google invÃ¡lida para esta sessÃ£o.", 401, "google_nonce_mismatch");
+    throw new AppError("Resposta do Google inválida para esta sessão.", 401, "google_nonce_mismatch");
   }
 
   return parsed;
@@ -207,17 +220,17 @@ export const googleOauthService = {
     ensureGoogleOauthConfigured();
 
     if (!input.code) {
-      throw new AppError("O Google nÃ£o retornou um cÃ³digo de autenticaÃ§Ã£o vÃ¡lido.", 400, "google_code_missing");
+      throw new AppError("O Google não retornou um código de autenticação válido.", 400, "google_code_missing");
     }
 
     if (!input.state || !input.stateCookie) {
-      throw new AppError("A validaÃ§Ã£o do login com Google falhou.", 401, "google_state_missing");
+      throw new AppError("A validação do login com Google falhou.", 401, "google_state_missing");
     }
 
     const statePayload = await verifyGoogleStateToken(input.stateCookie);
 
     if (statePayload.state !== input.state) {
-      throw new AppError("A validaÃ§Ã£o do login com Google falhou.", 401, "google_state_mismatch");
+      throw new AppError("A validação do login com Google falhou.", 401, "google_state_mismatch");
     }
 
     const tokens = await exchangeCodeForTokens(input.code);

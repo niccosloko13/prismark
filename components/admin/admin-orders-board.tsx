@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 
 import { StatusPill } from "@/components/common/status-pill";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatCpfMask } from "@/lib/cpf";
 import { formatCurrencyBRL, formatDateBR } from "@/lib/utils";
 import { ORDER_STATUSES, type OrderRecord, type OrderStatus } from "@/types";
 
@@ -129,6 +130,7 @@ export function AdminOrdersBoard({ orders }: { orders: OrderRecord[] }) {
                 </div>
                 <p className="mt-2 text-sm text-white/65">
                   {order.clientName} · {order.clientEmail}
+                  {order.customerCpf ? ` · CPF ${formatCpfMask(order.customerCpf)}` : ""}
                 </p>
                 <p className="mt-1 text-sm text-white/50">
                   Criado em {formatDateBR(order.createdAt)} · Atualizado em {formatDateBR(order.updatedAt)}

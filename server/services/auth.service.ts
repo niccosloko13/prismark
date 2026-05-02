@@ -110,7 +110,7 @@ export const authService = {
         );
 
         if (!refreshedLinkedUser) {
-          throw new AppError("NÃ£o foi possÃ­vel atualizar a sessÃ£o Google da conta.", 500, "google_profile_refresh_failed");
+          throw new AppError("Não foi possível atualizar a sessão Google da conta.", 500, "google_profile_refresh_failed");
         }
 
         if (!refreshedLinkedUser.isActive) {
@@ -133,7 +133,7 @@ export const authService = {
         );
 
         if (!linkedExistingUser) {
-          throw new AppError("NÃ£o foi possÃ­vel vincular a conta Google.", 500, "google_link_failed");
+          throw new AppError("Não foi possível vincular a conta Google.", 500, "google_link_failed");
         }
 
         if (!linkedExistingUser.isActive) {
@@ -150,8 +150,8 @@ export const authService = {
         {
           name: fallbackName,
           email: input.email,
-          company: "NÃ£o informado",
-          phone: "NÃ£o informado",
+          company: "Não informado",
+          phone: "Não informado",
           role: "client",
           passwordHash,
           authProvider: "google",

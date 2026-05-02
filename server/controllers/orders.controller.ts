@@ -36,8 +36,10 @@ export async function createOrderController(request: NextRequest) {
       deadline?: string;
       selectedAddonIds?: string[];
       notes?: string;
+      cpf?: string;
       fileId?: string | null;
       file?: StoredFile | null;
+      paymentMethod?: "pix" | "card";
     };
 
     const order = await ordersService.create(
@@ -49,9 +51,11 @@ export async function createOrderController(request: NextRequest) {
         material: body.material ?? "",
         finishing: body.finishing ?? "",
         deadline: body.deadline ?? "",
+        cpf: body.cpf ?? "",
         selectedAddonIds: Array.isArray(body.selectedAddonIds) ? body.selectedAddonIds : undefined,
         notes: body.notes,
         fileId: body.fileId ?? body.file?.id ?? null,
+        paymentMethod: body.paymentMethod,
       },
       session,
     );

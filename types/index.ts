@@ -139,6 +139,8 @@ export interface CartItem {
   summary: string;
   createdAt: string;
   updatedAt: string;
+  /** Produtos da vitrine admin: garante precificação no cliente antes do bridge HTTP. */
+  productSnapshot?: Product;
 }
 
 export interface ProductConfiguration {
@@ -249,6 +251,8 @@ export interface OrderRecord {
   clientName: string;
   clientEmail: string;
   clientPhone?: string | null;
+  /** CPF informado no checkout (pedidos antigos podem ser null). */
+  customerCpf?: string | null;
   productSlug: string;
   productName: string;
   measures: OrderMeasures;
@@ -317,9 +321,13 @@ export interface CreateOrderInput {
   material: string;
   finishing: string;
   deadline: string;
+  /** CPF somente dígitos. */
+  cpf: string;
   selectedAddonIds?: string[];
   notes?: string;
   fileId?: string | null;
+  /** Legado (opcional): o servidor aplica sempre o total com desconto PIX. */
+  paymentMethod?: "pix" | "card";
 }
 
 export const PIX_KEY_TYPES = ["CPF", "CNPJ", "EMAIL", "PHONE", "RANDOM"] as const;

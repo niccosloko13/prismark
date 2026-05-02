@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { defaultPostAuthPath } from "@/lib/safe-return-to";
+import { postGoogleOAuthSuccessPath, sanitizeReturnTo } from "@/lib/safe-return-to";
 import { withController } from "@/server/controllers/controller-utils";
 import { isAppError } from "@/server/errors/app-error";
 import { authService, toSessionUser } from "@/server/services/auth.service";
@@ -8,6 +8,7 @@ import { logger } from "@/server/services/logger";
 import {
   buildGoogleOauthStateCookieOptions,
   googleOauthService,
+  tryReadGoogleOauthReturnTo,
 } from "@/server/services/google-oauth.service";
 import { buildSessionCookieOptions, signSessionToken } from "@/server/services/session.service";
 
@@ -39,8 +40,9 @@ function clearGoogleOauthStateCookie(response: NextResponse) {
 function buildLoginRedirect(request: NextRequest, authError: string, returnTo?: string | null) {
   const loginUrl = new URL("/login", request.url);
 
-  if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")) {
-    loginUrl.searchParams.set("returnTo", returnTo);
+  const safe = sanitizeReturnTo(returnTo ?? null, "client");
+  if (safe) {
+    loginUrl.searchParams.set("returnTo", safe);
   }
 
   loginUrl.searchParams.set("authError", authError);
@@ -123,11 +125,18 @@ export async function googleStartController(request: NextRequest) {
 }
 
 export async function googleCallbackController(request: NextRequest) {
+  const oauthStateCookie = request.cookies.get(buildGoogleOauthStateCookieOptions().name)?.value;
+  const pendingReturnTo = await tryReadGoogleOauthReturnTo(oauthStateCookie);
+
   const googleError = request.nextUrl.searchParams.get("error");
 
   if (googleError) {
     const response = NextResponse.redirect(
-      buildLoginRedirect(request, googleError === "access_denied" ? "google_access_denied" : "google_auth_failed"),
+      buildLoginRedirect(
+        request,
+        googleError === "access_denied" ? "google_access_denied" : "google_auth_failed",
+        pendingReturnTo,
+      ),
     );
     clearGoogleOauthStateCookie(response);
     return response;
@@ -141,9 +150,8 @@ export async function googleCallbackController(request: NextRequest) {
     });
     const sessionUser = toSessionUser(result.user);
     const token = await signSessionToken(sessionUser);
-    const response = NextResponse.redirect(
-      new URL(defaultPostAuthPath(sessionUser.role, result.returnTo), request.url),
-    );
+    const successPath = postGoogleOAuthSuccessPath(sessionUser.role, result.returnTo);
+    const response = NextResponse.redirect(new URL(successPath, request.nextUrl.origin));
     setSessionCookie(response, token);
     clearGoogleOauthStateCookie(response);
     return response;
@@ -153,7 +161,7 @@ export async function googleCallbackController(request: NextRequest) {
     });
 
     const response = NextResponse.redirect(
-      buildLoginRedirect(request, isAppError(error) ? error.code : "google_auth_failed"),
+      buildLoginRedirect(request, isAppError(error) ? error.code : "google_auth_failed", pendingReturnTo),
     );
     clearGoogleOauthStateCookie(response);
     return response;
