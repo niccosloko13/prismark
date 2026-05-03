@@ -196,14 +196,14 @@ export function ProductStepConfigurator({
   const clampQty = (n: number) => Math.max(quantityMin, Math.round(n) || quantityMin);
 
   const stepper = (
-    <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <ol className="flex min-w-0 gap-2 sm:gap-3">
+    <div className="max-w-full overflow-x-auto overflow-y-visible pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ol className="flex w-max min-w-0 gap-2 sm:gap-3">
         {steps.map((s, i) => {
           const done = i < activeIndex;
           const current = i === activeIndex;
           const reachable = i <= unlockedStepIndex;
           return (
-            <li key={s.id} className="min-w-0 shrink-0">
+            <li key={s.id} className="min-w-0 max-w-[min(100vw-2.5rem,10.5rem)] shrink-0 sm:max-w-[12rem]">
               <button
                 type="button"
                 disabled={!reachable}
@@ -211,7 +211,7 @@ export function ProductStepConfigurator({
                   if (reachable) setActiveIndex(i);
                 }}
                 className={cn(
-                  "focus-ring flex max-w-[10.5rem] flex-col rounded-2xl border px-3 py-2 text-left transition sm:max-w-[12rem] sm:px-3.5",
+                  "focus-ring flex w-full max-w-full flex-col rounded-2xl border px-3 py-2 text-left transition sm:px-3.5",
                   current
                     ? "border-cyan-400/45 bg-cyan-500/15 shadow-[0_0_24px_rgba(56,189,248,0.2)]"
                     : done
@@ -436,12 +436,12 @@ export function ProductStepConfigurator({
             <div className="rounded-[18px] border border-white/10 bg-white/[0.04] p-3.5">
               <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Quantidade</p>
               <p className="mt-1 text-[0.78rem] text-white/60">Mínimo: {quantityMin} un.</p>
-              <div className="mt-3 flex items-center gap-2">
+              <div className="mt-3 flex min-w-0 items-center gap-2">
                 <button
                   type="button"
                   onClick={() => onQuantityChange(clampQty(selection.quantity - 1))}
                   disabled={selection.quantity <= quantityMin}
-                  className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.08] text-lg disabled:opacity-40"
+                  className="focus-ring inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.08] text-lg disabled:opacity-40"
                 >
                   −
                 </button>
@@ -451,12 +451,12 @@ export function ProductStepConfigurator({
                   step={1}
                   value={selection.quantity}
                   onChange={(e) => onQuantityChange(clampQty(Number(e.target.value)))}
-                  className="field h-10 flex-1 rounded-2xl border-white/10 bg-white/[0.06] text-center text-sm font-semibold"
+                  className="field h-11 min-h-[44px] min-w-0 flex-1 rounded-2xl border-white/10 bg-white/[0.06] text-center text-sm font-semibold"
                 />
                 <button
                   type="button"
                   onClick={() => onQuantityChange(clampQty(selection.quantity + 1))}
-                  className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.08] text-lg"
+                  className="focus-ring inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.08] text-lg"
                 >
                   +
                 </button>
@@ -517,12 +517,12 @@ export function ProductStepConfigurator({
         </div>
       ) : null}
 
-      <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-white/10 pt-4">
+      <div className="mt-6 flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
         {showBack ? (
           <button
             type="button"
             onClick={goPrev}
-            className="focus-ring rounded-full border border-white/15 bg-white/[0.05] px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:bg-white/[0.09]"
+            className="focus-ring order-2 w-full rounded-full border border-white/15 bg-white/[0.05] px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:bg-white/[0.09] sm:order-1 sm:w-auto"
           >
             Voltar
           </button>
@@ -530,9 +530,12 @@ export function ProductStepConfigurator({
         <button
           type="button"
           onClick={handlePrimary}
-          className="home-btn-gradient focus-ring ml-auto min-h-[48px] rounded-full px-6 text-sm font-semibold sm:min-h-[52px] sm:px-8"
+          className={cn(
+            "home-btn-gradient focus-ring order-1 min-h-[52px] w-full rounded-full px-6 text-sm font-semibold sm:order-2 sm:ml-auto sm:w-auto sm:px-8",
+            !showBack && "sm:ml-0",
+          )}
         >
-          {isLast ? "Ir para o resumo" : "Próximo passo"}
+          {isLast ? "Ver total e fechar" : "Próximo passo"}
         </button>
       </div>
     </section>

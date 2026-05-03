@@ -794,14 +794,14 @@ export function OrderBuilder({
       ? "Processando..."
       : !isReadyToSubmit
         ? "Complete os dados"
-        : "Continuar para pagamento";
+        : COPY.finalizeOrderPix;
   const primaryActionHelper = !session
     ? "Login rápido no próprio checkout."
     : isPending
       ? "Aguarde um instante."
       : hasCheckoutErrors
         ? completionLabel
-        : "Pix com 10% de desconto · ambiente seguro.";
+        : `Pix com ${PIX_DISCOUNT_PERCENT}% de desconto · ambiente seguro.`;
 
   function shouldShowFieldError(field: CheckoutField) {
     return submitAttempted || touchedFields[field];
@@ -928,7 +928,7 @@ export function OrderBuilder({
   return (
     <>
       <CheckoutHeader activeStepIndex={1} />
-      <div className="mx-auto min-w-0 max-w-[1180px] px-0 pb-[7.5rem] sm:pb-28 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8 lg:pb-10">
+      <div className="mx-auto flex min-w-0 max-w-[1180px] flex-col-reverse px-0 pb-[10.5rem] sm:pb-36 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8 lg:pb-10">
         <div className="min-w-0 space-y-5 lg:space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-[20px] border border-white/10 bg-[#0a0d12]/85 px-4 py-3 backdrop-blur-xl sm:px-5">
             {!session ? (
@@ -1021,7 +1021,7 @@ export function OrderBuilder({
                     setWidth(next);
                     setWidthText(String(next));
                   }}
-                  className="field"
+                  className="field min-h-[48px]"
                 />
               </label>
               <label className="space-y-2">
@@ -1037,7 +1037,7 @@ export function OrderBuilder({
                     setHeight(next);
                     setHeightText(String(next));
                   }}
-                  className="field"
+                  className="field min-h-[48px]"
                 />
               </label>
               <label className="space-y-2">
@@ -1049,7 +1049,7 @@ export function OrderBuilder({
                   onChange={(event) =>
                     setQuantity(Math.max(Number(event.target.value) || currentProduct.minQuantity, currentProduct.minQuantity))
                   }
-                  className="field"
+                  className="field min-h-[48px]"
                 />
               </label>
 
@@ -1117,7 +1117,7 @@ export function OrderBuilder({
                   aria-invalid={shouldShowFieldError("customerName") && !!fieldErrors.customerName}
                   aria-describedby="customer-name-hint"
                   className={cn(
-                    "field",
+                    "field min-h-[48px]",
                     shouldShowFieldError("customerName") && fieldErrors.customerName && "border-red-400/50 ring-1 ring-red-400/30",
                   )}
                   placeholder="Nome completo"
@@ -1128,7 +1128,7 @@ export function OrderBuilder({
                 >
                   {shouldShowFieldError("customerName") && fieldErrors.customerName
                     ? fieldErrors.customerName
-                    : "Como voce quer ser chamado na confirmacao do pedido."}
+                    : "Como você quer ser chamado na confirmação do pedido."}
                 </FieldHint>
               </label>
               <label className="space-y-2">
@@ -1144,8 +1144,12 @@ export function OrderBuilder({
                   autoComplete="email"
                   aria-invalid={shouldShowFieldError("customerEmail") && !!fieldErrors.customerEmail}
                   aria-describedby="customer-email-hint"
-                  className={cn("field", shouldShowFieldError("customerEmail") && fieldErrors.customerEmail && "border-red-300 bg-red-50/40")}
+                  className={cn(
+                    "field min-h-[48px]",
+                    shouldShowFieldError("customerEmail") && fieldErrors.customerEmail && "border-red-300 bg-red-50/40",
+                  )}
                   placeholder="voce@empresa.com"
+                  inputMode="email"
                 />
                 <FieldHint
                   id="customer-email-hint"
@@ -1153,7 +1157,7 @@ export function OrderBuilder({
                 >
                   {shouldShowFieldError("customerEmail") && fieldErrors.customerEmail
                     ? fieldErrors.customerEmail
-                    : "Enviamos a confirmacao e o acompanhamento do pedido por aqui."}
+                    : "Enviamos a confirmação e o acompanhamento do pedido por aqui."}
                 </FieldHint>
               </label>
               <label className="space-y-2">
@@ -1175,7 +1179,10 @@ export function OrderBuilder({
                   inputMode="tel"
                   aria-invalid={shouldShowFieldError("customerPhone") && !!fieldErrors.customerPhone}
                   aria-describedby="customer-phone-hint"
-                  className={cn("field", shouldShowFieldError("customerPhone") && fieldErrors.customerPhone && "border-red-400/50 ring-1 ring-red-400/30")}
+                  className={cn(
+                    "field min-h-[48px]",
+                    shouldShowFieldError("customerPhone") && fieldErrors.customerPhone && "border-red-400/50 ring-1 ring-red-400/30",
+                  )}
                   placeholder="(11) 99999-9999"
                 />
                 <FieldHint
@@ -1201,7 +1208,10 @@ export function OrderBuilder({
                   }}
                   aria-invalid={shouldShowFieldError("customerCpf") && !!fieldErrors.customerCpf}
                   aria-describedby="customer-cpf-hint"
-                  className={cn("field", shouldShowFieldError("customerCpf") && fieldErrors.customerCpf && "border-red-400/50 ring-1 ring-red-400/30")}
+                  className={cn(
+                    "field min-h-[48px]",
+                    shouldShowFieldError("customerCpf") && fieldErrors.customerCpf && "border-red-400/50 ring-1 ring-red-400/30",
+                  )}
                   placeholder="000.000.000-00"
                 />
                 <FieldHint
@@ -1252,7 +1262,7 @@ export function OrderBuilder({
                           aria-invalid={shouldShowFieldError("cep") && !!fieldErrors.cep}
                           aria-describedby="cep-hint"
                           className={cn(
-                            "field pr-10",
+                            "field min-h-[48px] pr-10",
                             shouldShowFieldError("cep") && fieldErrors.cep && "border-red-400/50 ring-1 ring-red-400/30",
                           )}
                           placeholder="00000-000"
@@ -1283,7 +1293,7 @@ export function OrderBuilder({
                         autoComplete="street-address"
                         aria-invalid={shouldShowFieldError("addressStreet") && !!fieldErrors.addressStreet}
                         className={cn(
-                          "field",
+                          "field min-h-[48px]",
                           shouldShowFieldError("addressStreet") && fieldErrors.addressStreet && "border-red-400/50 ring-1 ring-red-400/30",
                         )}
                         placeholder="Rua, avenida..."
@@ -1298,6 +1308,7 @@ export function OrderBuilder({
                       <FieldLabel>Número</FieldLabel>
                       <input
                         type="text"
+                        inputMode="numeric"
                         value={addressNumber}
                         onChange={(event) => setAddressNumber(event.target.value)}
                         onBlur={() => setFieldTouched("addressNumber")}
@@ -1305,7 +1316,7 @@ export function OrderBuilder({
                           fieldRefs.current.addressNumber = element;
                         }}
                         className={cn(
-                          "field",
+                          "field min-h-[48px]",
                           shouldShowFieldError("addressNumber") && fieldErrors.addressNumber && "border-red-400/50 ring-1 ring-red-400/30",
                         )}
                       />
@@ -1320,7 +1331,7 @@ export function OrderBuilder({
                         value={addressComplement}
                         onChange={(event) => setAddressComplement(event.target.value)}
                         autoComplete="off"
-                        className="field"
+                        className="field min-h-[48px]"
                         placeholder="Opcional"
                       />
                     </label>
@@ -1337,7 +1348,7 @@ export function OrderBuilder({
                           fieldRefs.current.addressNeighborhood = element;
                         }}
                         className={cn(
-                          "field",
+                          "field min-h-[48px]",
                           shouldShowFieldError("addressNeighborhood") &&
                             fieldErrors.addressNeighborhood &&
                             "border-red-400/50 ring-1 ring-red-400/30",
@@ -1358,7 +1369,7 @@ export function OrderBuilder({
                           fieldRefs.current.addressCity = element;
                         }}
                         className={cn(
-                          "field",
+                          "field min-h-[48px]",
                           shouldShowFieldError("addressCity") && fieldErrors.addressCity && "border-red-400/50 ring-1 ring-red-400/30",
                         )}
                       />
@@ -1378,7 +1389,7 @@ export function OrderBuilder({
                       }}
                       aria-invalid={shouldShowFieldError("addressState") && !!fieldErrors.addressState}
                       className={cn(
-                        "field",
+                        "field min-h-[48px]",
                         shouldShowFieldError("addressState") && fieldErrors.addressState && "border-red-400/50 ring-1 ring-red-400/30",
                       )}
                     >
@@ -1500,7 +1511,7 @@ export function OrderBuilder({
         </div>
       </div>
 
-      <aside className="mt-6 h-fit min-w-0 lg:mt-0 lg:sticky lg:top-6">
+      <aside className="mb-5 h-fit min-w-0 lg:mb-0 lg:mt-0 lg:sticky lg:top-6">
         <div className="rounded-[24px] border border-white/10 bg-[#0a0d12]/92 p-5 shadow-[0_24px_56px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-6">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-fuchsia-200/80">Resumo do pedido</p>
 
@@ -1600,21 +1611,21 @@ export function OrderBuilder({
       </aside>
     </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-white/8 bg-[#05070d]/96 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-4 lg:hidden">
-        <div className="mx-auto w-full max-w-[1600px]">
-          <div className="flex items-end justify-between gap-3">
+      <div className="fixed inset-x-0 bottom-0 z-[50] w-full max-w-[100vw] border-t border-white/10 bg-[#05070d]/78 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-3 shadow-[0_-20px_50px_rgba(0,0,0,0.52)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#05070d]/64 sm:px-4 lg:hidden">
+        <div className="mx-auto w-full min-w-0 max-w-[1600px]">
+          <div className="flex min-w-0 items-end justify-between gap-3">
             <div className="min-w-0 shrink">
-              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total</p>
+              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total estimado</p>
               <strong className="mt-0.5 block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
-              <p className="text-[0.68rem] font-medium text-cyan-200/90">{pixEconomizePagarNoPixLabel()}</p>
-              <p className="text-[0.72rem] font-semibold tabular-nums text-cyan-200">ou {formatCurrencyBRL(pixTotal)} no PIX</p>
+              <p className="text-[0.7rem] font-medium text-fuchsia-200/90">{pixEconomizePagarNoPixLabel()}</p>
+              <p className="text-[0.72rem] font-semibold tabular-nums text-cyan-200/95">{formatCurrencyBRL(pixTotal)} no Pix</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handleSubmit}
             disabled={isPending}
-            className="home-btn-gradient focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center gap-2 px-4 text-[0.9375rem] font-semibold transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
+            className="home-btn-gradient focus-ring mt-3 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] px-4 text-[0.9375rem] font-semibold transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {primaryActionLabel}
             <ArrowRight />
@@ -1622,7 +1633,7 @@ export function OrderBuilder({
           <button
             type="button"
             onClick={handleAddToCart}
-            className="focus-ring mt-2 flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="focus-ring mt-2 flex min-h-[52px] w-full items-center justify-center rounded-[18px] border border-white/14 bg-[#0a0e18]/95 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
             Adicionar ao carrinho
           </button>

@@ -9,7 +9,7 @@ import { Badge } from "@/components/common/badge";
 import { formatAddonPriceHint } from "@/components/product/product-addon-strip";
 import { buildCartItem } from "@/lib/cart";
 import { pixEconomizePagarNoPixLabel, pixOffNoPixLabel } from "@/lib/copy";
-import { applyPixDiscount, PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
+import { applyPixDiscount } from "@/lib/pix-discount";
 import { isCustomFormatId } from "@/lib/custom-product-size";
 import { buildOrderUrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
@@ -62,6 +62,15 @@ function SparkIcon() {
   );
 }
 
+function CartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4 shrink-0" aria-hidden>
+      <path d="M6 9V6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3" strokeLinecap="round" />
+      <path d="M6 9h15l-1.2 10.8A2 2 0 0 1 17.8 22H8.2a2 2 0 0 1-1.98-2.2L5 9Z" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function ProductSummaryPanel({
   product,
   experience,
@@ -93,7 +102,7 @@ export function ProductSummaryPanel({
   const sizePhrase = isCustomFormatId(selection.formatId)
     ? `tamanho personalizado (${selection.width} x ${selection.height} cm)`
     : `${selection.width} x ${selection.height} cm`;
-  const naturalSummary = `${selection.quantity} un. em ${selection.material.toLowerCase()}, ${sizePhrase}, ${selection.finishing.toLowerCase()} e ${color?.label ?? "cor padrao"}.`;
+  const naturalSummary = `${selection.quantity} un. em ${selection.material.toLowerCase()}, ${sizePhrase}, ${selection.finishing.toLowerCase()} e ${color?.label ?? "cor padrão"}.`;
   const previewImage = experience.gallery[0]?.src ?? "";
 
   useEffect(() => {
@@ -225,17 +234,17 @@ export function ProductSummaryPanel({
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-white/8 bg-[#05070d]/96 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-4 lg:hidden">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <div className="fixed inset-x-0 bottom-0 z-[50] w-full max-w-[100vw] border-t border-white/10 bg-[#05070d]/78 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-3 shadow-[0_-20px_50px_rgba(0,0,0,0.52)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#05070d]/64 sm:px-4 lg:hidden">
+        <div className="mx-auto w-full min-w-0 max-w-[1600px]">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
               <p className="truncate text-[0.8125rem] font-semibold leading-tight text-white">{product.name}</p>
               <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0 text-[0.68rem] text-white/58">
-                <span>{selection.deadline}</span>
+                <span className="max-w-full truncate">{selection.deadline}</span>
                 <span className="text-white/30">·</span>
                 <span>{selection.quantity} un.</span>
                 <span className="text-white/30">·</span>
-                <span>Pix −{PIX_DISCOUNT_PERCENT}%</span>
+                <span className="font-medium text-fuchsia-200/90">{pixOffNoPixLabel()}</span>
               </div>
             </div>
             <div className="shrink-0 text-right">
@@ -250,15 +259,15 @@ export function ProductSummaryPanel({
               </strong>
             </div>
           </div>
-          <p className="mt-1.5 text-center text-[0.78rem] font-semibold tabular-nums text-cyan-300">
-            ou {formatCurrencyBRL(pixTotal)} no PIX
+          <p className="mt-2 text-center text-[0.78rem] font-semibold tabular-nums text-cyan-200/95">
+            {formatCurrencyBRL(pixTotal)} no Pix
           </p>
-          <div className="mt-2.5 grid w-full gap-2">
+          <div className="mt-3 grid w-full min-w-0 gap-2.5">
             {!editingCartItemId ? (
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 px-4 text-[0.9375rem] font-semibold motion-reduce:transform-none"
+                className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] px-4 text-[0.9375rem] font-semibold motion-reduce:transform-none"
               >
                 Comprar agora
                 <ArrowRight />
@@ -269,14 +278,14 @@ export function ProductSummaryPanel({
               onClick={handleCartAction}
               disabled={isPending}
               className={cn(
-                "focus-ring flex w-full items-center justify-center gap-2 px-4 text-sm font-semibold disabled:cursor-wait disabled:opacity-75",
+                "focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] px-4 text-sm font-semibold disabled:cursor-wait disabled:opacity-75",
                 editingCartItemId
-                  ? "btn btn-primary min-h-[52px]"
-                  : "min-h-[48px] rounded-full border border-white/15 bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_26px_rgba(0,0,0,0.25)] transition hover:bg-white/12",
+                  ? "btn btn-primary"
+                  : "border border-white/14 bg-[#0a0e18]/95 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-white/[0.07]",
               )}
             >
               {isPending ? "Adicionando..." : editingCartItemId ? "Salvar no carrinho" : "Adicionar ao carrinho"}
-              <ArrowRight />
+              <CartIcon />
             </button>
           </div>
         </div>

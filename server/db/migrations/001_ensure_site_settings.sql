@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
   short_trust_line TEXT,
   support_line TEXT,
   shipping_free_min_brl NUMERIC(12, 2),
-  pix_discount_percent NUMERIC(5, 2) DEFAULT 15,
+  pix_discount_percent NUMERIC(5, 2) DEFAULT 10,
   site_whatsapp_digits TEXT,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

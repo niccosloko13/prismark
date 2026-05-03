@@ -13,15 +13,18 @@ const STEPS = [
 export function CheckoutHeader({ activeStepIndex = 1 }: { activeStepIndex?: number }) {
   return (
     <header className="mb-5 overflow-hidden rounded-[20px] border border-white/10 bg-[#0b0e15]/95 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:mb-6">
-      <div className="flex min-w-0 flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5">
-        <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
-          <Link href="/" className="relative block h-9 w-[128px] shrink-0 sm:h-10 sm:w-[148px]">
+      <div className="flex min-w-0 flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-4">
+          <Link
+            href="/"
+            className="relative block h-8 w-[min(42vw,9.25rem)] shrink-0 sm:h-10 sm:w-[10.75rem]"
+          >
             <Image
               src="/checkout.png"
               alt="Prismarq"
               fill
               className="object-contain object-left"
-              sizes="148px"
+              sizes="(max-width:640px) 40vw, 172px"
               priority
             />
           </Link>
@@ -47,7 +50,7 @@ export function CheckoutHeader({ activeStepIndex = 1 }: { activeStepIndex?: numb
         </div>
 
         <nav
-          className="flex min-w-0 items-center justify-between gap-1 overflow-x-auto pb-0.5 sm:justify-end sm:gap-2 sm:pb-0"
+          className="flex min-w-0 max-w-full items-center justify-between gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:justify-end sm:gap-2 sm:pb-0 [&::-webkit-scrollbar]:hidden"
           aria-label="Etapas do checkout"
         >
           {STEPS.map((step, index) => {

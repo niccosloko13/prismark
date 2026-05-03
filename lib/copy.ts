@@ -6,6 +6,8 @@ export const COPY = {
   addToCart: "Adicionar ao carrinho",
   saveToCart: "Salvar no carrinho",
   finalizeOrder: "Finalizar pedido",
+  /** CTA principal do checkout (PIX). */
+  finalizeOrderPix: "Finalizar pedido no PIX",
   finalizeOrderNow: "Finalizar pedido agora",
   finalizeOrderWithArt: "Finalizar pedido com arte",
   payWithPix: "Pagar com Pix",

@@ -508,7 +508,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
         </aside>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-[45] border-t border-white/8 bg-[#05070d]/96 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2.5 shadow-[0_-16px_44px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:px-4 lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-[50] w-full max-w-[100vw] border-t border-white/10 bg-[#05070d]/78 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-3 shadow-[0_-20px_50px_rgba(0,0,0,0.52)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#05070d]/64 sm:px-4 lg:hidden">
         <div className="mx-auto flex w-full max-w-[1600px] items-end gap-3">
           <div className="min-w-0 shrink">
             <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/45">Total</p>

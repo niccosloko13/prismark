@@ -14,6 +14,17 @@ import {
 } from "@/lib/cookies";
 import { cn } from "@/lib/utils";
 
+/** Espaço acima da barra fixa de CTA (produto, carrinho, checkout) para o banner não cobrir botões. */
+function storefrontStickyCtaPadding(pathname: string) {
+  if (/^\/products\/[^/]+$/.test(pathname)) {
+    return "max-lg:pb-[calc(env(safe-area-inset-bottom)+14.5rem)] lg:pb-8";
+  }
+  if (pathname === "/cart" || pathname === "/order") {
+    return "max-lg:pb-[calc(env(safe-area-inset-bottom)+12.5rem)] lg:pb-8";
+  }
+  return "pb-3 sm:pb-5 lg:pb-8";
+}
+
 type EditableCookiePreferences = Pick<CookieConsentPreferences, "marketing" | "analytics">;
 
 type CookieToggleCardProps = {
@@ -90,8 +101,8 @@ function CookieToggleCard({ checked, description, disabled = false, onChange, ti
 }
 
 export function CookieConsent() {
-  const pathname = usePathname();
-  const isStorefront = !pathname.startsWith("/admin");
+  const pathname = usePathname() ?? "";
+  const bannerPadding = storefrontStickyCtaPadding(pathname);
   const [mounted, setMounted] = useState(false);
   const [hasSavedConsent, setHasSavedConsent] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -210,37 +221,37 @@ export function CookieConsent() {
       {shouldShowBanner ? (
         <section
           aria-label="Consentimento de cookies"
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-3 pb-3 sm:px-5 sm:pb-5 lg:px-8"
+          className={cn("pointer-events-none fixed inset-x-0 bottom-0 z-[48] px-3 sm:px-5 lg:px-8", bannerPadding)}
         >
           <div className="pointer-events-auto mx-auto max-w-[1600px]">
-            <div className="relative overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.04] px-4 py-3 text-white shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:rounded-[28px] sm:px-6 sm:py-5">
+            <div className="relative overflow-hidden rounded-[18px] border border-white/8 bg-white/[0.04] px-3 py-2.5 text-white shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:rounded-[28px] sm:px-6 sm:py-5">
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan via-magenta to-yellow" />
 
-              <div className="relative flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-end lg:justify-between">
-                <div className="max-w-3xl space-y-1.5 sm:space-y-2">
-                  <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-cyan-300/85 sm:text-[0.68rem]">
+              <div className="relative flex flex-col gap-2.5 sm:gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl space-y-1 sm:space-y-2">
+                  <p className="font-mono text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-cyan-300/85 sm:text-[0.68rem]">
                     Privacidade Prismarq
                   </p>
-                  <h2 className="display-title text-lg font-semibold tracking-[-0.04em] text-white sm:text-[1.55rem] lg:text-[1.65rem]">
+                  <h2 className="display-title text-[0.95rem] font-semibold leading-snug tracking-[-0.03em] text-white sm:text-[1.55rem] sm:leading-tight lg:text-[1.65rem]">
                     Usamos cookies para deixar sua navegação mais fluida, segura e relevante.
                   </h2>
-                  <p className="text-sm leading-snug text-white/72 sm:text-[0.96rem] sm:leading-6">
+                  <p className="hidden text-sm leading-snug text-white/72 sm:block sm:text-[0.96rem] sm:leading-6">
                     Os cookies essenciais mantêm o site funcionando. Com sua autorização, também ativamos recursos de marketing e analytics para aprimorar campanhas e entender melhor o uso da plataforma.
                   </p>
                 </div>
 
-                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:justify-end">
+                <div className="flex w-full flex-row gap-2 sm:w-auto sm:justify-end">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="focus-ring inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+                    className="focus-ring inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/10 sm:min-h-[44px] sm:flex-none sm:px-4 sm:text-sm"
                   >
                     Configurar
                   </button>
                   <button
                     type="button"
                     onClick={handleAcceptAll}
-                    className="home-btn-gradient focus-ring w-full justify-center sm:w-auto"
+                    className="home-btn-gradient focus-ring min-h-[44px] flex-1 justify-center px-4 text-xs font-semibold sm:w-auto sm:min-h-[44px] sm:text-sm"
                   >
                     Aceitar
                   </button>
@@ -249,20 +260,7 @@ export function CookieConsent() {
             </div>
           </div>
         </section>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className={cn(
-            "focus-ring fixed bottom-24 left-3 z-[60] rounded-full border px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:-translate-y-0.5 sm:bottom-4 sm:left-4 sm:px-4",
-            isStorefront
-              ? "border-white/8 bg-white/[0.04] text-white/80 backdrop-blur-xl hover:border-white/25 hover:text-white"
-              : "border-black/10 bg-white/95 text-black/58 hover:text-ink",
-          )}
-        >
-          Cookies
-        </button>
-      )}
+      ) : null}
 
       {mounted ? (
         <div

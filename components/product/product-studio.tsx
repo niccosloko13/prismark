@@ -130,7 +130,7 @@ export function ProductStudio({
   }, [experience.gallery]);
 
   return (
-    <div className="min-w-0 space-y-4 pb-[9.5rem] sm:space-y-5 sm:pb-28 lg:pb-6 xl:pb-8">
+    <div className="min-w-0 space-y-4 pb-[13rem] sm:space-y-5 sm:pb-32 lg:pb-6 xl:pb-8">
       <nav
         className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-0.5 text-[0.78rem] text-white/60"
         aria-label="Trilha"
