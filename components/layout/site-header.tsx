@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -9,7 +8,7 @@ import { CartNavLink } from "@/components/cart/cart-nav-link";
 import { HeaderAuthMenu, useEncodedReturnTo } from "@/components/layout/header-auth-menu";
 import { HeaderSearch } from "@/components/layout/header-search";
 import { LogoutButton } from "@/components/layout/logout-button";
-import { HEADER_LOGO_SRC } from "@/lib/brand-assets";
+import { HEADER_LOGO_HEIGHT, HEADER_LOGO_SRC, HEADER_LOGO_WIDTH } from "@/lib/brand-assets";
 import { companyLinks, companyProfile } from "@/lib/company";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/types";
@@ -66,14 +65,14 @@ function HeaderNavLink({
     <Link
       href={href}
       className={cn(
-        "focus-ring relative rounded-full px-4 py-2.5 text-[0.92rem] font-semibold transition",
+        "focus-ring relative whitespace-nowrap rounded-full px-3 py-1.5 text-[0.875rem] font-semibold transition",
         plain
           ? null
           : homeUnderline
             ? "home-nav-link text-white/90 hover:bg-white/[0.06] hover:text-white"
             : "btn-ghost text-black/70",
         active &&
-          "text-white after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-[5px] after:h-px after:rounded-full after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-cyan-400",
+          "text-white after:content-[''] after:absolute after:left-3 after:right-3 after:bottom-[4px] after:h-px after:rounded-full after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-cyan-400",
         className,
       )}
     >
@@ -144,19 +143,15 @@ function HeaderBrand({
             : "max-w-[280px]",
       )}
     >
-      <Image
+      {/* img nativo: evita falha "Image size cannot be determined" do otimizador em alguns ambientes */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src={HEADER_LOGO_SRC}
         alt="Prismarq Comunicação Visual"
-        width={1536}
-        height={1024}
-        priority={priority}
-        sizes={
-          mobile && mobilePremium
-            ? "(max-width: 360px) 176px, (max-width: 430px) 210px, 230px"
-            : mobile
-              ? "(max-width: 640px) 220px, 240px"
-              : "(max-width: 1280px) 260px, 280px"
-        }
+        width={HEADER_LOGO_WIDTH}
+        height={HEADER_LOGO_HEIGHT}
+        decoding={priority ? "sync" : "async"}
+        fetchPriority={priority ? "high" : undefined}
         className={cn(
           "h-auto border-none bg-transparent object-contain object-left shadow-none",
           homePremium ? "mix-blend-lighten contrast-[1.06] [isolation:isolate]" : "",
@@ -177,9 +172,35 @@ function HomePedidoOnlineLink() {
       href="/order"
       className="focus-ring rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 p-[1px] shadow-[0_0_24px_rgba(168,85,247,0.25)] transition hover:brightness-110"
     >
-      <span className="flex min-h-[44px] items-center justify-center rounded-full bg-[#05070d]/95 px-4 py-2.5 text-[0.92rem] font-semibold text-white">
+      <span className="flex min-h-10 items-center justify-center whitespace-nowrap rounded-full bg-[#05070d]/95 px-3 py-2 text-[0.875rem] font-semibold text-white">
         Pedido online
       </span>
+    </Link>
+  );
+}
+
+function Election2026NavLink({
+  active,
+  onNavigate,
+  className,
+}: {
+  active: boolean;
+  onNavigate?: () => void;
+  className?: string;
+}) {
+  return (
+    <Link
+      href="/eleicao-2026"
+      onClick={onNavigate}
+      className={cn(
+        "focus-ring relative inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-[0.8125rem] font-bold uppercase leading-none tracking-wide text-black transition",
+        "bg-white shadow-[0_0_14px_rgba(255,255,255,0.35),0_4px_14px_rgba(0,0,0,0.2)]",
+        "hover:scale-105 hover:shadow-[0_0_28px_rgba(255,255,255,0.55),0_8px_24px_rgba(0,0,0,0.35)]",
+        active && "ring-2 ring-white/90 shadow-[0_0_24px_rgba(255,255,255,0.5),0_6px_20px_rgba(0,0,0,0.28)]",
+        className,
+      )}
+    >
+      Eleição 2026
     </Link>
   );
 }
@@ -212,6 +233,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
   const mobileLoginHref = `/login?returnTo=${encodedReturnTo}`;
   const mobileCadastroHref = `/cadastro?returnTo=${encodedReturnTo}`;
   const isHomeActive = pathname === "/";
+  const isElectionActive = pathname === "/eleicao-2026";
   const isProdutosActive = pathname === "/produtos" || pathname === "/products";
   const isContatoActive = pathname === "/contact";
 
@@ -316,22 +338,23 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
 
               <div
                 className={cn(
-                  "flex min-w-0 flex-wrap items-center justify-between gap-3 border-t pt-3",
+                  "flex min-w-0 flex-nowrap items-center gap-4 overflow-hidden border-t pt-3",
                   isStorefront ? "border-white/[0.08]" : "border-[#E5E7EB]",
                 )}
               >
-                <nav className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+                <nav className="flex min-w-0 flex-1 flex-nowrap items-center gap-4 overflow-hidden">
                   <HeaderNavLink href="/" homeUnderline={isStorefront} active={isHomeActive}>
                     {isStorefront ? "Início" : "Home"}
                   </HeaderNavLink>
+                  {isStorefront ? <Election2026NavLink active={isElectionActive} /> : null}
                   {isStorefront ? (
-                    <div className="group relative">
+                    <div className="group relative shrink-0">
                       <Link
                         href="/produtos"
                         className={cn(
-                          "focus-ring home-nav-link inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[0.92rem] font-semibold text-white/90 transition hover:bg-white/[0.06] hover:text-white",
+                          "focus-ring home-nav-link relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[0.875rem] font-semibold text-white/90 transition hover:bg-white/[0.06] hover:text-white",
                           isProdutosActive &&
-                            "text-white after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-[5px] after:h-px after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-cyan-400",
+                            "text-white after:content-[''] after:absolute after:left-3 after:right-3 after:bottom-[4px] after:h-px after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-cyan-400",
                         )}
                       >
                         Produtos
@@ -370,13 +393,13 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   </HeaderNavLink>
                 </nav>
 
-                <div className="flex min-w-0 w-full max-w-full flex-wrap items-center justify-end gap-2 lg:w-auto lg:max-w-[min(40rem,50%)] xl:max-w-[min(48rem,58%)] 2xl:max-w-none">
+                <div className="flex min-w-0 shrink-0 flex-nowrap items-center justify-end gap-4 overflow-hidden">
                   <HeaderSearch
-                    className="w-full min-w-0 max-w-[20rem] shrink sm:max-w-[16rem] lg:max-w-[14rem] xl:max-w-[16rem] 2xl:max-w-[18rem]"
+                    className="w-[10.25rem] min-w-0 shrink-0 sm:w-[11.25rem] lg:w-[11.5rem] xl:w-[13rem] 2xl:w-[14.5rem]"
                     tone={isStorefront ? "dark" : "light"}
                   />
                   <div className={cn("hidden h-8 w-px shrink-0 xl:block", isStorefront ? "bg-white/12" : "bg-black/8")} />
-                  <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-end gap-2">
+                  <div className="flex min-w-0 shrink-0 flex-nowrap items-center justify-end gap-4">
                     <CartNavLink headerOnDark={isStorefront} className="shrink-0" />
                     {isAdmin ? (
                       <LogoutButton
@@ -387,13 +410,13 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                         }
                       />
                     ) : (
-                      <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+                      <div className="flex min-w-0 shrink-0 flex-nowrap items-center justify-end gap-4">
                         <HeaderAuthMenu session={session} isStorefront={isStorefront} isAdmin={false} />
                         {!session ? (
                           <Link
                             href="/order"
                             className={cn(
-                              "focus-ring inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full px-3 py-2.5 text-sm font-semibold transition sm:px-4",
+                              "focus-ring inline-flex min-h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition",
                               isStorefront
                                 ? "bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-white shadow-[0_8px_30px_rgba(168,85,247,0.38),0_0_32px_rgba(56,189,248,0.2)] hover:scale-[1.03] hover:brightness-110"
                                 : "btn btn-primary",
@@ -472,6 +495,13 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
             <DrawerLink href="/" storefront={isStorefront}>
               Início
             </DrawerLink>
+            {isStorefront ? (
+              <Election2026NavLink
+                active={isElectionActive}
+                onNavigate={() => setIsMobileMenuOpen(false)}
+                className="w-full min-h-[48px] justify-center"
+              />
+            ) : null}
             <DrawerLink href="/produtos" storefront={isStorefront}>
               Produtos
             </DrawerLink>

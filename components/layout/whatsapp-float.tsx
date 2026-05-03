@@ -20,6 +20,9 @@ function useMobileFabBottomOffset(pathname: string) {
   if (pathname === "/cart" || pathname === "/order") {
     return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+13.25rem)]";
   }
+  if (pathname === "/eleicao-2026") {
+    return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+12.5rem)]";
+  }
   return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+5.75rem)]";
 }
 

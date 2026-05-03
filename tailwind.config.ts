@@ -33,6 +33,15 @@ const config: Config = {
       borderRadius: {
         "4xl": "2rem",
       },
+      keyframes: {
+        "election-row-in": {
+          from: { opacity: "0", transform: "translateY(0.5rem)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "election-row-in": "election-row-in 0.38s ease-out both",
+      },
     },
   },
   plugins: [],
