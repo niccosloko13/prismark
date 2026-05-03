@@ -285,6 +285,24 @@ export async function HomePage() {
                 .
               </h1>
             </div>
+            <Link
+              href="/eleicao-2026"
+              className={cn(
+                "focus-ring mx-auto mt-4 mb-4 block w-full text-center md:hidden",
+                "transition hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100",
+              )}
+            >
+              <span
+                className={cn(
+                  "inline-flex w-full items-center justify-center rounded-full border border-white/25",
+                  "bg-gradient-to-r from-white via-gray-100 to-white py-3 px-6 text-base font-bold uppercase tracking-wide text-black",
+                  "shadow-[0_0_20px_rgba(255,0,150,0.3),0_4px_18px_rgba(0,0,0,0.2)]",
+                  "hover:shadow-[0_0_28px_rgba(255,0,150,0.42),0_6px_22px_rgba(0,0,0,0.25)]",
+                )}
+              >
+                Eleição 2026
+              </span>
+            </Link>
             <p className="home-animate-in home-animate-delay-3 mt-5 max-w-xl text-base leading-relaxed text-white/70 sm:mt-6 md:text-lg md:leading-8">
               Produção gráfica de alta qualidade com agilidade, tecnologia e acabamento impecável.
             </p>
