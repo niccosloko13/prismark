@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { useCart } from "@/components/cart/cart-provider";
-import { COPY, pixOffNoPixLabel } from "@/lib/copy";
+import { COPY, pixEconomizePagarNoPixLabel, pixOffNoPixLabel } from "@/lib/copy";
 import { applyPixDiscount } from "@/lib/pix-discount";
 import { buildCartItem } from "@/lib/cart";
 import { formatSizeSummaryForSelection } from "@/lib/custom-product-size";
 import { buildOrderUrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
-import type { PriceBreakdown, Product } from "@/types";
+import type { PriceBreakdown, Product, SessionUser } from "@/types";
 import type { ProductExperience, ProductSelectionState } from "@/lib/product-experience";
 
 function ArrowRight() {
@@ -39,6 +39,8 @@ export function OrderSummaryBar({
   editingCartItemId,
   cartNotes,
   flowComplete,
+  session = null,
+  onRequestLogin,
 }: {
   product: Product;
   experience: ProductExperience;
@@ -47,6 +49,9 @@ export function OrderSummaryBar({
   editingCartItemId?: string | null;
   cartNotes?: string;
   flowComplete: boolean;
+  session?: SessionUser | null;
+  /** Quando não logado e o usuário toca em “Finalizar aqui”. */
+  onRequestLogin?: () => void;
 }) {
   const router = useRouter();
   const { upsertItem } = useCart();
@@ -92,11 +97,15 @@ export function OrderSummaryBar({
 
   function handleFinalize() {
     if (!flowComplete) return;
-    router.push(buildOrderUrl(product, experience, selection));
+    if (session) {
+      router.push(buildOrderUrl(product, experience, selection));
+      return;
+    }
+    onRequestLogin?.();
   }
 
   const primaryDisabled = !flowComplete || isPending;
-  const primaryLabel = !flowComplete ? COPY.completeOptions : COPY.buyNow;
+  const primaryLabel = flowComplete ? COPY.finalizeHere : COPY.completeOptions;
   const secondaryLabel = isPending ? "Adicionando..." : editingCartItemId ? COPY.saveToCart : COPY.addToCart;
 
   return (
@@ -108,49 +117,72 @@ export function OrderSummaryBar({
         "lg:static lg:inset-auto lg:z-auto lg:max-w-none lg:rounded-[22px] lg:border lg:border-white/10 lg:bg-[#05070d]/95 lg:px-5 lg:py-4 lg:shadow-[0_-12px_48px_rgba(0,0,0,0.45)] lg:backdrop-blur-xl",
       )}
     >
-      {/* Mobile: barra compacta premium */}
+      {/* Mobile */}
       <div className="mx-auto w-full max-w-[1600px] lg:hidden">
         <div className="flex min-w-0 items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[0.8125rem] font-semibold leading-tight text-white">{product.name}</p>
-            <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0 text-[0.68rem] text-white/58">
-              <span className="max-w-[100%] truncate">{selection.deadline}</span>
+            <p className="truncate text-[0.875rem] font-semibold leading-tight text-white">{product.name}</p>
+            <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0 text-[0.72rem] text-white/58">
+              <span className="max-w-full truncate">{selection.deadline}</span>
               <span className="text-white/30">·</span>
               <span className="shrink-0">{selection.quantity} un.</span>
-              <span className="text-white/30">·</span>
-              <span className="shrink-0 font-medium text-fuchsia-200/90">{pixOffNoPixLabel()}</span>
             </div>
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/45">Total</p>
-            <strong className="mt-0.5 block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total estimado</p>
+            <strong className="mt-0.5 block text-lg font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
           </div>
         </div>
-        <p className="mt-2 text-center text-[0.78rem] font-semibold tabular-nums text-cyan-200/95">
-          {formatCurrencyBRL(pixTotal)} no Pix
-        </p>
-        <div className="mt-3 grid w-full min-w-0 gap-2.5">
-          <button
-            type="button"
-            onClick={handleFinalize}
-            disabled={primaryDisabled}
-            className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] px-4 text-[0.9375rem] font-semibold disabled:cursor-not-allowed disabled:opacity-45"
-          >
-            {primaryLabel}
-            <ArrowRight />
-          </button>
-          <button
-            type="button"
-            onClick={handleCart}
-            disabled={primaryDisabled}
-            className={cn(
-              "focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] border border-white/14 bg-[#0a0e18]/95 px-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-45",
-            )}
-          >
-            {secondaryLabel}
-            <CartIcon />
-          </button>
-        </div>
+
+        {flowComplete ? (
+          <>
+            <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
+              <p className="text-center text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-fuchsia-200/90">
+                {pixOffNoPixLabel()}
+              </p>
+              <p className="mt-1 text-center text-xs text-white/60">{pixEconomizePagarNoPixLabel()}</p>
+              <p className="mt-1 text-center text-xl font-bold tabular-nums text-cyan-200/95">{formatCurrencyBRL(pixTotal)} no Pix</p>
+              <p className="mt-1 text-center text-[0.68rem] text-white/45">
+                em até 3x de {formatCurrencyBRL(unitAverage)} sem juros · −{formatCurrencyBRL(pixDiscountAmount)} no Pix
+              </p>
+            </div>
+            <div className="mt-3 grid w-full min-w-0 gap-2.5">
+              <button
+                type="button"
+                onClick={handleFinalize}
+                disabled={isPending}
+                className="home-btn-gradient focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] px-4 text-[0.9375rem] font-semibold disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                {primaryLabel}
+                <ArrowRight />
+              </button>
+              <button
+                type="button"
+                onClick={handleCart}
+                disabled={isPending}
+                className={cn(
+                  "focus-ring flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[18px] border border-white/14 bg-[#0a0e18]/95 px-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-45",
+                )}
+              >
+                {secondaryLabel}
+                <CartIcon />
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="mt-3 space-y-2">
+            <p className="text-center text-[0.8rem] leading-snug text-amber-200/90">
+              Complete as opções no configurador para ver o total e finalizar.
+            </p>
+            <button
+              type="button"
+              disabled
+              className="focus-ring flex min-h-[48px] w-full cursor-not-allowed items-center justify-center rounded-[18px] border border-white/10 bg-white/[0.04] text-sm font-semibold text-white/40"
+            >
+              {COPY.completeOptions}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Desktop */}

@@ -8,6 +8,10 @@ export const COPY = {
   finalizeOrder: "Finalizar pedido",
   /** CTA principal do checkout (PIX). */
   finalizeOrderPix: "Finalizar pedido no PIX",
+  /** Produto (sticky) e checkout quando falta login. */
+  finalizeHere: "Finalizar aqui",
+  /** Checkout logado com campos incompletos. */
+  fillDataToFinalize: "Preencha os dados para finalizar",
   finalizeOrderNow: "Finalizar pedido agora",
   finalizeOrderWithArt: "Finalizar pedido com arte",
   payWithPix: "Pagar com Pix",

@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { companyLinks } from "@/lib/company";
+import { PRISMARQ_PRODUCT_CTA_EVENT, type ProductCtaBroadcastDetail } from "@/lib/storefront-events";
 import { cn } from "@/lib/utils";
 
+function isProductSlugPage(pathname: string) {
+  return /^\/products\/[^/]+$/.test(pathname);
+}
+
 /** Altura aproximada das barras fixas de CTA no mobile (produto / carrinho / checkout). */
-function useMobileFabBottomOffset() {
-  const pathname = usePathname() ?? "";
-  if (/^\/products\/[^/]+$/.test(pathname)) {
-    return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+15.75rem)]";
+function useMobileFabBottomOffset(pathname: string) {
+  if (isProductSlugPage(pathname)) {
+    return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+16.25rem)]";
   }
   if (pathname === "/cart" || pathname === "/order") {
     return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+13.25rem)]";
@@ -18,8 +23,37 @@ function useMobileFabBottomOffset() {
   return "max-lg:bottom-[calc(env(safe-area-inset-bottom)+5.75rem)]";
 }
 
+function useProductPageCtaMode(pathname: string) {
+  const [mode, setMode] = useState<"compact" | "full" | null>(null);
+
+  useEffect(() => {
+    if (!isProductSlugPage(pathname)) {
+      setMode(null);
+      return;
+    }
+
+    const handler = (event: Event) => {
+      const custom = event as CustomEvent<ProductCtaBroadcastDetail>;
+      const next = custom.detail?.mode;
+      if (next === "full" || next === "compact") {
+        setMode(next);
+      } else {
+        setMode(null);
+      }
+    };
+
+    window.addEventListener(PRISMARQ_PRODUCT_CTA_EVENT, handler as EventListener);
+    return () => window.removeEventListener(PRISMARQ_PRODUCT_CTA_EVENT, handler as EventListener);
+  }, [pathname]);
+
+  return mode;
+}
+
 export function WhatsAppFloat() {
-  const bottomOffset = useMobileFabBottomOffset();
+  const pathname = usePathname() ?? "";
+  const productCtaMode = useProductPageCtaMode(pathname);
+  const bottomOffset = useMobileFabBottomOffset(pathname);
+  const hideOnMobileProductFull = isProductSlugPage(pathname) && productCtaMode === "full";
 
   return (
     <Link
@@ -30,6 +64,7 @@ export function WhatsAppFloat() {
       className={cn(
         "focus-ring fixed right-3 z-[40] flex items-center justify-center shadow-[0_12px_32px_rgba(15,15,15,0.2)] transition duration-200 hover:brightness-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:brightness-100 motion-reduce:active:scale-100",
         bottomOffset,
+        hideOnMobileProductFull && "max-lg:hidden",
         "h-11 w-11 rounded-full border border-white/22 bg-[#25D366] text-white lg:h-auto lg:w-auto lg:min-h-[44px] lg:rounded-full lg:border-0 lg:bg-gradient-to-r lg:from-pink-500 lg:via-purple-500 lg:to-cyan-400 lg:px-5 lg:py-3 lg:text-white lg:shadow-[0_4px_28px_rgba(236,72,153,0.35),0_0_0_1px_rgba(255,255,255,0.12)_inset,0_0_40px_rgba(56,189,248,0.12)]",
         "lg:bottom-8 lg:right-5 lg:max-w-[calc(100vw-2rem)] lg:gap-2",
         "max-lg:p-0 lg:gap-2",

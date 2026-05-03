@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Badge } from "@/components/common/badge";
 import {
   friendlyFinishingLabel,
   inferOptionBadge,
@@ -20,9 +19,36 @@ import { ProductAddonStrip } from "./product-addon-strip";
 type StepDef = {
   id: "size" | "material" | "finish" | "production" | "extras";
   title: string;
+  /** Nome curto no stepper (mobile). */
+  shortTitle: string;
   subtitle: string;
   optional?: boolean;
 };
+
+function stepShortTitle(id: StepDef["id"]): string {
+  switch (id) {
+    case "size":
+      return "Tamanho";
+    case "material":
+      return "Material";
+    case "finish":
+      return "Impressão";
+    case "production":
+      return "Produção";
+    case "extras":
+      return "Extras";
+    default:
+      return "";
+  }
+}
+
+function CheckMini({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className={cn("h-3.5 w-3.5", className)} aria-hidden>
+      <path d="m5.5 12.5 4 4 9-9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 function OptionCard({
   selected,
@@ -44,22 +70,31 @@ function OptionCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "focus-ring flex min-h-[3.25rem] w-full flex-col items-start gap-1 rounded-[18px] border px-3.5 py-3 text-left transition duration-200 sm:min-h-0 sm:px-4 sm:py-3.5",
+        "focus-ring relative flex min-h-[4.25rem] w-full flex-col items-start gap-1.5 rounded-[20px] border px-4 py-3.5 text-left transition duration-200 sm:min-h-0 sm:gap-1 sm:px-4 sm:py-3.5",
         selected
-          ? "border-transparent bg-gradient-to-r from-pink-500/90 via-purple-500/90 to-cyan-400/90 text-white shadow-[0_10px_32px_rgba(168,85,247,0.35),0_0_24px_rgba(56,189,248,0.18)] ring-1 ring-white/20"
-          : "border-white/10 bg-white/[0.04] text-white/88 hover:border-white/18 hover:bg-white/[0.07]",
+          ? "border-transparent bg-gradient-to-r from-pink-500/92 via-purple-500/88 to-cyan-400/85 text-white shadow-[0_12px_36px_rgba(168,85,247,0.42),0_0_32px_rgba(56,189,248,0.22)] ring-2 ring-fuchsia-400/35"
+          : "border-white/12 bg-white/[0.05] text-white/90 hover:border-white/22 hover:bg-white/[0.08]",
         className,
       )}
     >
-      <span className="flex w-full flex-wrap items-center gap-2">
-        <span className="text-sm font-semibold leading-snug">{title}</span>
-        {badge ? (
-          <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-white/90">
+      {selected ? (
+        <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-black/30 text-white ring-1 ring-white/35 backdrop-blur-sm">
+          <CheckMini />
+        </span>
+      ) : null}
+      <span className="flex w-full flex-wrap items-center gap-2 pr-9">
+        <span className="text-[0.95rem] font-semibold leading-snug sm:text-sm">{title}</span>
+        {badge && !selected ? (
+          <span className="rounded-full border border-white/18 bg-white/[0.08] px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-white/85">
             {badge}
           </span>
         ) : null}
       </span>
-      {description ? <span className="text-[0.78rem] leading-relaxed text-white/70">{description}</span> : null}
+      {description ? (
+        <span className={cn("text-[0.84rem] leading-relaxed sm:text-[0.78rem]", selected ? "text-white/85" : "text-white/65")}>
+          {description}
+        </span>
+      ) : null}
     </button>
   );
 }
@@ -72,6 +107,7 @@ function buildSteps(product: Product, experience: ProductExperience, customSizeP
     steps.push({
       id: "size",
       title: "Escolha o tamanho",
+      shortTitle: stepShortTitle("size"),
       subtitle: "Formato e medidas ideais para o seu uso.",
     });
   }
@@ -79,6 +115,7 @@ function buildSteps(product: Product, experience: ProductExperience, customSizeP
     steps.push({
       id: "material",
       title: "Escolha o material",
+      shortTitle: stepShortTitle("material"),
       subtitle: "Selecione a mídia que melhor combina com sua aplicação.",
     });
   }
@@ -88,18 +125,21 @@ function buildSteps(product: Product, experience: ProductExperience, customSizeP
     steps.push({
       id: "finish",
       title: "Acabamento e impressão",
+      shortTitle: stepShortTitle("finish"),
       subtitle: "Cor, enobrecimento e acabamento final.",
     });
   }
   steps.push({
     id: "production",
     title: "Prazo e quantidade",
+    shortTitle: stepShortTitle("production"),
     subtitle: "Defina tiragem e urgência de produção.",
   });
   if (experience.addons.length > 0) {
     steps.push({
       id: "extras",
       title: "Extras opcionais",
+      shortTitle: stepShortTitle("extras"),
       subtitle: "Serviços adicionais para facilitar sua entrega.",
       optional: true,
     });
@@ -148,12 +188,6 @@ export function ProductStepConfigurator({
   const [activeIndex, setActiveIndex] = useState(0);
   const [unlockedStepIndex, setUnlockedStepIndex] = useState(0);
 
-  const lastRequiredIndex = useMemo(() => {
-    let idx = steps.length - 1;
-    while (idx >= 0 && steps[idx]?.optional) idx--;
-    return Math.max(0, idx);
-  }, [steps]);
-
   const clampIndex = useCallback(
     (i: number) => Math.max(0, Math.min(i, Math.max(steps.length - 1, 0))),
     [steps.length],
@@ -172,7 +206,8 @@ export function ProductStepConfigurator({
     document.getElementById("order-summary-bar")?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const isLast = steps.length > 0 && activeIndex >= steps.length - 1;
+  const lastStepIndex = Math.max(0, steps.length - 1);
+  const isLast = steps.length > 0 && activeIndex >= lastStepIndex;
 
   const handlePrimary = () => {
     if (steps.length === 0) {
@@ -184,9 +219,6 @@ export function ProductStepConfigurator({
       document.getElementById("order-summary-bar")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    if (activeIndex === lastRequiredIndex) {
-      onCheckoutUnlocked(true);
-    }
     setUnlockedStepIndex((u) => Math.max(u, activeIndex + 1));
     setActiveIndex((i) => clampIndex(i + 1));
   };
@@ -196,14 +228,15 @@ export function ProductStepConfigurator({
   const clampQty = (n: number) => Math.max(quantityMin, Math.round(n) || quantityMin);
 
   const stepper = (
-    <div className="max-w-full overflow-x-auto overflow-y-visible pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <ol className="flex w-max min-w-0 gap-2 sm:gap-3">
+    <div className="max-w-full overflow-x-auto overflow-y-visible pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ol className="flex w-max min-w-0 snap-x snap-mandatory gap-2.5 px-0.5 sm:gap-3">
         {steps.map((s, i) => {
           const done = i < activeIndex;
           const current = i === activeIndex;
+          const future = i > activeIndex;
           const reachable = i <= unlockedStepIndex;
           return (
-            <li key={s.id} className="min-w-0 max-w-[min(100vw-2.5rem,10.5rem)] shrink-0 sm:max-w-[12rem]">
+            <li key={s.id} className="min-w-0 shrink-0 snap-start">
               <button
                 type="button"
                 disabled={!reachable}
@@ -211,20 +244,37 @@ export function ProductStepConfigurator({
                   if (reachable) setActiveIndex(i);
                 }}
                 className={cn(
-                  "focus-ring flex w-full max-w-full flex-col rounded-2xl border px-3 py-2 text-left transition sm:px-3.5",
-                  current
-                    ? "border-cyan-400/45 bg-cyan-500/15 shadow-[0_0_24px_rgba(56,189,248,0.2)]"
-                    : done
-                      ? "border-white/12 bg-white/[0.05] text-white/75 hover:border-white/20"
-                      : "border-white/8 bg-white/[0.02] text-white/45 hover:border-white/14",
-                  !reachable && "cursor-not-allowed opacity-45",
+                  "focus-ring flex min-w-[5.75rem] max-w-[8.25rem] flex-col rounded-2xl border px-3 py-2.5 text-left transition sm:min-w-[6.5rem] sm:max-w-none sm:px-3.5 sm:py-3",
+                  current &&
+                    "border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-500/25 via-violet-500/15 to-cyan-500/10 shadow-[0_0_28px_rgba(236,72,153,0.28)] ring-1 ring-fuchsia-400/30",
+                  done &&
+                    !current &&
+                    "border-emerald-400/35 bg-emerald-500/[0.12] text-emerald-50 hover:border-emerald-400/50",
+                  future && "border-white/[0.07] bg-white/[0.03] text-white/40",
+                  !reachable && "cursor-not-allowed opacity-40",
                 )}
               >
-                <span className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-white/50">
-                  {String(i + 1).padStart(2, "0")}
+                <span className="flex items-center justify-between gap-1">
+                  <span
+                    className={cn(
+                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-bold tabular-nums",
+                      current && "bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-md",
+                      done && !current && "bg-emerald-500/30 text-emerald-100",
+                      future && "bg-white/10 text-white/45",
+                    )}
+                  >
+                    {done && !current ? <CheckMini className="h-3 w-3" /> : i + 1}
+                  </span>
                 </span>
-                <span className="mt-0.5 line-clamp-2 text-[0.72rem] font-semibold leading-tight text-white sm:text-[0.78rem]">
-                  {s.title}
+                <span
+                  className={cn(
+                    "mt-1.5 block text-[0.8rem] font-semibold leading-tight sm:text-[0.78rem]",
+                    current && "text-white",
+                    done && !current && "text-emerald-100/95",
+                    future && "text-white/45",
+                  )}
+                >
+                  {s.shortTitle}
                 </span>
               </button>
             </li>
@@ -241,9 +291,9 @@ export function ProductStepConfigurator({
         body = (
           <div className="grid gap-3">
             {experience.models.length > 1 ? (
-              <div className="space-y-2">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Modelo</p>
-                <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2.5">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Modelo</p>
+                <div className="grid gap-3 sm:grid-cols-2">
                   {experience.models.map((m) => (
                     <OptionCard
                       key={m.id}
@@ -257,9 +307,9 @@ export function ProductStepConfigurator({
                 </div>
               </div>
             ) : null}
-            <div className="space-y-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Formato</p>
-              <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-2.5">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Formato</p>
+              <div className="grid gap-3 sm:grid-cols-2">
                 {experience.formats.map((f) => (
                   <OptionCard
                     key={f.id}
@@ -334,7 +384,7 @@ export function ProductStepConfigurator({
         break;
       case "material":
         body = (
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {product.materials.map((mat) => (
               <OptionCard
                 key={mat.label}
@@ -350,40 +400,50 @@ export function ProductStepConfigurator({
         break;
       case "finish":
         body = (
-          <div className="space-y-5">
+          <div className="space-y-6">
             {experience.colors.length > 1 ? (
-              <div className="space-y-2">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Cor</p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {experience.colors.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => onColorChange(c.id)}
-                      className={cn(
-                        "focus-ring flex items-start gap-2 rounded-[18px] border px-3.5 py-3 text-left transition sm:items-center",
-                        selection.colorId === c.id
-                          ? "border-transparent bg-gradient-to-r from-pink-500/90 via-purple-500/90 to-cyan-400/90 text-white ring-1 ring-white/20"
-                          : "border-white/10 bg-white/[0.04] hover:border-white/18",
-                      )}
-                    >
-                      <span
-                        className="mt-0.5 h-4 w-4 shrink-0 rounded-full border border-white/25 sm:mt-0"
-                        style={{ background: c.swatch }}
-                      />
-                      <span>
-                        <span className="block text-sm font-semibold">{c.label}</span>
-                        <span className="mt-0.5 block text-[0.78rem] text-white/65">{c.description}</span>
-                      </span>
-                    </button>
-                  ))}
+              <div className="space-y-2.5">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Cor</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {experience.colors.map((c) => {
+                    const selected = selection.colorId === c.id;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => onColorChange(c.id)}
+                        className={cn(
+                          "focus-ring relative flex min-h-[4.25rem] items-start gap-3 rounded-[20px] border px-4 py-3.5 text-left transition sm:min-h-0 sm:items-center",
+                          selected
+                            ? "border-transparent bg-gradient-to-r from-pink-500/92 via-purple-500/88 to-cyan-400/85 text-white shadow-[0_12px_36px_rgba(168,85,247,0.42),0_0_28px_rgba(56,189,248,0.2)] ring-2 ring-fuchsia-400/35"
+                            : "border-white/12 bg-white/[0.05] hover:border-white/22",
+                        )}
+                      >
+                        {selected ? (
+                          <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-black/30 text-white ring-1 ring-white/35 backdrop-blur-sm">
+                            <CheckMini />
+                          </span>
+                        ) : null}
+                        <span
+                          className="mt-0.5 h-5 w-5 shrink-0 rounded-full border border-white/25 sm:mt-0"
+                          style={{ background: c.swatch }}
+                        />
+                        <span className="min-w-0 flex-1 pr-8">
+                          <span className="block text-[0.95rem] font-semibold leading-snug sm:text-sm">{c.label}</span>
+                          <span className="mt-0.5 block text-[0.84rem] leading-relaxed text-white/70 sm:text-[0.78rem]">
+                            {c.description}
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ) : null}
             {experience.enhancements.length > 1 ? (
-              <div className="space-y-2">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Enobrecimento</p>
-                <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2.5">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Enobrecimento</p>
+                <div className="grid gap-3 sm:grid-cols-2">
                   {experience.enhancements.map((e) => (
                     <OptionCard
                       key={e.id}
@@ -397,9 +457,9 @@ export function ProductStepConfigurator({
               </div>
             ) : null}
             {product.finishings.length > 1 ? (
-              <div className="space-y-2">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Acabamento</p>
-                <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2.5">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Acabamento</p>
+                <div className="grid gap-3 sm:grid-cols-2">
                   {product.finishings.map((f) => (
                     <OptionCard
                       key={f.label}
@@ -419,9 +479,9 @@ export function ProductStepConfigurator({
       case "production":
         body = (
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Prazo</p>
-              <div className="grid gap-2">
+            <div className="space-y-2.5">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Prazo</p>
+              <div className="grid gap-3">
                 {product.deadlines.map((d) => (
                   <OptionCard
                     key={d.label}
@@ -434,7 +494,7 @@ export function ProductStepConfigurator({
               </div>
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/[0.04] p-3.5">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/45">Quantidade</p>
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Quantidade</p>
               <p className="mt-1 text-[0.78rem] text-white/60">Mínimo: {quantityMin} un.</p>
               <div className="mt-3 flex min-w-0 items-center gap-2">
                 <button
@@ -476,7 +536,7 @@ export function ProductStepConfigurator({
             <button
               type="button"
               onClick={skipExtras}
-              className="focus-ring w-full rounded-2xl border border-white/15 bg-white/[0.04] py-3 text-sm font-semibold text-white/85 transition hover:bg-white/[0.08]"
+              className="focus-ring w-full rounded-xl border border-white/10 bg-transparent py-2 text-xs font-medium text-white/50 transition hover:border-white/18 hover:text-white/70"
             >
               Pular extras
             </button>
@@ -493,27 +553,29 @@ export function ProductStepConfigurator({
   return (
     <section
       id="configurador"
-      className="min-w-0 rounded-[22px] border border-white/10 bg-white/[0.04] p-3 shadow-[0_24px_64px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:p-4 md:p-5"
+      className="min-w-0 rounded-[22px] border border-white/10 bg-white/[0.04] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:p-4 md:p-5"
     >
-      <div className="border-b border-white/10 pb-3">
-        <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-fuchsia-300/90">Configurador</p>
-        <h1 className="font-display mt-2 text-[clamp(1.35rem,2.4vw,2rem)] font-semibold tracking-tight text-white">
-          Monte seu pedido em etapas
+      <div className="border-b border-white/10 pb-4">
+        <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-fuchsia-300/90 sm:text-[0.62rem]">
+          Configurador
+        </p>
+        <h1 className="font-display mt-2 text-[clamp(1.55rem,5vw,2rem)] font-semibold leading-tight tracking-tight text-white">
+          Personalize seu produto
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-white/65">
-          Preço e prazo atualizam conforme suas escolhas — mesmo catálogo e regras de sempre.
+        <p className="mt-2.5 text-[0.95rem] leading-relaxed text-white/72 sm:text-sm">
+          Escolha as opções e veja o valor atualizado antes de finalizar.
         </p>
       </div>
 
-      <div className="mt-4">{stepper}</div>
+      <div className="mt-5">{stepper}</div>
 
       {stepMeta ? (
-        <div className="mt-5">
-          <h2 className="text-base font-semibold text-white sm:text-lg">
-            {activeIndex + 1}. {stepMeta.title}
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold text-white sm:text-xl">
+            <span className="text-fuchsia-300/90">{activeIndex + 1}.</span> {stepMeta.shortTitle}
           </h2>
-          <p className="mt-1 text-sm text-white/60">{stepMeta.subtitle}</p>
-          <div className="mt-4">{body}</div>
+          <p className="mt-1.5 text-[0.95rem] leading-snug text-white/65 sm:text-sm">{stepMeta.subtitle}</p>
+          <div className="mt-5">{body}</div>
         </div>
       ) : null}
 
@@ -535,7 +597,7 @@ export function ProductStepConfigurator({
             !showBack && "sm:ml-0",
           )}
         >
-          {isLast ? "Ver total e fechar" : "Próximo passo"}
+          {isLast ? "Ver total e finalizar" : "Próximo passo"}
         </button>
       </div>
     </section>

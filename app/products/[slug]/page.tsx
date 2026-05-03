@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProductStudio } from "@/components/product/product-studio";
+import { getSession } from "@/lib/auth";
 import { getActiveProductBySlug, getActiveProducts } from "@/lib/active-products";
 import {
   clampCustomDimensions,
@@ -199,6 +200,8 @@ export default async function ProductDetailPage({
     storeMeta: "storeMeta" in product ? product.storeMeta : null,
   });
 
+  const session = await getSession();
+
   return (
     <div className="min-h-screen space-y-4 bg-[#05070d] text-white sm:space-y-5">
       <ProductStudio
@@ -209,6 +212,7 @@ export default async function ProductDetailPage({
         editingCartItemId={initialSelection.editingCartItemId}
         cartNotes={initialSelection.notes}
         relatedProducts={relatedProducts}
+        initialSession={session}
       />
     </div>
   );

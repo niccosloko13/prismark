@@ -789,14 +789,14 @@ export function OrderBuilder({
   }, [session]);
 
   const primaryActionLabel = !session
-    ? "Entrar para continuar"
+    ? COPY.finalizeHere
     : isPending
       ? "Processando..."
       : !isReadyToSubmit
-        ? "Complete os dados"
+        ? COPY.fillDataToFinalize
         : COPY.finalizeOrderPix;
   const primaryActionHelper = !session
-    ? "Login rápido no próprio checkout."
+    ? "Use sua conta para continuar com o mesmo pedido."
     : isPending
       ? "Aguarde um instante."
       : hasCheckoutErrors

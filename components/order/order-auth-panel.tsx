@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useCallback, useState, useTransition } from "react";
 
 import { sanitizeReturnTo } from "@/lib/safe-return-to";
+import { cn } from "@/lib/utils";
 
 export type OrderAuthTab = "login" | "register";
 
@@ -96,12 +97,15 @@ export function OrderAuthPanel({
   returnToPath,
   onSuccess,
   onCollapse,
+  embedded = false,
 }: {
   activeTab: OrderAuthTab;
   onActiveTabChange: (tab: OrderAuthTab) => void;
   returnToPath: string;
   onSuccess: () => void;
   onCollapse: () => void;
+  /** Em modal (ex.: produto): sem “Recolher” e sem margem/chip duplo com o shell. */
+  embedded?: boolean;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -196,11 +200,20 @@ export function OrderAuthPanel({
 
   return (
     <div
-      className="mt-4 overflow-hidden rounded-[22px] border border-white/10 bg-[#0a0d14]/95 shadow-[0_20px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+      className={[
+        embedded
+          ? "mt-0 overflow-hidden rounded-none border-0 bg-[#0a0d14]/95 shadow-none backdrop-blur-xl"
+          : "mt-4 overflow-hidden rounded-[22px] border border-white/10 bg-[#0a0d14]/95 shadow-[0_20px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl",
+      ].join(" ")}
       role="region"
       aria-label="Entrar ou criar conta no checkout"
     >
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 sm:px-5">
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-2 border-b border-white/10 px-3 py-3 sm:px-5",
+          embedded ? "justify-start" : "justify-between",
+        )}
+      >
         <div
           className="flex min-w-0 flex-1 rounded-full border border-white/10 bg-black/25 p-1 sm:max-w-md"
           role="tablist"
@@ -241,13 +254,15 @@ export function OrderAuthPanel({
             Criar conta
           </button>
         </div>
-        <button
-          type="button"
-          onClick={onCollapse}
-          className="focus-ring shrink-0 rounded-full px-3 py-2 text-xs font-semibold text-white/55 transition hover:bg-white/[0.08] hover:text-white"
-        >
-          Recolher
-        </button>
+        {!embedded ? (
+          <button
+            type="button"
+            onClick={onCollapse}
+            className="focus-ring shrink-0 rounded-full px-3 py-2 text-xs font-semibold text-white/55 transition hover:bg-white/[0.08] hover:text-white"
+          >
+            Recolher
+          </button>
+        ) : null}
       </div>
 
       <div className="max-w-full space-y-4 overflow-x-hidden p-4 sm:p-5">

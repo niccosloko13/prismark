@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ProductCard } from "@/components/common/product-card";
+import { OrderAuthPanel, type OrderAuthTab } from "@/components/order/order-auth-panel";
 import {
   clampCustomDimensions,
   customSizePolicyFromMeta,
@@ -11,14 +13,17 @@ import {
   type CustomSizePolicy,
 } from "@/lib/custom-product-size";
 import {
+  buildOrderUrl,
   getAddonsFeeTotalBrl,
   getDefaultSelection,
   type ProductExperience,
   type ProductSelectionState,
 } from "@/lib/product-experience";
 import { calculateQuoteForProduct } from "@/lib/pricing";
+import { PRISMARQ_PRODUCT_CTA_EVENT, type ProductCtaBroadcastDetail } from "@/lib/storefront-events";
 import type { StoreProductMeta } from "@/lib/store-product-payload";
-import type { Product } from "@/types";
+import { cn } from "@/lib/utils";
+import type { Product, SessionUser } from "@/types";
 
 import { OrderSummaryBar } from "./order-summary-bar";
 import { ProductMediaColumn } from "./product-media-column";
@@ -40,6 +45,7 @@ export function ProductStudio({
   editingCartItemId,
   cartNotes,
   relatedProducts = [],
+  initialSession = null,
 }: {
   product: Product;
   experience: ProductExperience;
@@ -49,7 +55,9 @@ export function ProductStudio({
   editingCartItemId?: string | null;
   cartNotes?: string;
   relatedProducts?: Array<{ product: Product; imageSrc?: string | null }>;
+  initialSession?: SessionUser | null;
 }) {
+  const router = useRouter();
   const customSizePolicy =
     customSizePolicyProp ??
     customSizePolicyFromMeta(
@@ -59,13 +67,20 @@ export function ProductStudio({
   const [selection, setSelection] = useState<ProductSelectionState>(
     () => initialSelection ?? getDefaultSelection(product, experience),
   );
-  const [checkoutUnlocked, setCheckoutUnlocked] = useState(false);
+  const [checkoutUnlocked, setCheckoutUnlocked] = useState(() => Boolean(editingCartItemId));
+  const [session, setSession] = useState<SessionUser | null>(initialSession ?? null);
+  const [productAuthOpen, setProductAuthOpen] = useState(false);
+  const [orderAuthTab, setOrderAuthTab] = useState<OrderAuthTab>("login");
+
+  useEffect(() => {
+    setSession(initialSession ?? null);
+  }, [initialSession]);
 
   useEffect(() => {
     setActiveGalleryId(experience.gallery[0]?.id ?? "");
     setSelection(initialSelection ?? getDefaultSelection(product, experience));
-    setCheckoutUnlocked(false);
-  }, [experience, product, initialSelection]);
+    setCheckoutUnlocked(Boolean(editingCartItemId));
+  }, [experience, product, initialSelection, editingCartItemId]);
 
   const quote = calculateQuoteForProduct(product, {
     width: selection.width,
@@ -129,8 +144,28 @@ export function ProductStudio({
     return experience.gallery.slice(1);
   }, [experience.gallery]);
 
+  const orderReturnTo = useMemo(
+    () => buildOrderUrl(product, experience, selection),
+    [product, experience, selection],
+  );
+
+  useEffect(() => {
+    const detail: ProductCtaBroadcastDetail = { mode: checkoutUnlocked ? "full" : "compact" };
+    window.dispatchEvent(new CustomEvent(PRISMARQ_PRODUCT_CTA_EVENT, { detail }));
+    return () => {
+      window.dispatchEvent(new CustomEvent(PRISMARQ_PRODUCT_CTA_EVENT, { detail: { mode: null } }));
+    };
+  }, [checkoutUnlocked]);
+
   return (
-    <div className="min-w-0 space-y-4 pb-[13rem] sm:space-y-5 sm:pb-32 lg:pb-6 xl:pb-8">
+    <div
+      className={cn(
+        "min-w-0 space-y-4 sm:space-y-5 lg:pb-6 xl:pb-8",
+        checkoutUnlocked
+          ? "max-lg:pb-[18.25rem] max-lg:sm:pb-[19rem]"
+          : "max-lg:pb-[15.25rem] max-lg:sm:pb-[16rem]",
+      )}
+    >
       <nav
         className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-0.5 text-[0.78rem] text-white/60"
         aria-label="Trilha"
@@ -222,7 +257,61 @@ export function ProductStudio({
         editingCartItemId={editingCartItemId ?? null}
         cartNotes={cartNotes}
         flowComplete={checkoutUnlocked}
+        session={session}
+        onRequestLogin={() => {
+          setOrderAuthTab("login");
+          setProductAuthOpen(true);
+        }}
       />
+
+      {productAuthOpen ? (
+        <div
+          className="fixed inset-0 z-[62] flex items-end justify-center bg-black/55 p-0 backdrop-blur-[2px] sm:items-center sm:p-4"
+          role="presentation"
+          onClick={() => setProductAuthOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setProductAuthOpen(false);
+          }}
+        >
+          <div
+            className="flex max-h-[min(92vh,760px)] w-full max-w-md flex-col overflow-hidden rounded-t-[24px] border border-white/12 bg-[#05070d] shadow-[0_-20px_60px_rgba(0,0,0,0.55)] sm:rounded-[24px]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-auth-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+              <p id="product-auth-modal-title" className="text-sm font-semibold text-white">
+                Entrar na Prismarq
+              </p>
+              <button
+                type="button"
+                aria-label="Fechar"
+                onClick={() => setProductAuthOpen(false)}
+                className="focus-ring grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/12 bg-white/[0.06] text-white transition hover:bg-white/[0.12]"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden>
+                  <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4 pt-1 sm:px-4">
+              <OrderAuthPanel
+                embedded
+                activeTab={orderAuthTab}
+                onActiveTabChange={setOrderAuthTab}
+                returnToPath={orderReturnTo}
+                onSuccess={() => {
+                  setProductAuthOpen(false);
+                  router.push(orderReturnTo);
+                  router.refresh();
+                }}
+                onCollapse={() => setProductAuthOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="min-w-0 space-y-4 sm:space-y-5">
         <ProductSpecs specs={experience.specs} />
