@@ -31,7 +31,7 @@ function ElectionPageBackdrop() {
 
 export default function Eleicao2026Page() {
   return (
-    <div className="relative min-w-0 pb-44 pt-2 sm:pb-10 lg:pb-10">
+    <div className="relative min-w-0 pb-36 pt-2 sm:pb-10 lg:pb-10">
       <ElectionPageBackdrop />
 
       <div className="relative z-[1] mx-auto max-w-6xl rounded-[28px] border border-white/10 bg-[#060b18]/80 p-5 shadow-[0_0_80px_rgba(37,99,235,0.12)] backdrop-blur-md sm:p-8 lg:p-10">

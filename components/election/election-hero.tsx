@@ -3,10 +3,6 @@ import Link from "next/link";
 import { companyLinks } from "@/lib/company";
 import { cn } from "@/lib/utils";
 
-const whatsappSolicitarHref = `${companyLinks.whatsapp.split("?")[0]}?text=${encodeURIComponent(
-  "Olá, Prismarq! Quero solicitar material de campanha para a Eleição 2026.",
-)}`;
-
 function IconRocket({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
@@ -120,17 +116,15 @@ export function ElectionHero({ className }: { className?: string }) {
 
       <div className="mt-8 hidden flex-col gap-3 sm:flex sm:flex-row sm:flex-wrap sm:items-center">
         <Link
-          href={whatsappSolicitarHref}
-          target="_blank"
-          rel="noreferrer"
+          href="#materiais"
           className={cn(
             "focus-ring inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black uppercase tracking-wide text-[#1a0505]",
-            "bg-gradient-to-r from-red-600 via-red-500 to-amber-400",
-            "shadow-[0_0_40px_rgba(239,68,68,0.45),0_12px_40px_rgba(0,0,0,0.35)]",
+            "bg-gradient-to-r from-yellow-300 via-amber-300 to-yellow-400",
+            "shadow-[0_0_40px_rgba(250,204,21,0.4),0_12px_40px_rgba(0,0,0,0.35)]",
             "transition hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_56px_rgba(250,204,21,0.5),0_16px_48px_rgba(0,0,0,0.4)]",
           )}
         >
-          Solicitar material agora
+          Ver materiais
           <IconArrowRight className="h-5 w-5" />
         </Link>
         <Link
@@ -150,5 +144,3 @@ export function ElectionHero({ className }: { className?: string }) {
     </section>
   );
 }
-
-export { whatsappSolicitarHref };
