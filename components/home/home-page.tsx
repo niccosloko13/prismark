@@ -285,24 +285,6 @@ export async function HomePage() {
                 .
               </h1>
             </div>
-            <Link
-              href="/eleicao-2026"
-              className={cn(
-                "focus-ring mx-auto mt-4 mb-4 block w-full text-center md:hidden",
-                "transition hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100",
-              )}
-            >
-              <span
-                className={cn(
-                  "inline-flex w-full items-center justify-center rounded-full border border-white/25",
-                  "bg-gradient-to-r from-white via-gray-100 to-white py-3 px-6 text-base font-bold uppercase tracking-wide text-black",
-                  "shadow-[0_0_20px_rgba(255,0,150,0.3),0_4px_18px_rgba(0,0,0,0.2)]",
-                  "hover:shadow-[0_0_28px_rgba(255,0,150,0.42),0_6px_22px_rgba(0,0,0,0.25)]",
-                )}
-              >
-                Eleição 2026
-              </span>
-            </Link>
             <p className="home-animate-in home-animate-delay-3 mt-5 max-w-xl text-base leading-relaxed text-white/70 sm:mt-6 md:text-lg md:leading-8">
               Produção gráfica de alta qualidade com agilidade, tecnologia e acabamento impecável.
             </p>
@@ -317,6 +299,24 @@ export async function HomePage() {
                 Ver catálogo
               </Link>
             </div>
+            <Link
+              href="/eleicao-2026"
+              className={cn(
+                "focus-ring mt-3 block w-full text-center md:hidden",
+                "transition hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100",
+              )}
+            >
+              <span
+                className={cn(
+                  "inline-flex w-full items-center justify-center rounded-full border border-white/25",
+                  "bg-gradient-to-r from-white via-gray-100 to-white py-3 px-6 text-base font-bold uppercase tracking-wide text-black",
+                  "shadow-[0_0_20px_rgba(255,0,150,0.3),0_4px_18px_rgba(0,0,0,0.2)]",
+                  "hover:shadow-[0_0_28px_rgba(255,0,150,0.42),0_6px_22px_rgba(0,0,0,0.25)]",
+                )}
+              >
+                Eleição 2026
+              </span>
+            </Link>
           </div>
 
           <div className="home-animate-in home-animate-delay-3 relative flex min-h-[320px] items-center justify-center lg:min-h-[440px]">
@@ -414,7 +414,7 @@ export async function HomePage() {
       >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl min-w-0">
-            <p className="font-mono text-[0.68rem] uppercase tracking-[0.28em] text-cyan-300/75">Acesso rápido</p>
+            <p className="label-kicker">Acesso rápido</p>
             <h2 className="font-display mt-2 text-balance text-[clamp(1.45rem,4.2vw,3rem)] font-semibold leading-[1.05] tracking-tight text-white">
               Entre pelo produto e avance direto para a configuração.
             </h2>
@@ -458,7 +458,7 @@ export async function HomePage() {
                       {pixOffNoPixLabel()}
                     </span>
                   </div>
-                  <p className="font-display mt-3 text-[1.12rem] font-semibold leading-tight text-white">{product.name}</p>
+                  <p className="font-display mt-2 text-[1.12rem] font-semibold leading-tight text-white">{product.name}</p>
                   <div className="mt-3 flex items-end justify-between gap-3">
                     <div>
                       <p className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/45">A partir de</p>
@@ -531,7 +531,7 @@ export async function HomePage() {
       >
         <div className="flex flex-col gap-4 sm:gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl min-w-0">
-            <p className="font-mono text-[0.68rem] uppercase tracking-[0.28em] text-cyan-300/75">Confiança Prismarq</p>
+            <p className="label-kicker">Confiança Prismarq</p>
             <h2 className="font-display mt-2 text-balance text-[clamp(1.45rem,4vw,2.6rem)] font-semibold leading-[1.05] tracking-tight text-white sm:leading-[1.02]">
               Produção direta, fechamento claro e atendimento comercial sem ruído.
             </h2>

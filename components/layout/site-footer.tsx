@@ -138,7 +138,9 @@ export function SiteFooter() {
                   )}
                 >
                   {item.label}
-                  <span className={isStorefront ? "text-white/40" : "text-black/34"}>{">"}</span>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className={cn("h-3.5 w-3.5 shrink-0", isStorefront ? "text-white/40" : "text-black/34")} aria-hidden>
+                    <path d="m6 3 4 5-4 5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </Link>
               ))}
             </div>

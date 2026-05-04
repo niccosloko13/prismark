@@ -34,3 +34,7 @@ Transformar a Prismarq em uma gráfica online premium com alta conversão.
 - Carrinho
 - Checkout
 - Blocos de confiança
+
+## Documentação para quem for mexer no código
+- Guia completo (rotas, PDP, checkout, Eleição 2026, cores, checklist): **`docs/GUIA-COMPLETO-PRISMARQ.md`**
+- Atalho: **`docs/CLAUDE-HANDOFF-FRONTEND.md`**

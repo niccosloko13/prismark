@@ -167,19 +167,25 @@ export function ProductStudio({
       )}
     >
       <nav
-        className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 px-0.5 text-[0.78rem] text-white/60"
+        className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 px-0.5 text-[0.78rem] text-white/60"
         aria-label="Trilha"
       >
         <Link href="/" className="transition hover:text-white">
           Home
         </Link>
-        <span aria-hidden>{">"}</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-3 w-3 shrink-0 text-white/30" aria-hidden>
+          <path d="m6 3 4 5-4 5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
         <Link href="/produtos" className="transition hover:text-white">
           Produtos
         </Link>
-        <span aria-hidden>{">"}</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-3 w-3 shrink-0 text-white/30" aria-hidden>
+          <path d="m6 3 4 5-4 5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
         <span className="min-w-0 truncate text-white/70">{product.category}</span>
-        <span aria-hidden>{">"}</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-3 w-3 shrink-0 text-white/30" aria-hidden>
+          <path d="m6 3 4 5-4 5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
         <span className="min-w-0 truncate text-cyan-300">{product.name}</span>
       </nav>
 

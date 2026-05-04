@@ -25,6 +25,14 @@ function ChevronDown() {
   );
 }
 
+function ChevronRight({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className={className ?? "h-3.5 w-3.5 shrink-0"} aria-hidden>
+      <path d="m6 3 4 5-4 5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function MenuIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
@@ -110,7 +118,9 @@ function DrawerLink({
       )}
     >
       <span>{children}</span>
-      <span className={cn("text-sm", highlighted ? "text-white/72" : storefront ? "text-white/40" : "text-black/34")}>{">"}</span>
+      <span className={cn(highlighted ? "text-white/72" : storefront ? "text-white/40" : "text-black/34")}>
+        <ChevronRight />
+      </span>
     </Link>
   );
 }
@@ -137,7 +147,7 @@ function HeaderBrand({
       className={cn(
         "focus-ring inline-flex max-w-full shrink-0 items-center rounded-none border-none bg-transparent shadow-none transition hover:opacity-90",
         mobile && mobilePremium
-          ? "min-w-0 max-w-[min(230px,100%)] flex-1"
+          ? "min-w-0 max-w-[min(270px,100%)] flex-1"
           : mobile
             ? "min-w-0 max-w-[min(220px,100%)]"
             : "max-w-[280px]",
@@ -156,7 +166,7 @@ function HeaderBrand({
           "h-auto border-none bg-transparent object-contain object-left shadow-none",
           homePremium ? "mix-blend-lighten contrast-[1.06] [isolation:isolate]" : "",
           mobile && mobilePremium
-            ? "max-h-[52px] w-full min-w-0 max-w-[min(230px,100%)] object-left sm:max-h-[54px]"
+            ? "max-h-[72px] w-full min-w-0 max-w-[min(270px,100%)] object-left sm:max-h-[78px]"
             : mobile
               ? "max-h-8 w-auto min-w-0 max-w-[min(200px,100%)] sm:max-h-9 sm:max-w-[220px]"
               : "w-[230px] sm:w-[250px] lg:w-[260px] xl:w-[280px]",
@@ -286,7 +296,7 @@ export function SiteHeader({ session }: { session: SessionUser | null }) {
                   className={cn(
                     "focus-ring inline-flex shrink-0 items-center justify-center rounded-full border transition",
                     isStorefront
-                      ? "h-14 w-14 border-white/18 bg-white/[0.07] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md hover:border-white/28 hover:bg-white/[0.11] max-lg:[&_svg]:h-[1.35rem] max-lg:[&_svg]:w-[1.35rem]"
+                      ? "h-12 w-12 border-white/18 bg-white/[0.07] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md hover:border-white/28 hover:bg-white/[0.11]"
                       : "h-10 w-10 border-[#E5E7EB] bg-[#F3F4F6] text-ink hover:bg-white sm:h-11 sm:w-11",
                   )}
                 >

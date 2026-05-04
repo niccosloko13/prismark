@@ -45,9 +45,9 @@ function CartStatCard({
 }) {
   return (
     <div className="metric-card p-4">
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/50">{label}</p>
+      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/65">{label}</p>
       <strong className="mt-2 block text-2xl font-semibold tracking-tight text-white">{value}</strong>
-      {note ? <p className="mt-1 text-xs leading-5 text-white/55">{note}</p> : null}
+      {note ? <p className="mt-1 text-xs leading-5 text-white/70">{note}</p> : null}
     </div>
   );
 }
@@ -61,8 +61,8 @@ function CartSpecCard({
 }) {
   return (
     <div className="surface-muted p-4">
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/48">{label}</p>
-      <p className="mt-2 text-sm font-medium leading-6 text-white/80">{value}</p>
+      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/65">{label}</p>
+      <p className="mt-2 text-sm font-medium leading-6 text-white/88">{value}</p>
     </div>
   );
 }
@@ -425,7 +425,7 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
           <div className="mt-6 space-y-3">
             <div className="rounded-[30px] border border-white/8 bg-white/[0.04] p-5 backdrop-blur-xl shadow-[0_22px_48px_rgba(0,0,0,0.3)]">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Total estimado</p>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/65">Total estimado</p>
               <strong className="mt-2 block text-[2.55rem] font-semibold tracking-tight text-white">
                 {formatCurrencyBRL(subtotal)}
               </strong>
@@ -445,11 +445,11 @@ export function CartPage({ session }: { session: SessionUser | null }) {
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               <div className="surface-card p-4">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Itens</p>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/65">Itens</p>
                 <strong className="mt-2 block text-2xl font-semibold text-white">{itemCount}</strong>
               </div>
               <div className="surface-card p-4">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/48">Status</p>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/65">Status</p>
                 <strong className="mt-2 block text-lg font-semibold text-white">
                   {session ? "Pronto para finalizar" : "Conta para finalizar"}
                 </strong>
@@ -458,8 +458,11 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           </div>
 
           <div className="mt-4 grid gap-2">
-            {["Producao propria", "Suporte comercial", "Checagem antes da producao"].map((item) => (
-              <div key={item} className="surface-muted px-4 py-3 text-sm font-medium text-white/72">
+            {["Produção própria", "Suporte comercial", "Checagem antes da produção"].map((item) => (
+              <div key={item} className="surface-muted flex items-center gap-2.5 px-4 py-3 text-sm font-medium text-white/82">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-hidden>
+                  <path d="m3 8 3.5 3.5L13 4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 {item}
               </div>
             ))}
