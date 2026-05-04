@@ -309,7 +309,7 @@ export async function HomePage() {
               <span
                 className={cn(
                   "inline-flex w-full items-center justify-center rounded-full border border-white/25",
-                  "bg-gradient-to-r from-white via-gray-100 to-white py-3 px-6 text-base font-bold uppercase tracking-wide text-black",
+                  "bg-gradient-to-r from-white via-gray-100 to-white py-3 px-6 text-base font-bold uppercase tracking-wide text-[#0d0d0d]",
                   "shadow-[0_0_20px_rgba(255,0,150,0.3),0_4px_18px_rgba(0,0,0,0.2)]",
                   "hover:shadow-[0_0_28px_rgba(255,0,150,0.42),0_6px_22px_rgba(0,0,0,0.25)]",
                 )}

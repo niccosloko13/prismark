@@ -95,7 +95,7 @@ function FieldGroup({
         <h3 className="display-title text-[1.05rem] font-semibold tracking-tight text-white sm:text-[1.2rem]">{title}</h3>
         <p className="mt-1.5 text-sm leading-6 text-white/65 sm:mt-2">{description}</p>
       </div>
-      <div className="surface-card p-4 shadow-[0_18px_38px_rgba(15,15,15,0.05)] sm:p-6">{children}</div>
+      <div className="surface-card p-4 shadow-[0_18px_38px_rgba(0,0,0,0.28)] sm:p-6">{children}</div>
     </section>
   );
 }
@@ -119,10 +119,10 @@ function FieldHint({
       className={cn(
         "text-xs leading-5",
         tone === "error"
-          ? "font-medium text-red-600"
+          ? "font-medium text-red-300"
           : tone === "success"
-            ? "font-medium text-emerald-700"
-            : "text-white/55",
+            ? "font-medium text-emerald-300"
+            : "text-white/60",
       )}
     >
       {children}
@@ -505,7 +505,7 @@ export function OrderBuilder({
     missingFieldCount === 0
       ? "Tudo pronto para concluir"
       : missingFieldCount === 1
-        ? "Falta so 1 dado para concluir"
+        ? "Falta só 1 dado para concluir"
         : `Faltam ${missingFieldCount} dados para concluir`;
 
   useEffect(() => {
@@ -1146,7 +1146,7 @@ export function OrderBuilder({
                   aria-describedby="customer-email-hint"
                   className={cn(
                     "field min-h-[48px]",
-                    shouldShowFieldError("customerEmail") && fieldErrors.customerEmail && "border-red-300 bg-red-50/40",
+                    shouldShowFieldError("customerEmail") && fieldErrors.customerEmail && "border-red-400/50 ring-1 ring-red-400/30",
                   )}
                   placeholder="voce@empresa.com"
                   inputMode="email"
@@ -1497,7 +1497,7 @@ export function OrderBuilder({
         <div aria-live="polite" className="mt-5 min-h-6 text-sm">
           {error ? <p className="font-medium text-red-300">{error}</p> : null}
           {!error && message ? <p className="font-medium text-emerald-300">{message}</p> : null}
-          {!error && !message ? <p className="text-white/50">{primaryActionHelper}</p> : null}
+          {!error && !message ? <p className="text-white/62">{primaryActionHelper}</p> : null}
         </div>
 
         <div className="mt-4 hidden gap-3 lg:flex">
@@ -1513,7 +1513,7 @@ export function OrderBuilder({
 
       <aside className="mb-5 h-fit min-w-0 lg:mb-0 lg:mt-0 lg:sticky lg:top-6">
         <div className="rounded-[24px] border border-white/10 bg-[#0a0d12]/92 p-5 shadow-[0_24px_56px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-6">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-fuchsia-200/80">Resumo do pedido</p>
+          <p className="label-kicker">Resumo do pedido</p>
 
           <div className="mt-4 flex min-w-0 gap-3">
             {summaryThumbSrc ? (
@@ -1526,7 +1526,7 @@ export function OrderBuilder({
             )}
             <div className="min-w-0 flex-1">
               <h3 className="truncate text-base font-semibold text-white">{currentProduct.name}</h3>
-              <p className="mt-1 line-clamp-2 text-xs leading-snug text-white/55">
+              <p className="mt-1 line-clamp-2 text-xs leading-snug text-white/68">
                 {material} · {finishing}
               </p>
             </div>
@@ -1534,21 +1534,21 @@ export function OrderBuilder({
 
           <ul className="mt-5 space-y-2.5 text-sm text-white/70">
             <li className="flex justify-between gap-2">
-              <span className="text-white/45">Medidas</span>
+              <span className="text-white/62">Medidas</span>
               <span className="min-w-0 text-right font-medium text-white">
                 {widthForQuote} × {heightForQuote} cm
               </span>
             </li>
             <li className="flex justify-between gap-2">
-              <span className="text-white/45">Quantidade</span>
+              <span className="text-white/62">Quantidade</span>
               <span className="font-medium text-white">{quantity}</span>
             </li>
             <li className="flex justify-between gap-2">
-              <span className="text-white/45">Prazo</span>
+              <span className="text-white/62">Prazo</span>
               <span className="min-w-0 text-right font-medium text-white">{deadline}</span>
             </li>
             <li className="flex justify-between gap-2 border-t border-white/10 pt-2">
-              <span className="text-white/45">Subtotal</span>
+              <span className="text-white/62">Subtotal</span>
               <span className="font-medium tabular-nums text-white">{formatCurrencyBRL(quote.total)}</span>
             </li>
             <li className="flex justify-between gap-2 text-emerald-300/95">
@@ -1558,7 +1558,7 @@ export function OrderBuilder({
           </ul>
 
           <div className="mt-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-fuchsia-200/90">Total no PIX</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-emerald-300/90">Total no PIX</p>
             <p className="mt-1 bg-gradient-to-r from-fuchsia-300 to-violet-300 bg-clip-text text-3xl font-bold tabular-nums text-transparent sm:text-4xl">
               {formatCurrencyBRL(pixTotal)}
             </p>
@@ -1571,7 +1571,7 @@ export function OrderBuilder({
             </p>
           </div>
 
-          <ul className="mt-5 space-y-2 text-xs text-white/55">
+          <ul className="mt-5 space-y-2 text-xs text-white/72">
             <li className="flex gap-2">
               <CheckIcon />
               <span>Produção própria Prismarq</span>
@@ -1615,7 +1615,7 @@ export function OrderBuilder({
         <div className="mx-auto w-full min-w-0 max-w-[1600px]">
           <div className="flex min-w-0 items-end justify-between gap-3">
             <div className="min-w-0 shrink">
-              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/50">Total estimado</p>
+              <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/65">Total estimado</p>
               <strong className="mt-0.5 block text-base font-semibold tabular-nums text-white">{formatCurrencyBRL(quote.total)}</strong>
               <p className="text-[0.7rem] font-medium text-fuchsia-200/90">{pixEconomizePagarNoPixLabel()}</p>
               <p className="text-[0.72rem] font-semibold tabular-nums text-cyan-200/95">{formatCurrencyBRL(pixTotal)} no Pix</p>

@@ -43,7 +43,7 @@ export function CheckoutHeader({ activeStepIndex = 1 }: { activeStepIndex?: numb
               </span>
               <span className="truncate">Checkout seguro</span>
             </p>
-            <p className="mt-0.5 truncate text-[0.7rem] font-medium uppercase tracking-[0.12em] text-white/45 sm:text-xs sm:normal-case sm:tracking-normal sm:text-white/55">
+            <p className="mt-0.5 truncate text-[0.7rem] font-medium uppercase tracking-[0.12em] text-white/62 sm:text-xs sm:normal-case sm:tracking-normal sm:text-white/65">
               Produção, pagamento e entrega no mesmo fluxo.
             </p>
           </div>
