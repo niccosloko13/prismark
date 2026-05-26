@@ -1,0 +1,174 @@
+- generic [active] [ref=e1]:
+  - link "Pular para o conteúdo" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Ir para a home da Prismarq" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "Prismarq Comunicação Visual" [ref=e9]
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - generic [ref=e12]:
+              - link "(11) 97410-0193" [ref=e13] [cursor=pointer]:
+                - /url: tel:+5511974100193
+                - generic [ref=e14]: ✆
+                - text: (11) 97410-0193
+              - link "contato@prismarqcomunicacao.com" [ref=e16] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - generic [ref=e17]: ✉
+                - generic [ref=e18]: contato@prismarqcomunicacao.com
+              - generic [ref=e20]:
+                - generic [ref=e21]: ⌖
+                - text: São Bernardo do Campo - SP
+            - paragraph [ref=e22]: Impressão profissional com pedido online.
+          - generic [ref=e23]:
+            - navigation [ref=e24]:
+              - link "Home" [ref=e25] [cursor=pointer]:
+                - /url: /
+              - link "Produtos" [ref=e26] [cursor=pointer]:
+                - /url: /produtos
+              - link "Pedido online" [ref=e27] [cursor=pointer]:
+                - /url: /order
+              - link "Contato" [ref=e28] [cursor=pointer]:
+                - /url: /contact
+            - generic [ref=e29]:
+              - generic [ref=e31]:
+                - generic [ref=e32]: Buscar produtos
+                - searchbox "Buscar produtos" [ref=e33]
+                - button "Pesquisar produtos" [ref=e34] [cursor=pointer]:
+                  - img [ref=e35]
+              - generic [ref=e38]:
+                - link "Abrir carrinho com 0 item(ns)" [ref=e39] [cursor=pointer]:
+                  - /url: /cart
+                  - img [ref=e41]
+                  - generic [ref=e45]: Carrinho
+                  - generic [ref=e46]: "0"
+                - generic [ref=e47]:
+                  - button "Login" [ref=e49] [cursor=pointer]:
+                    - text: Login
+                    - img [ref=e50]
+                  - link "Pedir agora" [ref=e52] [cursor=pointer]:
+                    - /url: /order
+    - main [ref=e53]:
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - paragraph [ref=e57]: Painel Administrativo
+          - heading "Prismarq Operação" [level=2] [ref=e58]
+          - paragraph [ref=e59]: Acesso restrito para gestão de pedidos, pagamentos Pix e catálogo.
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - paragraph [ref=e62]: Admin
+            - heading "Entrar no painel" [level=1] [ref=e63]
+          - generic [ref=e64]:
+            - text: Usuário
+            - textbox "Usuário" [ref=e65]:
+              - /placeholder: niccos
+              - text: nicollas
+          - generic [ref=e66]:
+            - text: Senha
+            - textbox "Senha" [ref=e67]:
+              - /placeholder: ••••••••
+              - text: leleco123
+          - button "Entrando..." [disabled] [ref=e125]
+    - contentinfo [ref=e69]:
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - link "Ir para a página inicial da Prismarq Comunicação Visual" [ref=e74] [cursor=pointer]:
+              - /url: /
+              - img "Prismarq Comunicação Visual" [ref=e75]
+            - paragraph [ref=e76]: Comunicação visual
+            - heading "PRISMARQ COMUNICAÇÃO VISUAL LTDA" [level=2] [ref=e77]
+            - paragraph [ref=e78]: Produção própria, atendimento direto e impressão profissional.
+            - paragraph [ref=e79]: Pedido online, sinalização, grandes formatos e comunicação visual com operação comercial real.
+          - generic [ref=e80]:
+            - paragraph [ref=e81]: Contato
+            - generic [ref=e82]:
+              - link "WhatsApp (11) 97410-0193 Atendimento direto para orçamento e pedido online." [ref=e83] [cursor=pointer]:
+                - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+                - paragraph [ref=e84]: WhatsApp
+                - paragraph [ref=e85]: (11) 97410-0193
+                - paragraph [ref=e86]: Atendimento direto para orçamento e pedido online.
+              - link "E-mail contato@prismarqcomunicacao.com Canal institucional e comercial da Prismarq." [ref=e87] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - paragraph [ref=e88]: E-mail
+                - paragraph [ref=e89]: contato@prismarqcomunicacao.com
+                - paragraph [ref=e90]: Canal institucional e comercial da Prismarq.
+              - link "Endereço Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP CEP 16430-057" [ref=e91] [cursor=pointer]:
+                - /url: https://www.google.com/maps/search/?api=1&query=Rua%20Jos%C3%A9%20Bonifacio%2C%20203%20-%20Centro%2C%20S%C3%A3o%20Bernardo%20do%20Campo%20-%20SP%2C%20CEP%2016430-057
+                - paragraph [ref=e92]: Endereço
+                - paragraph [ref=e93]: Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP
+                - paragraph [ref=e94]: CEP 16430-057
+          - generic [ref=e95]:
+            - paragraph [ref=e96]: Links úteis
+            - generic [ref=e97]:
+              - link "Produtos" [ref=e98] [cursor=pointer]:
+                - /url: /products
+                - text: Produtos
+                - img [ref=e99]
+              - link "Pedido online" [ref=e101] [cursor=pointer]:
+                - /url: /order
+                - text: Pedido online
+                - img [ref=e102]
+              - link "Contato" [ref=e104] [cursor=pointer]:
+                - /url: /contact
+                - text: Contato
+                - img [ref=e105]
+        - generic [ref=e107]:
+          - paragraph [ref=e108]: © 2026 PRISMARQ COMUNICAÇÃO VISUAL LTDA. Todos os direitos reservados.
+          - paragraph [ref=e109]: São Bernardo do Campo - SP • CEP 16430-057
+  - region "Consentimento de cookies":
+    - generic [ref=e113]:
+      - generic [ref=e114]:
+        - paragraph [ref=e115]: Privacidade Prismarq
+        - heading "Usamos cookies para deixar sua navegação mais fluida, segura e relevante." [level=2] [ref=e116]
+        - paragraph [ref=e117]: Os cookies essenciais mantêm o site funcionando. Com sua autorização, também ativamos recursos de marketing e analytics para aprimorar campanhas e entender melhor o uso da plataforma.
+      - generic [ref=e118]:
+        - button "Configurar" [ref=e119] [cursor=pointer]
+        - button "Aceitar" [ref=e120] [cursor=pointer]
+  - generic:
+    - button
+    - generic:
+      - dialog:
+        - generic:
+          - generic:
+            - generic:
+              - paragraph: Preferências de cookies
+              - heading [level=2]: Ajuste sua experiência com total clareza.
+              - paragraph: Você decide quais categorias opcionais a Prismarq pode usar. Os cookies essenciais permanecem ativos para garantir autenticação, segurança e continuidade dos fluxos atuais.
+            - button:
+              - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Essenciais
+                  - generic: Sempre ativo
+                - paragraph: Necessários para autenticação, estabilidade da navegação, segurança e funcionamento básico do carrinho, pedidos e demais fluxos já existentes.
+              - generic:
+                - switch [checked] [disabled]
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Marketing
+                - paragraph: Permite ativar recursos voltados a campanhas, remarketing e comunicação mais alinhada ao seu interesse.
+              - generic:
+                - switch
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Analytics
+                - paragraph: Ajuda a entender como o site e os fluxos são utilizados, apoiando melhorias contínuas sem alterar a experiência atual.
+              - generic:
+                - switch
+          - generic:
+            - paragraph: "Seleção atual: apenas cookies essenciais ativos."
+            - generic:
+              - button: Aceitar todos
+              - button: Salvar preferências
+  - link "Falar com a Prismarq no WhatsApp" [ref=e121] [cursor=pointer]:
+    - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+    - generic [ref=e122]: WA
+    - generic [ref=e123]: WhatsApp
+  - alert [ref=e124]

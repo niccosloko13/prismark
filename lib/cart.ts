@@ -1,7 +1,12 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 import { activeProductToProduct, getActiveProductSnapshotBySlug } from "@/lib/active-product-snapshot";
-import { isCustomFormatId } from "@/lib/custom-product-size";
+import {
+  formatCustomSizeLabel,
+  isCustomFormatId,
+  normalizeCustomSizeUnit,
+  PRISMARQ_CUSTOM_FORMAT_ID,
+} from "@/lib/custom-product-size";
 import { calculateQuoteForProduct } from "@/lib/pricing";
 import {
   buildSelectionNotes,
@@ -31,6 +36,7 @@ const cartSelectionSchema = z.object({
   formatId: z.string(),
   width: z.number(),
   height: z.number(),
+  customSizeUnit: z.enum(["cm", "m"]).optional(),
   colorId: z.string(),
   enhancementId: z.string(),
   material: z.string(),
@@ -112,11 +118,12 @@ function buildSelectionFromQuery({
     .filter(Boolean)
     .filter((addonId) => experience.addons.some((item) => item.id === addonId));
 
-  const selection: ProductSelectionState = {
+  let selection: ProductSelectionState = {
     modelId: model?.id ?? base.modelId,
     formatId: format?.id ?? base.formatId,
     width: positiveNumber(params.width) ?? format?.width ?? base.width,
     height: positiveNumber(params.height) ?? format?.height ?? base.height,
+    customSizeUnit: normalizeCustomSizeUnit(params.customSizeUnit),
     colorId:
       experience.colors.find((item) => item.id === colorFromQuery)?.id ??
       model?.colorId ??
@@ -139,6 +146,13 @@ function buildSelectionFromQuery({
     quantity: Math.max(Math.round(positiveNumber(params.quantity) ?? base.quantity), product.minQuantity),
     selectedAddonIds,
   };
+
+  if (formatFromQuery === PRISMARQ_CUSTOM_FORMAT_ID) {
+    selection = {
+      ...selection,
+      formatId: PRISMARQ_CUSTOM_FORMAT_ID,
+    };
+  }
 
   return {
     selection,
@@ -210,6 +224,7 @@ export function buildCartItem({
       formatId: selection.formatId,
       width: selection.width,
       height: selection.height,
+      customSizeUnit: normalizeCustomSizeUnit(selection.customSizeUnit),
       colorId: selection.colorId,
       enhancementId: selection.enhancementId,
       material: selection.material,
@@ -233,14 +248,14 @@ export function buildCartItem({
       selectedModel?.label,
       selectedFormat
         ? isCustomFormatId(selection.formatId)
-          ? `Tamanho personalizado: ${selection.width}x${selection.height}cm`
-          : `${selectedFormat.label} · ${selection.width} x ${selection.height} cm`
+          ? formatCustomSizeLabel(selection)
+          : `${selectedFormat.label} Â· ${selection.width} x ${selection.height} cm`
         : null,
       selectedColor?.label,
       selectedEnhancement?.label,
     ]
       .filter(Boolean)
-      .join(" · "),
+      .join(" Â· "),
     createdAt,
     updatedAt: createdAt,
   };
@@ -253,6 +268,9 @@ export function buildCartEditUrl(item: CartItem) {
   params.set("formatId", item.selection.formatId);
   params.set("width", String(item.selection.width));
   params.set("height", String(item.selection.height));
+  if (isCustomFormatId(item.selection.formatId)) {
+    params.set("customSizeUnit", normalizeCustomSizeUnit(item.selection.customSizeUnit));
+  }
   params.set("quantity", String(item.selection.quantity));
   params.set("colorId", item.selection.colorId);
   params.set("enhancementId", item.selection.enhancementId);

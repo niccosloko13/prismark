@@ -24,8 +24,8 @@ export function ElectionMobileStickyCta() {
           <Link
             href="#materiais"
             className={cn(
-              "focus-ring flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-4 py-3 text-xs font-black uppercase tracking-wide text-[#1a0505]",
-              "bg-gradient-to-r from-yellow-300 via-amber-300 to-yellow-400",
+              "focus-ring flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-4 py-3 text-xs font-black uppercase tracking-wide text-[#0d0d0d]",
+              "bg-gradient-to-br from-yellow-300 via-amber-300 to-yellow-500",
               "shadow-[0_0_28px_rgba(250,204,21,0.35)] active:scale-[0.99]",
             )}
           >

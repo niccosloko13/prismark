@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -8,8 +8,14 @@ import {
   inferOptionBadge,
   materialChoiceHint,
 } from "@/lib/product-display-labels";
-import type { CustomSizePolicy } from "@/lib/custom-product-size";
-import { PRISMARQ_CUSTOM_FORMAT_ID } from "@/lib/custom-product-size";
+import {
+  cmToCustomUnit,
+  customUnitToCm,
+  normalizeCustomSizeUnit,
+  PRISMARQ_CUSTOM_FORMAT_ID,
+  type CustomSizePolicy,
+  type CustomSizeUnit,
+} from "@/lib/custom-product-size";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 import type { ProductExperience, ProductSelectionState } from "@/lib/product-experience";
@@ -32,9 +38,9 @@ function stepShortTitle(id: StepDef["id"]): string {
     case "material":
       return "Material";
     case "finish":
-      return "Impressão";
+      return "ImpressÃ£o";
     case "production":
-      return "Produção";
+      return "ProduÃ§Ã£o";
     case "extras":
       return "Extras";
     default:
@@ -116,7 +122,7 @@ function buildSteps(product: Product, experience: ProductExperience, customSizeP
       id: "material",
       title: "Escolha o material",
       shortTitle: stepShortTitle("material"),
-      subtitle: "Selecione a mídia que melhor combina com sua aplicação.",
+      subtitle: "Selecione a mÃ­dia que melhor combina com sua aplicaÃ§Ã£o.",
     });
   }
   const showFinish =
@@ -124,7 +130,7 @@ function buildSteps(product: Product, experience: ProductExperience, customSizeP
   if (showFinish) {
     steps.push({
       id: "finish",
-      title: "Acabamento e impressão",
+      title: "Acabamento e impressÃ£o",
       shortTitle: stepShortTitle("finish"),
       subtitle: "Cor, enobrecimento e acabamento final.",
     });
@@ -133,14 +139,14 @@ function buildSteps(product: Product, experience: ProductExperience, customSizeP
     id: "production",
     title: "Prazo e quantidade",
     shortTitle: stepShortTitle("production"),
-    subtitle: "Defina tiragem e urgência de produção.",
+    subtitle: "Defina tiragem e urgÃªncia de produÃ§Ã£o.",
   });
   if (experience.addons.length > 0) {
     steps.push({
       id: "extras",
       title: "Extras opcionais",
       shortTitle: stepShortTitle("extras"),
-      subtitle: "Serviços adicionais para facilitar sua entrega.",
+      subtitle: "ServiÃ§os adicionais para facilitar sua entrega.",
       optional: true,
     });
   }
@@ -167,9 +173,9 @@ export function ProductStepConfigurator({
   product: Product;
   experience: ProductExperience;
   selection: ProductSelectionState;
-  /** Só preenchido para produtos `store_products` com `meta.allowCustomSize`. */
+  /** SÃ³ preenchido para produtos `store_products` com `meta.allowCustomSize`. */
   customSizePolicy?: CustomSizePolicy | null;
-  onCustomDimensionsChange?: (widthCm: number, heightCm: number) => void;
+  onCustomDimensionsChange?: (widthCm: number, heightCm: number, unit?: CustomSizeUnit) => void;
   onModelChange: (modelId: string) => void;
   onFormatChange: (formatId: string) => void;
   onMaterialChange: (material: string) => void;
@@ -315,9 +321,9 @@ export function ProductStepConfigurator({
                     key={f.id}
                     selected={selection.formatId === f.id}
                     onClick={() => onFormatChange(f.id)}
-                    title={`${f.label} · ${f.width}×${f.height} cm`}
+                    title={`${f.label} Â· ${f.width}Ã—${f.height} cm`}
                     description={f.description}
-                    badge={f.recommended ? "Melhor custo-benefício" : inferOptionBadge(f.label)}
+                    badge={f.recommended ? "Melhor custo-benefÃ­cio" : inferOptionBadge(f.label)}
                   />
                 ))}
                 {customSizePolicy && onCustomDimensionsChange ? (
@@ -326,52 +332,77 @@ export function ProductStepConfigurator({
                       selected={selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID}
                       onClick={() => onFormatChange(PRISMARQ_CUSTOM_FORMAT_ID)}
                       title="Tamanho personalizado"
-                      description="Informe largura e altura em centímetros."
+                      description="Informe largura, altura e unidade em cm ou m."
                       badge="Sob medida"
                     />
                     {selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID ? (
                       <div className="sm:col-span-2">
-                        <div className="grid gap-3 rounded-[18px] border border-cyan-400/25 bg-black/25 p-3 sm:grid-cols-2">
-                          <label className="block text-sm text-white/75">
-                            <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/45">
-                              Largura (cm) · mín. {customSizePolicy.minWidthCm}
-                            </span>
-                            <input
-                              type="number"
-                              inputMode="decimal"
-                              min={customSizePolicy.minWidthCm}
-                              step={1}
-                              value={Number.isFinite(selection.width) ? selection.width : ""}
-                              onChange={(e) => {
-                                const raw = Number(e.target.value.replace(",", "."));
-                                onCustomDimensionsChange(
-                                  Number.isFinite(raw) ? raw : selection.width,
-                                  selection.height,
-                                );
-                              }}
-                              className="field mt-1 h-11 w-full rounded-xl border-white/12 bg-white/[0.06] px-3 text-sm font-semibold text-white"
-                            />
-                          </label>
-                          <label className="block text-sm text-white/75">
-                            <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/45">
-                              Altura (cm) · mín. {customSizePolicy.minHeightCm}
-                            </span>
-                            <input
-                              type="number"
-                              inputMode="decimal"
-                              min={customSizePolicy.minHeightCm}
-                              step={1}
-                              value={Number.isFinite(selection.height) ? selection.height : ""}
-                              onChange={(e) => {
-                                const raw = Number(e.target.value.replace(",", "."));
-                                onCustomDimensionsChange(
-                                  selection.width,
-                                  Number.isFinite(raw) ? raw : selection.height,
-                                );
-                              }}
-                              className="field mt-1 h-11 w-full rounded-xl border-white/12 bg-white/[0.06] px-3 text-sm font-semibold text-white"
-                            />
-                          </label>
+                        <div className="grid gap-3 rounded-[18px] border border-cyan-400/25 bg-black/25 p-3 sm:grid-cols-[1fr_1fr_120px]">
+                          {(() => {
+                            const unit = normalizeCustomSizeUnit(selection.customSizeUnit);
+                            return (
+                              <>
+                                <label className="block text-sm text-white/75">
+                                  <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/45">
+                                    Largura · mín. {cmToCustomUnit(customSizePolicy.minWidthCm, unit)} {unit}
+                                  </span>
+                                  <input
+                                    type="number"
+                                    inputMode="decimal"
+                                    min={cmToCustomUnit(customSizePolicy.minWidthCm, unit)}
+                                    step={unit === "m" ? 0.01 : 0.1}
+                                    value={Number.isFinite(selection.width) ? cmToCustomUnit(selection.width, unit) : ""}
+                                    onChange={(e) => {
+                                      const raw = Number(e.target.value.replace(",", "."));
+                                      onCustomDimensionsChange(
+                                        Number.isFinite(raw) ? customUnitToCm(raw, unit) : selection.width,
+                                        selection.height,
+                                        unit,
+                                      );
+                                    }}
+                                    className="field mt-1 h-11 w-full rounded-xl border-white/12 bg-white/[0.06] px-3 text-sm font-semibold text-white"
+                                  />
+                                </label>
+                                <label className="block text-sm text-white/75">
+                                  <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/45">
+                                    Altura · mín. {cmToCustomUnit(customSizePolicy.minHeightCm, unit)} {unit}
+                                  </span>
+                                  <input
+                                    type="number"
+                                    inputMode="decimal"
+                                    min={cmToCustomUnit(customSizePolicy.minHeightCm, unit)}
+                                    step={unit === "m" ? 0.01 : 0.1}
+                                    value={Number.isFinite(selection.height) ? cmToCustomUnit(selection.height, unit) : ""}
+                                    onChange={(e) => {
+                                      const raw = Number(e.target.value.replace(",", "."));
+                                      onCustomDimensionsChange(
+                                        selection.width,
+                                        Number.isFinite(raw) ? customUnitToCm(raw, unit) : selection.height,
+                                        unit,
+                                      );
+                                    }}
+                                    className="field mt-1 h-11 w-full rounded-xl border-white/12 bg-white/[0.06] px-3 text-sm font-semibold text-white"
+                                  />
+                                </label>
+                                <label className="block text-sm text-white/75">
+                                  <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/45">
+                                    Unidade
+                                  </span>
+                                  <select
+                                    value={unit}
+                                    onChange={(e) => {
+                                      const nextUnit = normalizeCustomSizeUnit(e.target.value);
+                                      onCustomDimensionsChange(selection.width, selection.height, nextUnit);
+                                    }}
+                                    className="field mt-1 h-11 w-full rounded-xl border-white/12 bg-white/[0.06] px-3 text-sm font-semibold text-white"
+                                  >
+                                    <option value="cm">cm</option>
+                                    <option value="m">m</option>
+                                  </select>
+                                </label>
+                              </>
+                            );
+                          })()}
                         </div>
                       </div>
                     ) : null}
@@ -450,7 +481,7 @@ export function ProductStepConfigurator({
                       selected={selection.enhancementId === e.id}
                       onClick={() => onEnhancementChange(e.id)}
                       title={e.label}
-                      description={`${e.description} · ${e.priceLabel}`}
+                      description={`${e.description} Â· ${e.priceLabel}`}
                     />
                   ))}
                 </div>
@@ -495,7 +526,7 @@ export function ProductStepConfigurator({
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/[0.04] p-3.5">
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/55">Quantidade</p>
-              <p className="mt-1 text-[0.78rem] text-white/60">Mínimo: {quantityMin} un.</p>
+              <p className="mt-1 text-[0.78rem] text-white/60">MÃ­nimo: {quantityMin} un.</p>
               <div className="mt-3 flex min-w-0 items-center gap-2">
                 <button
                   type="button"
@@ -503,7 +534,7 @@ export function ProductStepConfigurator({
                   disabled={selection.quantity <= quantityMin}
                   className="focus-ring inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.08] text-lg disabled:opacity-40"
                 >
-                  −
+                  âˆ’
                 </button>
                 <input
                   type="number"
@@ -563,7 +594,7 @@ export function ProductStepConfigurator({
           Personalize seu produto
         </h1>
         <p className="mt-2.5 text-[0.95rem] leading-relaxed text-white/72 sm:text-sm">
-          Escolha as opções e veja o valor atualizado antes de finalizar.
+          Escolha as opÃ§Ãµes e veja o valor atualizado antes de finalizar.
         </p>
       </div>
 
@@ -597,9 +628,10 @@ export function ProductStepConfigurator({
             !showBack && "sm:ml-0",
           )}
         >
-          {isLast ? "Ver total e finalizar" : "Próximo passo"}
+          {isLast ? "Ver total e finalizar" : "PrÃ³ximo passo"}
         </button>
       </div>
     </section>
   );
 }
+

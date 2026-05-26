@@ -47,4 +47,5 @@ export const companyFooterLinks = [
   { label: "Produtos", href: "/products" },
   { label: "Pedido online", href: "/order" },
   { label: "Contato", href: "/contact" },
+  { label: "Política de Privacidade", href: "/politica" },
 ] as const;

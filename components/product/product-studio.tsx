@@ -207,13 +207,14 @@ export function ProductStudio({
             onModelChange={onModelChange}
             onCustomDimensionsChange={
               customSizePolicy
-                ? (widthCm, heightCm) => {
+                ? (widthCm, heightCm, customSizeUnit) => {
                     const clamped = clampCustomDimensions(widthCm, heightCm, customSizePolicy);
                     setSelection((current) => ({
                       ...current,
                       formatId: PRISMARQ_CUSTOM_FORMAT_ID,
                       width: clamped.width,
                       height: clamped.height,
+                      customSizeUnit: customSizeUnit ?? current.customSizeUnit ?? "cm",
                     }));
                   }
                 : undefined
@@ -227,6 +228,7 @@ export function ProductStudio({
                     formatId: PRISMARQ_CUSTOM_FORMAT_ID,
                     width: clamped.width,
                     height: clamped.height,
+                    customSizeUnit: current.customSizeUnit ?? "cm",
                   };
                 });
                 return;

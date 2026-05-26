@@ -46,7 +46,7 @@ export function ProductTrustColumn({
   experience: ProductExperience;
   className?: string;
 }) {
-  const chips = [...product.applications.slice(0, 6), product.category].filter(Boolean);
+  const chips = [...(product.applications ?? []).slice(0, 6), product.category].filter(Boolean);
   const { value: ratingValue, reviews, caption } = experience.rating;
 
   return (

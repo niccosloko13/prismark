@@ -1,0 +1,129 @@
+- generic [active] [ref=e1]:
+  - link "Pular para o conteúdo" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Ir para a home da Prismarq" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "Prismarq Comunicação Visual" [ref=e9]
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - generic [ref=e12]:
+              - link "(11) 97410-0193" [ref=e13] [cursor=pointer]:
+                - /url: tel:+5511974100193
+                - generic [ref=e14]: ✆
+                - text: (11) 97410-0193
+              - link "contato@prismarqcomunicacao.com" [ref=e16] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - generic [ref=e17]: ✉
+                - generic [ref=e18]: contato@prismarqcomunicacao.com
+              - generic [ref=e20]:
+                - generic [ref=e21]: ⌖
+                - text: São Bernardo do Campo - SP
+            - paragraph [ref=e22]: Impressão profissional com pedido online.
+          - generic [ref=e23]:
+            - navigation [ref=e24]:
+              - link "Início" [ref=e25] [cursor=pointer]:
+                - /url: /
+              - link "Eleição 2026" [ref=e26] [cursor=pointer]:
+                - /url: /eleicao-2026
+              - link "Produtos" [ref=e28] [cursor=pointer]:
+                - /url: /produtos
+                - text: Produtos
+                - img [ref=e29]
+              - link "Pedido online" [ref=e31] [cursor=pointer]:
+                - /url: /order
+                - generic [ref=e32]: Pedido online
+              - link "Contato" [ref=e33] [cursor=pointer]:
+                - /url: /contact
+            - generic [ref=e34]:
+              - generic [ref=e36]:
+                - generic [ref=e37]: Buscar produtos
+                - searchbox "Buscar produtos" [ref=e38]
+                - button "Pesquisar produtos" [ref=e39] [cursor=pointer]:
+                  - img [ref=e40]
+              - generic [ref=e44]:
+                - link "Abrir carrinho com 0 item(ns)" [ref=e45] [cursor=pointer]:
+                  - /url: /cart
+                  - img [ref=e47]
+                  - generic [ref=e51]: Carrinho
+                  - generic [ref=e52]: "0"
+                - button "C Cliente" [ref=e55] [cursor=pointer]:
+                  - generic [ref=e56]: C
+                  - generic [ref=e57]: Cliente
+                  - img [ref=e58]
+    - main [ref=e60]:
+      - generic [ref=e61]:
+        - paragraph [ref=e62]: Pagamento via Pix
+        - 'heading "Pedido #PRM-24043" [level=1] [ref=e63]'
+        - paragraph [ref=e64]: Aguardando pagamento
+        - paragraph [ref=e65]: R$ 141,30
+        - paragraph [ref=e66]: QR e copia-e-cola com o mesmo payload Pix.
+        - paragraph [ref=e67]: Seu pedido será confirmado após o pagamento via Pix.
+        - paragraph [ref=e68]: Após o pagamento, sua confirmação será identificada e o pedido seguirá para produção.
+        - generic [ref=e69]:
+          - img "QR Code Pix" [ref=e71]
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - paragraph [ref=e74]: Pix copia-e-cola
+              - textbox [ref=e75]: 00020101021126360014br.gov.bcb.pix0114640138790001995204000053039865406141.305802BR5925PRISMARQ COMUNICACAO VISU6012SAO BERNARDO62220518CEAEDUSJ0LT9AIQQL86304D5DC
+            - button "Copiar código Pix" [ref=e76] [cursor=pointer]
+            - paragraph [ref=e77]: "txid: CEAEDUSJ0LT9AIQQL8"
+        - link "Acompanhar no painel" [ref=e79] [cursor=pointer]:
+          - /url: /dashboard
+    - contentinfo [ref=e80]:
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - link "Ir para a página inicial da Prismarq Comunicação Visual" [ref=e85] [cursor=pointer]:
+              - /url: /
+              - img "Prismarq Comunicação Visual" [ref=e86]
+            - paragraph [ref=e87]: Comunicação visual
+            - heading "PRISMARQ COMUNICAÇÃO VISUAL LTDA" [level=2] [ref=e88]
+            - paragraph [ref=e89]: Produção própria, atendimento direto e impressão profissional.
+            - paragraph [ref=e90]: Pedido online, sinalização, grandes formatos e comunicação visual com operação comercial real.
+          - generic [ref=e91]:
+            - paragraph [ref=e92]: Contato
+            - generic [ref=e93]:
+              - link "WhatsApp (11) 97410-0193 Atendimento direto para orçamento e pedido online." [ref=e94] [cursor=pointer]:
+                - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+                - paragraph [ref=e95]: WhatsApp
+                - paragraph [ref=e96]: (11) 97410-0193
+                - paragraph [ref=e97]: Atendimento direto para orçamento e pedido online.
+              - link "E-mail contato@prismarqcomunicacao.com Canal institucional e comercial da Prismarq." [ref=e98] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - paragraph [ref=e99]: E-mail
+                - paragraph [ref=e100]: contato@prismarqcomunicacao.com
+                - paragraph [ref=e101]: Canal institucional e comercial da Prismarq.
+              - link "Endereço Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP CEP 16430-057" [ref=e102] [cursor=pointer]:
+                - /url: https://www.google.com/maps/search/?api=1&query=Rua%20Jos%C3%A9%20Bonifacio%2C%20203%20-%20Centro%2C%20S%C3%A3o%20Bernardo%20do%20Campo%20-%20SP%2C%20CEP%2016430-057
+                - paragraph [ref=e103]: Endereço
+                - paragraph [ref=e104]: Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP
+                - paragraph [ref=e105]: CEP 16430-057
+          - generic [ref=e106]:
+            - paragraph [ref=e107]: Links úteis
+            - generic [ref=e108]:
+              - link "Produtos" [ref=e109] [cursor=pointer]:
+                - /url: /products
+                - text: Produtos
+                - img [ref=e110]
+              - link "Pedido online" [ref=e112] [cursor=pointer]:
+                - /url: /order
+                - text: Pedido online
+                - img [ref=e113]
+              - link "Contato" [ref=e115] [cursor=pointer]:
+                - /url: /contact
+                - text: Contato
+                - img [ref=e116]
+              - link "Política de Privacidade" [ref=e118] [cursor=pointer]:
+                - /url: /politica
+                - text: Política de Privacidade
+                - img [ref=e119]
+        - generic [ref=e121]:
+          - paragraph [ref=e122]: © 2026 PRISMARQ COMUNICAÇÃO VISUAL LTDA. Todos os direitos reservados.
+          - paragraph [ref=e123]: São Bernardo do Campo - SP • CEP 16430-057
+  - link "Falar com a Prismarq no WhatsApp" [ref=e124] [cursor=pointer]:
+    - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+    - generic [ref=e125]: WA
+    - generic [ref=e126]: WhatsApp

@@ -7,6 +7,7 @@ import { getActiveProductBySlug, getActiveProducts } from "@/lib/active-products
 import {
   clampCustomDimensions,
   customSizePolicyFromMeta,
+  normalizeCustomSizeUnit,
   PRISMARQ_CUSTOM_FORMAT_ID,
 } from "@/lib/custom-product-size";
 import { buildProductExperience, getDefaultSelection, type ProductSelectionState } from "@/lib/product-experience";
@@ -62,6 +63,7 @@ function buildInitialSelection({
     formatId?: string;
     width?: string;
     height?: string;
+    customSizeUnit?: string;
     quantity?: string;
     colorId?: string;
     enhancementId?: string;
@@ -102,6 +104,7 @@ function buildInitialSelection({
     formatId: format?.id ?? base.formatId,
     width: positiveNumber(searchParams.width) ?? format?.width ?? base.width,
     height: positiveNumber(searchParams.height) ?? format?.height ?? base.height,
+    customSizeUnit: normalizeCustomSizeUnit(searchParams.customSizeUnit),
     colorId:
       experience.colors.find((item) => item.id === colorId)?.id ?? model?.colorId ?? base.colorId,
     enhancementId:
@@ -128,13 +131,6 @@ function buildInitialSelection({
       width: clamped.width,
       height: clamped.height,
     };
-  } else if (formatIdParam === PRISMARQ_CUSTOM_FORMAT_ID && !policy) {
-    selection = {
-      ...selection,
-      formatId: base.formatId,
-      width: base.width,
-      height: base.height,
-    };
   }
 
   return {
@@ -155,6 +151,7 @@ export default async function ProductDetailPage({
     formatId?: string;
     width?: string;
     height?: string;
+    customSizeUnit?: string;
     quantity?: string;
     colorId?: string;
     enhancementId?: string;

@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(npm run *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(Read /c/prismarq/app/globals.css 836 848)",
+      "Bash(sed -n '836,848p' /c/prismarq/app/globals.css)",
+      "Bash(xargs grep *)",
+      "Bash(grep -v \"interface\\\\|^\\\\s*//\")",
+      "Bash(node -e ' *)",
+      "Bash(npx --yes node -e \"const bcrypt = require\\('bcryptjs'\\); bcrypt.hash\\('leleco123', 12\\).then\\(h => console.log\\(h\\)\\);\")",
+      "Bash(node *)"
     ]
   }
 }

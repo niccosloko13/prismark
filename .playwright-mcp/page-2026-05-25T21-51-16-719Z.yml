@@ -1,0 +1,544 @@
+- generic [ref=e1]:
+  - link "Pular para o conteúdo" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Ir para a home da Prismarq" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "Prismarq Comunicação Visual" [ref=e9]
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - generic [ref=e12]:
+              - link "(11) 97410-0193" [ref=e13] [cursor=pointer]:
+                - /url: tel:+5511974100193
+                - generic [ref=e14]: ✆
+                - text: (11) 97410-0193
+              - link "contato@prismarqcomunicacao.com" [ref=e16] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - generic [ref=e17]: ✉
+                - generic [ref=e18]: contato@prismarqcomunicacao.com
+              - generic [ref=e20]:
+                - generic [ref=e21]: ⌖
+                - text: São Bernardo do Campo - SP
+            - paragraph [ref=e22]: Impressão profissional com pedido online.
+          - generic [ref=e23]:
+            - navigation [ref=e24]:
+              - link "Início" [ref=e25] [cursor=pointer]:
+                - /url: /
+              - link "Eleição 2026" [ref=e26] [cursor=pointer]:
+                - /url: /eleicao-2026
+              - link "Produtos" [ref=e28] [cursor=pointer]:
+                - /url: /produtos
+                - text: Produtos
+                - img [ref=e29]
+              - link "Pedido online" [ref=e31] [cursor=pointer]:
+                - /url: /order
+                - generic [ref=e32]: Pedido online
+              - link "Contato" [ref=e33] [cursor=pointer]:
+                - /url: /contact
+            - generic [ref=e34]:
+              - generic [ref=e36]:
+                - generic [ref=e37]: Buscar produtos
+                - searchbox "Buscar produtos" [ref=e38]
+                - button "Pesquisar produtos" [ref=e39] [cursor=pointer]:
+                  - img [ref=e40]
+              - generic [ref=e44]:
+                - link "Abrir carrinho com 0 item(ns)" [ref=e45] [cursor=pointer]:
+                  - /url: /cart
+                  - img [ref=e47]
+                  - generic [ref=e51]: Carrinho
+                  - generic [ref=e52]: "0"
+                - button "C Cliente" [ref=e55] [cursor=pointer]:
+                  - generic [ref=e56]: C
+                  - generic [ref=e57]: Cliente
+                  - img [ref=e58]
+    - main [ref=e60]:
+      - generic [ref=e62]:
+        - navigation "Trilha" [ref=e63]:
+          - link "Home" [ref=e64] [cursor=pointer]:
+            - /url: /
+          - img [ref=e65]
+          - link "Produtos" [ref=e67] [cursor=pointer]:
+            - /url: /produtos
+          - img [ref=e68]
+          - generic [ref=e70]: Grande Formato
+          - img [ref=e71]
+          - generic [ref=e73]: Banner
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - generic [ref=e78]:
+                  - generic [ref=e79]: Mais vendido
+                  - generic [ref=e80]: Mais vendido
+                - img "Banner 1" [ref=e82]
+              - generic [ref=e83]:
+                - button "Banner 1" [pressed] [ref=e84] [cursor=pointer]
+                - button "Banner 2" [ref=e85] [cursor=pointer]
+                - button "Banner 3" [ref=e86] [cursor=pointer]
+                - button "Banner 4" [ref=e87] [cursor=pointer]
+              - link "Ver aplicação real" [ref=e89] [cursor=pointer]:
+                - /url: "#veja-em-uso"
+            - generic [ref=e90]:
+              - heading "Banner" [level=2] [ref=e91]
+              - paragraph [ref=e92]: Fluxo rapido para quem precisa personalizar, enviar a arte e fechar o pedido com acabamento pronto para uso.
+              - list [ref=e93]:
+                - listitem [ref=e94]:
+                  - text: Alta qualidade
+                  - generic [ref=e95]: Cores vivas e definição impecável.
+                - listitem [ref=e96]:
+                  - text: Durabilidade
+                  - generic [ref=e97]: Materiais pensados para uso real.
+                - listitem [ref=e98]:
+                  - text: Entrega rápida
+                  - generic [ref=e99]: Prazos claros e logística organizada.
+              - paragraph [ref=e100]: Foto 1 de 4
+          - generic [ref=e102]:
+            - generic [ref=e103]:
+              - paragraph [ref=e104]: Configurador
+              - heading "Personalize seu produto" [level=1] [ref=e105]
+              - paragraph [ref=e106]: Escolha as opÃ§Ãµes e veja o valor atualizado antes de finalizar.
+            - list [ref=e109]:
+              - listitem [ref=e110]:
+                - button "1 Tamanho" [ref=e111] [cursor=pointer]:
+                  - generic [ref=e113]: "1"
+                  - generic [ref=e114]: Tamanho
+              - listitem [ref=e115]:
+                - button "2 Material" [disabled] [ref=e116]:
+                  - generic [ref=e118]: "2"
+                  - generic [ref=e119]: Material
+              - listitem [ref=e120]:
+                - button "3 ImpressÃ£o" [disabled] [ref=e121]:
+                  - generic [ref=e123]: "3"
+                  - generic [ref=e124]: ImpressÃ£o
+              - listitem [ref=e125]:
+                - button "4 ProduÃ§Ã£o" [disabled] [ref=e126]:
+                  - generic [ref=e128]: "4"
+                  - generic [ref=e129]: ProduÃ§Ã£o
+              - listitem [ref=e130]:
+                - button "5 Extras" [disabled] [ref=e131]:
+                  - generic [ref=e133]: "5"
+                  - generic [ref=e134]: Extras
+            - generic [ref=e135]:
+              - heading "1. Tamanho" [level=2] [ref=e136]:
+                - generic [ref=e137]: "1."
+                - text: Tamanho
+              - paragraph [ref=e138]: Formato e medidas ideais para o seu uso.
+              - generic [ref=e140]:
+                - generic [ref=e141]:
+                  - paragraph [ref=e142]: Modelo
+                  - generic [ref=e143]:
+                    - button "Loja e balcão Formato clássico para ofertas, vitrine e campanha rápida." [ref=e144] [cursor=pointer]:
+                      - img [ref=e146]
+                      - generic [ref=e149]: Loja e balcão
+                      - generic [ref=e150]: Formato clássico para ofertas, vitrine e campanha rápida.
+                    - button "Evento Mais vendido Equilíbrio entre leitura, custo e acabamento pronto para uso." [ref=e151] [cursor=pointer]:
+                      - generic [ref=e152]:
+                        - generic [ref=e153]: Evento
+                        - generic [ref=e154]: Mais vendido
+                      - generic [ref=e155]: Equilíbrio entre leitura, custo e acabamento pronto para uso.
+                    - button "Impacto vertical Mais altura visual para recepção, auditório e circulação." [ref=e156] [cursor=pointer]:
+                      - generic [ref=e158]: Impacto vertical
+                      - generic [ref=e159]: Mais altura visual para recepção, auditório e circulação.
+                - generic [ref=e160]:
+                  - paragraph [ref=e161]: Formato
+                  - generic [ref=e162]:
+                    - button "600 x 900 mm Â· 60Ã—90 cm Formato ágil para balcão, loja e campanha enxuta." [ref=e163] [cursor=pointer]:
+                      - generic [ref=e168]: 600 x 900 mm Â· 60Ã—90 cm
+                      - generic [ref=e169]: Formato ágil para balcão, loja e campanha enxuta.
+                    - button "1000 x 1500 mm Â· 100Ã—150 cm Melhor custo-benefÃcio Formato principal para promoções, eventos e PDV." [ref=e170] [cursor=pointer]:
+                      - generic [ref=e171]:
+                        - generic [ref=e172]: 1000 x 1500 mm Â· 100Ã—150 cm
+                        - generic [ref=e173]: Melhor custo-benefÃcio
+                      - generic [ref=e174]: Formato principal para promoções, eventos e PDV.
+                    - button "1000 x 2000 mm Â· 100Ã—200 cm Mais altura e presença para recepção e circulação." [ref=e175] [cursor=pointer]:
+                      - generic [ref=e177]: 1000 x 2000 mm Â· 100Ã—200 cm
+                      - generic [ref=e178]: Mais altura e presença para recepção e circulação.
+                    - button "Tamanho personalizado Informe largura, altura e unidade em cm ou m." [active] [ref=e536] [cursor=pointer]:
+                      - img [ref=e538]
+                      - generic [ref=e181]: Tamanho personalizado
+                      - generic [ref=e183]: Informe largura, altura e unidade em cm ou m.
+                    - generic [ref=e541]:
+                      - generic [ref=e542]:
+                        - generic [ref=e543]: Largura · mín. 0.01 cm
+                        - spinbutton "Largura · mín. 0.01 cm" [ref=e544]: "60"
+                      - generic [ref=e545]:
+                        - generic [ref=e546]: Altura · mín. 0.01 cm
+                        - spinbutton "Altura · mín. 0.01 cm" [ref=e547]: "90"
+                      - generic [ref=e548]:
+                        - generic [ref=e549]: Unidade
+                        - combobox "Unidade" [ref=e550]:
+                          - option "cm" [selected]
+                          - option "m"
+            - button "PrÃ³ximo passo" [ref=e185] [cursor=pointer]
+          - complementary [ref=e186]:
+            - generic [ref=e187]:
+              - paragraph [ref=e188]: Confiança
+              - heading "Por que escolher a Prismarq?" [level=2] [ref=e189]
+            - list [ref=e190]:
+              - listitem [ref=e191]:
+                - paragraph [ref=e192]: Impressão premium
+                - paragraph [ref=e193]: Cores vivas e definição impecável para sua marca se destacar.
+              - listitem [ref=e194]:
+                - paragraph [ref=e195]: Material resistente
+                - paragraph [ref=e196]: Lonas e mídias de alta gramatura com durabilidade para uso real.
+              - listitem [ref=e197]:
+                - paragraph [ref=e198]: Acabamento profissional
+                - paragraph [ref=e199]: Acabamentos que valorizam apresentação e percepção de valor.
+              - listitem [ref=e200]:
+                - paragraph [ref=e201]: Entrega para todo o Brasil
+                - paragraph [ref=e202]: Agilidade e segurança na expedição com acompanhamento comercial.
+            - generic [ref=e203]:
+              - paragraph [ref=e204]: Ideal para
+              - generic [ref=e205]:
+                - generic [ref=e206]: Eventos
+                - generic [ref=e207]: PDV
+                - generic [ref=e208]: Lojas
+                - generic [ref=e209]: Grande Formato
+            - generic [ref=e210]:
+              - generic [ref=e211]:
+                - generic [ref=e212]:
+                  - generic [ref=e213]: ★
+                  - generic [ref=e214]: ★
+                  - generic [ref=e215]: ★
+                  - generic [ref=e216]: ★
+                  - generic [ref=e217]: ★
+                - generic [ref=e218]: "4.9"
+              - paragraph [ref=e219]: Baseado em 126 avaliações. Grande formato com operaÃ§Ã£o pronta para fechamento.
+              - paragraph [ref=e220]: Equipe comercial acompanha medida, material e arte para reduzir retrabalho.
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - paragraph [ref=e224]: Resumo do seu pedido
+            - generic [ref=e225]:
+              - generic [ref=e551]:
+                - generic [ref=e552]: "Tamanho:"
+                - generic [ref=e553]: "Tamanho personalizado: 60 x 90 cm"
+              - generic [ref=e229]:
+                - generic [ref=e230]: "Material:"
+                - generic [ref=e231]: Lona brilho 340g
+              - generic [ref=e232]:
+                - generic [ref=e233]: "Acabamento:"
+                - generic [ref=e234]: Bastão e cordão
+              - generic [ref=e235]:
+                - generic [ref=e236]: "Produção:"
+                - generic [ref=e237]: Standard · 4 dias
+              - generic [ref=e238]:
+                - generic [ref=e239]: "Extra:"
+                - generic [ref=e240]: Sem enobrecimento
+          - generic [ref=e243]:
+            - paragraph [ref=e244]: Total estimado
+            - paragraph [ref=e245]: R$ 84,44
+            - generic [ref=e246]:
+              - paragraph [ref=e247]: Melhor preço no PIX
+              - generic [ref=e248]: 10% OFF no PIX
+              - paragraph [ref=e249]: ou R$ 76,00 no PIX
+            - paragraph [ref=e250]: em até 3x de R$ 84,44 sem juros · −R$ 8,44 no PIX
+          - generic [ref=e251]:
+            - button "Complete as opções" [disabled] [ref=e252]:
+              - text: Complete as opções
+              - img [ref=e253]
+            - button "Adicionar ao carrinho" [disabled] [ref=e255]:
+              - text: Adicionar ao carrinho
+              - img [ref=e256]
+        - generic [ref=e259]:
+          - generic [ref=e260]:
+            - generic [ref=e261]:
+              - paragraph [ref=e262]: Informações técnicas
+              - heading "Detalhes do produto" [level=2] [ref=e263]
+              - paragraph [ref=e264]: Dados objetivos para você decidir com segurança — sem tabelas pesadas.
+            - generic [ref=e265]:
+              - generic [ref=e266]:
+                - paragraph [ref=e267]: Categoria
+                - paragraph [ref=e268]: Grande Formato
+              - generic [ref=e269]:
+                - paragraph [ref=e270]: Categorias comerciais
+                - paragraph [ref=e271]: Grande Formato · Eventos · PDV · Lojas
+              - generic [ref=e272]:
+                - paragraph [ref=e273]: Área mínima
+                - paragraph [ref=e274]: 0.50 m²
+              - generic [ref=e275]:
+                - paragraph [ref=e276]: Preço base
+                - paragraph [ref=e277]: 86.00 por m²
+              - generic [ref=e278]:
+                - paragraph [ref=e279]: Dimensão padrão
+                - paragraph [ref=e280]: 100 x 150 cm
+              - generic [ref=e281]:
+                - paragraph [ref=e282]: Materiais
+                - paragraph [ref=e283]: Lona brilho 340g · Lona fosca 340g · Lona blackout 440g
+              - generic [ref=e284]:
+                - paragraph [ref=e285]: Acabamentos
+                - paragraph [ref=e286]: Ilhós reforçado · Bastão e cordão · Refilado
+              - generic [ref=e287]:
+                - paragraph [ref=e288]: Prazos
+                - paragraph [ref=e289]: Expresso · 2 dias · Standard · 4 dias · Planejado · 6 dias
+              - generic [ref=e290]:
+                - paragraph [ref=e291]: Aplicações
+                - paragraph [ref=e292]: Eventos · PDV · Lojas
+          - generic [ref=e294]:
+            - generic [ref=e295]:
+              - paragraph [ref=e296]: Arquivos prontos
+              - heading "Gabaritos para montar sua arte" [level=2] [ref=e297]
+              - paragraph [ref=e298]: Baixe o arquivo pronto para Illustrator, Corel ou PDF.
+            - generic [ref=e299]:
+              - link "Ai Illustrator Base vetorial pronta para ediÃ§Ã£o no Adobe Illustrator. Baixar gabarito" [ref=e300] [cursor=pointer]:
+                - /url: data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20fill%3D%22none%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%22120%22%20y1%3D%2280%22%20x2%3D%221080%22%20y2%3D%22720%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300B5FF%22%20stop-opacity%3D%220.16%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23111111%22%20stop-opacity%3D%220.03%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20rx%3D%2248%22%20fill%3D%22white%22%20%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%2240%22%20width%3D%221120%22%20height%3D%22720%22%20rx%3D%2236%22%20fill%3D%22url(%23bg)%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.12)%22%20%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%2292%22%20width%3D%22280%22%20height%3D%2252%22%20rx%3D%2226%22%20fill%3D%22rgba(15%2C15%2C15%2C0.92)%22%20%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22132%22%20y%3D%22126%22%20fill%3D%22white%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20letter-spacing%3D%224%22%3EPRISMARQ%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22214%22%20fill%3D%22%230f0f0f%22%20font-size%3D%2252%22%20font-weight%3D%22800%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EBanner%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22270%22%20fill%3D%22rgba(15%2C15%2C15%2C0.72)%22%20font-size%3D%2226%22%20font-weight%3D%22500%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3ETemplate%20base%20para%20exporta%C3%83%C2%A7%C3%83%C2%A3o%20e%20aprova%C3%83%C2%A7%C3%83%C2%A3o%20visual.%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%22336%22%20width%3D%221008%22%20height%3D%22308%22%20rx%3D%2232%22%20fill%3D%22white%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.12)%22%20stroke-dasharray%3D%2214%2014%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22152%22%20y%3D%22392%22%20width%3D%22896%22%20height%3D%22196%22%20rx%3D%2224%22%20fill%3D%22rgba(255%2C255%2C255%2C0.92)%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.08)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M188%20530%20L512%20368%20L688%20454%20L948%20362%22%20stroke%3D%22%23FF2EBF%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M246%20480%20H934%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.18)%22%20stroke-width%3D%2210%22%20stroke-dasharray%3D%2218%2016%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M246%20562%20H934%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.18)%22%20stroke-width%3D%2210%22%20stroke-dasharray%3D%2218%2016%22%20%2F%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22706%22%20fill%3D%22rgba(15%2C15%2C15%2C0.8)%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EFormato%20sugerido%3A%20100%20x%20150%20cm%20%C3%82%C2%B7%20Sangria%20t%C3%83%C2%A9cnica%20e%20%C3%83%C2%A1rea%20segura%20j%C3%83%C2%A1%20indicadas.%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22876%22%20y%3D%22706%22%20fill%3D%22rgba(15%2C15%2C15%2C0.86)%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EILLUSTRATOR%20%C3%82%C2%B7%20100%20x%20150%20cm%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%221036%22%20cy%3D%22144%22%20r%3D%2258%22%20fill%3D%22%23FFD300%22%20fill-opacity%3D%220.18%22%20%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20
+                - generic [ref=e301]:
+                  - generic [ref=e302]: Ai
+                  - img [ref=e304]
+                - generic [ref=e306]:
+                  - strong [ref=e307]: Illustrator
+                  - paragraph [ref=e308]: Base vetorial pronta para ediÃ§Ã£o no Adobe Illustrator.
+                - generic [ref=e309]: Baixar gabarito
+              - link "Cdr Corel Arquivo base para ediÃ§Ã£o rÃ¡pida em CorelDRAW. Baixar gabarito" [ref=e310] [cursor=pointer]:
+                - /url: data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20fill%3D%22none%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%22120%22%20y1%3D%2280%22%20x2%3D%221080%22%20y2%3D%22720%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300B5FF%22%20stop-opacity%3D%220.16%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23111111%22%20stop-opacity%3D%220.03%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20rx%3D%2248%22%20fill%3D%22white%22%20%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%2240%22%20width%3D%221120%22%20height%3D%22720%22%20rx%3D%2236%22%20fill%3D%22url(%23bg)%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.12)%22%20%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%2292%22%20width%3D%22280%22%20height%3D%2252%22%20rx%3D%2226%22%20fill%3D%22rgba(15%2C15%2C15%2C0.92)%22%20%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22132%22%20y%3D%22126%22%20fill%3D%22white%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20letter-spacing%3D%224%22%3EPRISMARQ%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22214%22%20fill%3D%22%230f0f0f%22%20font-size%3D%2252%22%20font-weight%3D%22800%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EBanner%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22270%22%20fill%3D%22rgba(15%2C15%2C15%2C0.72)%22%20font-size%3D%2226%22%20font-weight%3D%22500%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3ETemplate%20base%20para%20exporta%C3%83%C2%A7%C3%83%C2%A3o%20e%20aprova%C3%83%C2%A7%C3%83%C2%A3o%20visual.%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%22336%22%20width%3D%221008%22%20height%3D%22308%22%20rx%3D%2232%22%20fill%3D%22white%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.12)%22%20stroke-dasharray%3D%2214%2014%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22152%22%20y%3D%22392%22%20width%3D%22896%22%20height%3D%22196%22%20rx%3D%2224%22%20fill%3D%22rgba(255%2C255%2C255%2C0.92)%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.08)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M188%20530%20L512%20368%20L688%20454%20L948%20362%22%20stroke%3D%22%23FF2EBF%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M246%20480%20H934%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.18)%22%20stroke-width%3D%2210%22%20stroke-dasharray%3D%2218%2016%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M246%20562%20H934%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.18)%22%20stroke-width%3D%2210%22%20stroke-dasharray%3D%2218%2016%22%20%2F%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22706%22%20fill%3D%22rgba(15%2C15%2C15%2C0.8)%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EFormato%20sugerido%3A%20100%20x%20150%20cm%20%C3%82%C2%B7%20Sangria%20t%C3%83%C2%A9cnica%20e%20%C3%83%C2%A1rea%20segura%20j%C3%83%C2%A1%20indicadas.%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22876%22%20y%3D%22706%22%20fill%3D%22rgba(15%2C15%2C15%2C0.86)%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3ECOREL%20DRAW%20%C3%82%C2%B7%20100%20x%20150%20cm%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%221036%22%20cy%3D%22144%22%20r%3D%2258%22%20fill%3D%22%23FFD300%22%20fill-opacity%3D%220.18%22%20%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20
+                - generic [ref=e311]:
+                  - generic [ref=e312]: Cdr
+                  - img [ref=e314]
+                - generic [ref=e316]:
+                  - strong [ref=e317]: Corel
+                  - paragraph [ref=e318]: Arquivo base para ediÃ§Ã£o rÃ¡pida em CorelDRAW.
+                - generic [ref=e319]: Baixar gabarito
+              - link "PDF PDF Preview tÃ©cnico para aprovaÃ§Ã£o e alinhamento comercial. Baixar gabarito" [ref=e320] [cursor=pointer]:
+                - /url: data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20fill%3D%22none%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%22120%22%20y1%3D%2280%22%20x2%3D%221080%22%20y2%3D%22720%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300B5FF%22%20stop-opacity%3D%220.16%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23111111%22%20stop-opacity%3D%220.03%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20rx%3D%2248%22%20fill%3D%22white%22%20%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%2240%22%20width%3D%221120%22%20height%3D%22720%22%20rx%3D%2236%22%20fill%3D%22url(%23bg)%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.12)%22%20%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%2292%22%20width%3D%22280%22%20height%3D%2252%22%20rx%3D%2226%22%20fill%3D%22rgba(15%2C15%2C15%2C0.92)%22%20%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22132%22%20y%3D%22126%22%20fill%3D%22white%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20letter-spacing%3D%224%22%3EPRISMARQ%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22214%22%20fill%3D%22%230f0f0f%22%20font-size%3D%2252%22%20font-weight%3D%22800%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EBanner%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22270%22%20fill%3D%22rgba(15%2C15%2C15%2C0.72)%22%20font-size%3D%2226%22%20font-weight%3D%22500%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3ETemplate%20base%20para%20exporta%C3%83%C2%A7%C3%83%C2%A3o%20e%20aprova%C3%83%C2%A7%C3%83%C2%A3o%20visual.%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%22336%22%20width%3D%221008%22%20height%3D%22308%22%20rx%3D%2232%22%20fill%3D%22white%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.12)%22%20stroke-dasharray%3D%2214%2014%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%22152%22%20y%3D%22392%22%20width%3D%22896%22%20height%3D%22196%22%20rx%3D%2224%22%20fill%3D%22rgba(255%2C255%2C255%2C0.92)%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.08)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M188%20530%20L512%20368%20L688%20454%20L948%20362%22%20stroke%3D%22%23FF2EBF%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M246%20480%20H934%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.18)%22%20stroke-width%3D%2210%22%20stroke-dasharray%3D%2218%2016%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M246%20562%20H934%22%20stroke%3D%22rgba(15%2C15%2C15%2C0.18)%22%20stroke-width%3D%2210%22%20stroke-dasharray%3D%2218%2016%22%20%2F%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2296%22%20y%3D%22706%22%20fill%3D%22rgba(15%2C15%2C15%2C0.8)%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EFormato%20sugerido%3A%20100%20x%20150%20cm%20%C3%82%C2%B7%20Sangria%20t%C3%83%C2%A9cnica%20e%20%C3%83%C2%A1rea%20segura%20j%C3%83%C2%A1%20indicadas.%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22876%22%20y%3D%22706%22%20fill%3D%22rgba(15%2C15%2C15%2C0.86)%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20font-family%3D%22Aptos%2C%20Segoe%20UI%2C%20sans-serif%22%3EPDF%20PREVIEW%20%C3%82%C2%B7%20100%20x%20150%20cm%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%221036%22%20cy%3D%22144%22%20r%3D%2258%22%20fill%3D%22%23FFD300%22%20fill-opacity%3D%220.18%22%20%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20
+                - generic [ref=e321]:
+                  - generic [ref=e322]: PDF
+                  - img [ref=e324]
+                - generic [ref=e326]:
+                  - strong [ref=e327]: PDF
+                  - paragraph [ref=e328]: Preview tÃ©cnico para aprovaÃ§Ã£o e alinhamento comercial.
+                - generic [ref=e329]: Baixar gabarito
+          - generic [ref=e330]:
+            - generic [ref=e331]:
+              - paragraph [ref=e332]: Contexto real
+              - heading "Veja este produto em uso" [level=2] [ref=e333]
+              - paragraph [ref=e334]: Imagens do catálogo em aplicação — mesmas peças que você está configurando.
+            - generic [ref=e335]:
+              - generic [ref=e336]:
+                - img "Banner — Banner 2" [ref=e338]
+                - generic [ref=e339]:
+                  - paragraph [ref=e340]: Banner 2
+                  - paragraph [ref=e341]: Imagem do catálogo ativo
+              - generic [ref=e342]:
+                - img "Banner — Banner 3" [ref=e344]
+                - generic [ref=e345]:
+                  - paragraph [ref=e346]: Banner 3
+                  - paragraph [ref=e347]: Imagem do catálogo ativo
+              - generic [ref=e348]:
+                - img "Banner — Banner 4" [ref=e350]
+                - generic [ref=e351]:
+                  - paragraph [ref=e352]: Banner 4
+                  - paragraph [ref=e353]: Imagem do catálogo ativo
+        - generic [ref=e354]:
+          - generic [ref=e355]:
+            - paragraph [ref=e356]: Relacionados
+            - heading "Complete seu pedido" [level=2] [ref=e357]
+            - paragraph [ref=e358]: Outros produtos da mesma linha para fechar comunicação visual com consistência.
+          - generic [ref=e359]:
+            - article [ref=e360]:
+              - generic [ref=e361]:
+                - generic [ref=e362]:
+                  - img "Adesivo" [ref=e365]
+                  - generic [ref=e366]:
+                    - generic [ref=e367]:
+                      - paragraph [ref=e368]: Adesivos e Aplicação
+                      - generic [ref=e369]: 10% OFF no PIX
+                    - heading "Adesivo" [level=3] [ref=e370]
+                    - paragraph [ref=e371]: Pensado para pontos de venda, paredes, embalagens e acoes visuais de curta ou media duracao.
+                - generic [ref=e372]:
+                  - generic [ref=e373]:
+                    - generic [ref=e374]:
+                      - generic [ref=e375]:
+                        - generic [ref=e376]: Preco no Pix
+                        - strong [ref=e377]: R$ 106,20
+                        - generic [ref=e378]: por m2
+                      - generic [ref=e379]: 10% OFF no PIX
+                    - generic [ref=e380]:
+                      - generic [ref=e381]: "Cartao: R$ 118,00"
+                      - generic [ref=e382]: Area min. 0.25 m2
+                  - link "Personalizar" [ref=e384] [cursor=pointer]:
+                    - /url: /products/adesivo
+                    - text: Personalizar
+                    - img [ref=e385]
+            - article [ref=e387]:
+              - generic [ref=e388]:
+                - generic [ref=e389]:
+                  - img "Adesivo perfurado" [ref=e392]
+                  - generic [ref=e393]:
+                    - generic [ref=e394]:
+                      - paragraph [ref=e395]: Adesivos e Aplicação
+                      - generic [ref=e396]: 10% OFF no PIX
+                    - heading "Adesivo perfurado" [level=3] [ref=e397]
+                    - paragraph [ref=e398]: Muito usado em vitrines, fachadas envidracadas e traseiros automotivos com necessidade de privacidade comercial.
+                - generic [ref=e399]:
+                  - generic [ref=e400]:
+                    - generic [ref=e401]:
+                      - generic [ref=e402]:
+                        - generic [ref=e403]: Preco no Pix
+                        - strong [ref=e404]: R$ 109,80
+                        - generic [ref=e405]: por m2
+                      - generic [ref=e406]: 10% OFF no PIX
+                    - generic [ref=e407]:
+                      - generic [ref=e408]: "Cartao: R$ 122,00"
+                      - generic [ref=e409]: Area min. 0.45 m2
+                  - link "Personalizar" [ref=e411] [cursor=pointer]:
+                    - /url: /products/adesivo-perfurado
+                    - text: Personalizar
+                    - img [ref=e412]
+            - article [ref=e414]:
+              - generic [ref=e415]:
+                - generic [ref=e416]:
+                  - img "Backdrop" [ref=e419]
+                  - generic [ref=e420]:
+                    - generic [ref=e421]:
+                      - paragraph [ref=e422]: Grande Formato
+                      - generic [ref=e423]: 10% OFF no PIX
+                    - heading "Backdrop" [level=3] [ref=e424]
+                    - paragraph [ref=e425]: Ideal para quem precisa de fundo visual de marca, patrocinadores ou cenarios de foto com impacto imediato.
+                - generic [ref=e426]:
+                  - generic [ref=e427]:
+                    - generic [ref=e428]:
+                      - generic [ref=e429]:
+                        - generic [ref=e430]: Preco no Pix
+                        - strong [ref=e431]: R$ 43,20
+                        - generic [ref=e432]: por m2
+                      - generic [ref=e433]: 10% OFF no PIX
+                    - generic [ref=e434]:
+                      - generic [ref=e435]: "Cartao: R$ 48,00"
+                      - generic [ref=e436]: Area min. 4.00 m2
+                  - link "Personalizar" [ref=e438] [cursor=pointer]:
+                    - /url: /products/backdrop
+                    - text: Personalizar
+                    - img [ref=e439]
+            - article [ref=e441]:
+              - generic [ref=e442]:
+                - generic [ref=e443]:
+                  - img "Backdrop de tecido" [ref=e446]
+                  - generic [ref=e447]:
+                    - generic [ref=e448]:
+                      - paragraph [ref=e449]: Grande Formato
+                      - generic [ref=e450]: 10% OFF no PIX
+                    - heading "Backdrop de tecido" [level=3] [ref=e451]
+                    - paragraph [ref=e452]: Ideal para eventos que precisam de fundo de marca com transporte mais facil e acabamento costurado.
+                - generic [ref=e453]:
+                  - generic [ref=e454]:
+                    - generic [ref=e455]:
+                      - generic [ref=e456]:
+                        - generic [ref=e457]: Preco no Pix
+                        - strong [ref=e458]: R$ 41,40
+                        - generic [ref=e459]: por m2
+                      - generic [ref=e460]: 10% OFF no PIX
+                    - generic [ref=e461]:
+                      - generic [ref=e462]: "Cartao: R$ 46,00"
+                      - generic [ref=e463]: Area min. 3.00 m2
+                  - link "Personalizar" [ref=e465] [cursor=pointer]:
+                    - /url: /products/backdrop-tecido
+                    - text: Personalizar
+                    - img [ref=e466]
+    - contentinfo [ref=e468]:
+      - generic [ref=e469]:
+        - generic [ref=e470]:
+          - generic [ref=e471]:
+            - link "Ir para a página inicial da Prismarq Comunicação Visual" [ref=e473] [cursor=pointer]:
+              - /url: /
+              - img "Prismarq Comunicação Visual" [ref=e474]
+            - paragraph [ref=e475]: Comunicação visual
+            - heading "PRISMARQ COMUNICAÇÃO VISUAL LTDA" [level=2] [ref=e476]
+            - paragraph [ref=e477]: Produção própria, atendimento direto e impressão profissional.
+            - paragraph [ref=e478]: Pedido online, sinalização, grandes formatos e comunicação visual com operação comercial real.
+          - generic [ref=e479]:
+            - paragraph [ref=e480]: Contato
+            - generic [ref=e481]:
+              - link "WhatsApp (11) 97410-0193 Atendimento direto para orçamento e pedido online." [ref=e482] [cursor=pointer]:
+                - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+                - paragraph [ref=e483]: WhatsApp
+                - paragraph [ref=e484]: (11) 97410-0193
+                - paragraph [ref=e485]: Atendimento direto para orçamento e pedido online.
+              - link "E-mail contato@prismarqcomunicacao.com Canal institucional e comercial da Prismarq." [ref=e486] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - paragraph [ref=e487]: E-mail
+                - paragraph [ref=e488]: contato@prismarqcomunicacao.com
+                - paragraph [ref=e489]: Canal institucional e comercial da Prismarq.
+              - link "Endereço Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP CEP 16430-057" [ref=e490] [cursor=pointer]:
+                - /url: https://www.google.com/maps/search/?api=1&query=Rua%20Jos%C3%A9%20Bonifacio%2C%20203%20-%20Centro%2C%20S%C3%A3o%20Bernardo%20do%20Campo%20-%20SP%2C%20CEP%2016430-057
+                - paragraph [ref=e491]: Endereço
+                - paragraph [ref=e492]: Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP
+                - paragraph [ref=e493]: CEP 16430-057
+          - generic [ref=e494]:
+            - paragraph [ref=e495]: Links úteis
+            - generic [ref=e496]:
+              - link "Produtos" [ref=e497] [cursor=pointer]:
+                - /url: /products
+                - text: Produtos
+                - img [ref=e498]
+              - link "Pedido online" [ref=e500] [cursor=pointer]:
+                - /url: /order
+                - text: Pedido online
+                - img [ref=e501]
+              - link "Contato" [ref=e503] [cursor=pointer]:
+                - /url: /contact
+                - text: Contato
+                - img [ref=e504]
+              - link "Política de Privacidade" [ref=e506] [cursor=pointer]:
+                - /url: /politica
+                - text: Política de Privacidade
+                - img [ref=e507]
+        - generic [ref=e509]:
+          - paragraph [ref=e510]: © 2026 PRISMARQ COMUNICAÇÃO VISUAL LTDA. Todos os direitos reservados.
+          - paragraph [ref=e511]: São Bernardo do Campo - SP • CEP 16430-057
+  - region "Consentimento de cookies":
+    - generic [ref=e518]:
+      - generic [ref=e519]:
+        - paragraph [ref=e520]: Privacidade Prismarq
+        - heading "Usamos cookies para deixar sua navegação mais fluida, segura e relevante." [level=2] [ref=e521]
+        - paragraph [ref=e522]: Os cookies essenciais mantêm o site funcionando. Com sua autorização, também ativamos recursos de marketing e analytics para aprimorar campanhas e entender melhor o uso da plataforma.
+      - generic [ref=e523]:
+        - button "Configurar" [ref=e524] [cursor=pointer]
+        - button "Aceitar" [ref=e525] [cursor=pointer]
+  - generic:
+    - button
+    - generic:
+      - dialog:
+        - generic:
+          - generic:
+            - generic:
+              - paragraph: Preferências de cookies
+              - heading [level=2]: Ajuste sua experiência com total clareza.
+              - paragraph: Você decide quais categorias opcionais a Prismarq pode usar. Os cookies essenciais permanecem ativos para garantir autenticação, segurança e continuidade dos fluxos atuais.
+            - button:
+              - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Essenciais
+                  - generic: Sempre ativo
+                - paragraph: Necessários para autenticação, estabilidade da navegação, segurança e funcionamento básico do carrinho, pedidos e demais fluxos já existentes.
+              - generic:
+                - switch [checked] [disabled]
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Marketing
+                - paragraph: Permite ativar recursos voltados a campanhas, remarketing e comunicação mais alinhada ao seu interesse.
+              - generic:
+                - switch
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Analytics
+                - paragraph: Ajuda a entender como o site e os fluxos são utilizados, apoiando melhorias contínuas sem alterar a experiência atual.
+              - generic:
+                - switch
+          - generic:
+            - paragraph: "Seleção atual: apenas cookies essenciais ativos."
+            - generic:
+              - button: Aceitar todos
+              - button: Salvar preferências
+  - link "Falar com a Prismarq no WhatsApp" [ref=e512] [cursor=pointer]:
+    - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+    - generic [ref=e513]: WA
+    - generic [ref=e514]: WhatsApp
+  - button "Open Next.js Dev Tools" [ref=e531] [cursor=pointer]:
+    - img [ref=e532]
+  - alert [ref=e535]

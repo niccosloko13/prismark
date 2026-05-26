@@ -1,13 +1,20 @@
 import { activeProductToProduct, getActiveProductSnapshotBySlug } from "@/lib/active-product-snapshot";
 import { roundTo } from "@/lib/utils";
+import type { StoreProductMeta } from "@/lib/store-product-payload";
 import type { PriceBreakdown, Product, QuoteInput } from "@/types";
+
+function getStoreMeta(product: Product): StoreProductMeta | null {
+  return "storeMeta" in product ? ((product as Product & { storeMeta?: StoreProductMeta | null }).storeMeta ?? null) : null;
+}
 
 function calculateForProduct(
   product: Product,
   input: Omit<QuoteInput, "productSlug">,
 ): PriceBreakdown {
   const area = roundTo((input.width / 100) * (input.height / 100), 4);
-  const billableArea = Math.max(area, product.minimumArea);
+  const meta = getStoreMeta(product);
+  const pricingUnit = meta?.pricingUnit ?? "m2";
+  const billableArea = pricingUnit === "m2" ? Math.max(area, product.minimumArea) : product.minimumArea;
   const material =
     product.materials.find((item) => item.label === input.material) ?? product.materials[0];
   const finishing =
@@ -23,7 +30,8 @@ function calculateForProduct(
   );
   const baseTotal = roundTo((subtotal + finishingFee) * deadline.multiplier);
   const addonsTotal = roundTo(Math.max(0, input.addonsTotal ?? 0));
-  const total = roundTo(baseTotal + addonsTotal);
+  const minimumOrderValue = Math.max(0, meta?.minimumOrderValue ?? 0);
+  const total = roundTo(Math.max(baseTotal + addonsTotal, minimumOrderValue));
 
   return {
     area,

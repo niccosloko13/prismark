@@ -11,7 +11,7 @@ function emptyMeta(): StoreProductMeta {
     usageTags: [],
     pricingUnit: "m2",
     minimumOrderValue: null,
-    allowCustomSize: false,
+    allowCustomSize: true,
     customMinWidthCm: 10,
     customMinHeightCm: 10,
     descriptionFull: "",

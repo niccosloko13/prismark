@@ -118,8 +118,8 @@ export function ElectionHero({ className }: { className?: string }) {
         <Link
           href="#materiais"
           className={cn(
-            "focus-ring inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black uppercase tracking-wide text-[#1a0505]",
-            "bg-gradient-to-r from-yellow-300 via-amber-300 to-yellow-400",
+            "focus-ring inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black uppercase tracking-wide text-[#0d0d0d]",
+            "bg-gradient-to-br from-yellow-300 via-amber-300 to-yellow-500",
             "shadow-[0_0_40px_rgba(250,204,21,0.4),0_12px_40px_rgba(0,0,0,0.35)]",
             "transition hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_56px_rgba(250,204,21,0.5),0_16px_48px_rgba(0,0,0,0.4)]",
           )}

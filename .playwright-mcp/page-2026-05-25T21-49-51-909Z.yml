@@ -1,0 +1,375 @@
+- generic [active] [ref=e1]:
+  - link "Pular para o conteúdo" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Ir para a home da Prismarq" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "Prismarq Comunicação Visual" [ref=e9]
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - generic [ref=e12]:
+              - link "(11) 97410-0193" [ref=e13] [cursor=pointer]:
+                - /url: tel:+5511974100193
+                - generic [ref=e14]: ✆
+                - text: (11) 97410-0193
+              - link "contato@prismarqcomunicacao.com" [ref=e16] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - generic [ref=e17]: ✉
+                - generic [ref=e18]: contato@prismarqcomunicacao.com
+              - generic [ref=e20]:
+                - generic [ref=e21]: ⌖
+                - text: São Bernardo do Campo - SP
+            - paragraph [ref=e22]: Impressão profissional com pedido online.
+          - generic [ref=e23]:
+            - navigation [ref=e24]:
+              - link "Início" [ref=e25] [cursor=pointer]:
+                - /url: /
+              - link "Eleição 2026" [ref=e26] [cursor=pointer]:
+                - /url: /eleicao-2026
+              - link "Produtos" [ref=e28] [cursor=pointer]:
+                - /url: /produtos
+                - text: Produtos
+                - img [ref=e29]
+              - link "Pedido online" [ref=e31] [cursor=pointer]:
+                - /url: /order
+                - generic [ref=e32]: Pedido online
+              - link "Contato" [ref=e33] [cursor=pointer]:
+                - /url: /contact
+            - generic [ref=e34]:
+              - generic [ref=e36]:
+                - generic [ref=e37]: Buscar produtos
+                - searchbox "Buscar produtos" [ref=e38]
+                - button "Pesquisar produtos" [ref=e39] [cursor=pointer]:
+                  - img [ref=e40]
+              - generic [ref=e44]:
+                - link "Abrir carrinho com 0 item(ns)" [ref=e45] [cursor=pointer]:
+                  - /url: /cart
+                  - img [ref=e47]
+                  - generic [ref=e51]: Carrinho
+                  - generic [ref=e52]: "0"
+                - generic [ref=e53]:
+                  - button "Login" [ref=e55] [cursor=pointer]:
+                    - text: Login
+                    - img [ref=e56]
+                  - link "Pedir agora" [ref=e58] [cursor=pointer]:
+                    - /url: /order
+    - main [ref=e59]:
+      - generic [ref=e60]:
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - link "Prismarq" [ref=e64] [cursor=pointer]:
+              - /url: /
+              - img "Prismarq" [ref=e65]
+            - generic [ref=e66]:
+              - paragraph [ref=e67]:
+                - img [ref=e69]
+                - generic [ref=e72]: Checkout seguro
+              - paragraph [ref=e73]: Produção, pagamento e entrega no mesmo fluxo.
+          - navigation "Etapas do checkout" [ref=e74]:
+            - generic [ref=e76]:
+              - generic [ref=e77]: ✓
+              - generic [ref=e78]: Carrinho
+            - generic [ref=e81]:
+              - generic [ref=e82]: "2"
+              - generic [ref=e83]: Revisão
+            - generic [ref=e86]:
+              - generic [ref=e87]: "3"
+              - generic [ref=e88]: Pagamento
+            - generic [ref=e91]:
+              - generic [ref=e92]: "4"
+              - generic [ref=e93]: Conclusão
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - generic [ref=e97]:
+              - paragraph [ref=e98]: Entre ou crie sua conta para finalizar
+              - generic [ref=e99]:
+                - button "Entrar" [ref=e100] [cursor=pointer]
+                - button "Criar conta" [ref=e101] [cursor=pointer]
+            - generic [ref=e102]:
+              - generic [ref=e103]:
+                - generic [ref=e104]:
+                  - heading "ConfiguraÃ§Ã£o do pedido" [level=3] [ref=e105]
+                  - paragraph [ref=e106]: Produto, medidas e opÃ§Ãµes de produÃ§Ã£o.
+                - generic [ref=e108]:
+                  - generic [ref=e109]:
+                    - text: Produto
+                    - combobox "Produto" [ref=e110] [cursor=pointer]:
+                      - img [ref=e111]
+                    - combobox [ref=e113]
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Largura (cm)
+                    - textbox "Largura (cm)" [ref=e116]: "120"
+                  - generic [ref=e117]:
+                    - generic [ref=e118]: Altura (cm)
+                    - textbox "Altura (cm)" [ref=e119]: "120"
+                  - generic [ref=e120]:
+                    - text: Unidade
+                    - combobox "Unidade" [ref=e121]:
+                      - option "cm" [selected]
+                      - option "m"
+                  - generic [ref=e122]:
+                    - text: Quantidade
+                    - spinbutton "Quantidade" [ref=e123]: "1"
+                  - generic [ref=e124]:
+                    - text: Material
+                    - combobox "Material" [ref=e125] [cursor=pointer]:
+                      - img [ref=e126]
+                    - combobox [ref=e128]
+                  - generic [ref=e129]:
+                    - text: Acabamento
+                    - combobox "Acabamento" [ref=e130] [cursor=pointer]:
+                      - img [ref=e131]
+                    - combobox [ref=e133]
+                  - generic [ref=e134]:
+                    - text: Prazo
+                    - combobox "Prazo" [ref=e135] [cursor=pointer]:
+                      - img [ref=e136]
+                    - combobox [ref=e138]
+              - generic [ref=e139]:
+                - generic [ref=e140]:
+                  - heading "Dados do cliente" [level=3] [ref=e141]
+                  - paragraph [ref=e142]: Nome, e-mail, WhatsApp e CPF para o pedido.
+                - generic [ref=e144]:
+                  - generic [ref=e145]:
+                    - text: Nome completo
+                    - textbox "Nome completo Como vocÃª quer ser chamado na confirmaÃ§Ã£o do pedido." [ref=e146]:
+                      - /placeholder: Nome completo
+                    - paragraph [ref=e147]: Como vocÃª quer ser chamado na confirmaÃ§Ã£o do pedido.
+                  - generic [ref=e148]:
+                    - text: Email
+                    - textbox "Email Enviamos a confirmaÃ§Ã£o e o acompanhamento do pedido por aqui." [ref=e149]:
+                      - /placeholder: voce@empresa.com
+                    - paragraph [ref=e150]: Enviamos a confirmaÃ§Ã£o e o acompanhamento do pedido por aqui.
+                  - generic [ref=e151]:
+                    - generic [ref=e152]:
+                      - text: WhatsApp
+                      - img [ref=e153]
+                    - textbox "WhatsApp DDD + nÃºmero com 8 ou 9 dÃgitos." [ref=e155]:
+                      - /placeholder: (11) 99999-9999
+                    - paragraph [ref=e156]: DDD + nÃºmero com 8 ou 9 dÃgitos.
+                  - generic [ref=e157]:
+                    - text: CPF
+                    - textbox "CPF ObrigatÃ³rio para emissÃ£o e conferÃªncia do pedido." [ref=e158]:
+                      - /placeholder: 000.000.000-00
+                    - paragraph [ref=e159]: ObrigatÃ³rio para emissÃ£o e conferÃªncia do pedido.
+              - generic [ref=e160]:
+                - generic [ref=e161]:
+                  - heading "Entrega" [level=3] [ref=e162]
+                  - paragraph [ref=e163]: Receba em casa ou retire na Prismarq.
+                - generic [ref=e165]:
+                  - generic [ref=e166]:
+                    - button "Receber em endereÃ§o Envio para o endereÃ§o informado abaixo." [ref=e167] [cursor=pointer]:
+                      - generic [ref=e169]:
+                        - strong [ref=e170]: Receber em endereÃ§o
+                        - paragraph [ref=e171]: Envio para o endereÃ§o informado abaixo.
+                    - button "Retirar na Prismarq Sem custo de envio â€” retirada com nossa equipe." [ref=e172] [cursor=pointer]:
+                      - generic [ref=e174]:
+                        - strong [ref=e175]: Retirar na Prismarq
+                        - paragraph [ref=e176]: Sem custo de envio â€” retirada com nossa equipe.
+                  - generic [ref=e177]:
+                    - generic [ref=e178]:
+                      - generic [ref=e179]:
+                        - text: CEP
+                        - generic [ref=e180]:
+                          - textbox "CEP Com 8 dÃgitos buscamos o endereÃ§o automaticamente (ViaCEP)." [ref=e181]:
+                            - /placeholder: 00000-000
+                          - generic:
+                            - img
+                        - paragraph [ref=e182]: Com 8 dÃgitos buscamos o endereÃ§o automaticamente (ViaCEP).
+                      - generic [ref=e183]:
+                        - text: Rua / logradouro
+                        - textbox "Rua / logradouro" [ref=e184]:
+                          - /placeholder: Rua, avenida...
+                    - generic [ref=e185]:
+                      - generic [ref=e186]:
+                        - text: NÃºmero
+                        - textbox "NÃºmero" [ref=e187]
+                      - generic [ref=e188]:
+                        - text: Complemento
+                        - textbox "Complemento" [ref=e189]:
+                          - /placeholder: Opcional
+                    - generic [ref=e190]:
+                      - generic [ref=e191]:
+                        - text: Bairro
+                        - textbox "Bairro" [ref=e192]
+                      - generic [ref=e193]:
+                        - text: Cidade
+                        - textbox "Cidade" [ref=e194]
+                    - generic [ref=e195]:
+                      - text: UF
+                      - combobox "UF" [ref=e196]:
+                        - option "UF" [selected]
+                        - option "AC"
+                        - option "AL"
+                        - option "AP"
+                        - option "AM"
+                        - option "BA"
+                        - option "CE"
+                        - option "DF"
+                        - option "ES"
+                        - option "GO"
+                        - option "MA"
+                        - option "MT"
+                        - option "MS"
+                        - option "MG"
+                        - option "PA"
+                        - option "PB"
+                        - option "PR"
+                        - option "PE"
+                        - option "PI"
+                        - option "RJ"
+                        - option "RN"
+                        - option "RS"
+                        - option "RO"
+                        - option "RR"
+                        - option "SC"
+                        - option "SP"
+                        - option "SE"
+                        - option "TO"
+              - generic [ref=e197]:
+                - generic [ref=e198]:
+                  - heading "Arquivo da arte" [level=3] [ref=e199]
+                  - paragraph [ref=e200]: Envie agora ou depois pelo atendimento.
+                - generic [ref=e203]:
+                  - img [ref=e205]
+                  - generic [ref=e208]:
+                    - strong [ref=e209]: Clique para enviar ou arraste seu arquivo
+                    - paragraph [ref=e210]: PDF, PNG, JPG, SVG, AI, CDR, ZIP (mÃ¡x. 15 MB nesta instalaÃ§Ã£o). VocÃª tambÃ©m pode enviar sua arte depois pelo atendimento.
+                    - button "Choose File" [ref=e211]
+                    - paragraph [ref=e212]:
+                      - img [ref=e213]
+                      - text: Seus arquivos sÃ£o confidenciais e usados apenas para produÃ§Ã£o do pedido.
+              - generic [ref=e216]:
+                - generic [ref=e217]:
+                  - heading "Pagamento" [level=3] [ref=e218]
+                  - paragraph [ref=e219]: Pix ativo com desconto. CartÃ£o em manutenÃ§Ã£o.
+                - generic [ref=e221]:
+                  - 'status "Forma de pagamento: PIX ativo" [ref=e222]':
+                    - generic [ref=e223]:
+                      - img [ref=e224]
+                      - generic [ref=e227]:
+                        - strong [ref=e228]: PIX
+                        - paragraph [ref=e229]: "Economize 10% pagando no PIX. Total: R$ 169,13."
+                  - generic:
+                    - generic:
+                      - generic:
+                        - strong: CartÃ£o (em manutenÃ§Ã£o)
+                        - paragraph: Pagamento com cartão temporariamente indisponível
+                      - generic: IndisponÃvel
+              - generic [ref=e230]:
+                - generic [ref=e231]:
+                  - heading "ObservaÃ§Ãµes" [level=3] [ref=e232]
+                  - paragraph [ref=e233]: Opcional â€” instruÃ§Ãµes extras para produÃ§Ã£o.
+                - generic [ref=e235]:
+                  - text: Notas
+                  - textbox "Notas" [ref=e236]:
+                    - /placeholder: Detalhes para a equipe (opcional).
+            - paragraph [ref=e238]: Use sua conta para continuar com o mesmo pedido.
+            - button "Adicionar ao carrinho" [ref=e240] [cursor=pointer]
+          - complementary [ref=e241]:
+            - generic [ref=e242]:
+              - paragraph [ref=e243]: Resumo do pedido
+              - generic [ref=e246]:
+                - heading "Adesivo" [level=3] [ref=e247]
+                - paragraph [ref=e248]: Vinil fosco Â· Laminação fosca
+              - list [ref=e249]:
+                - listitem [ref=e250]:
+                  - generic [ref=e251]: Medidas
+                  - generic [ref=e252]: "Tamanho personalizado: 120 x 120 cm"
+                - listitem [ref=e253]:
+                  - generic [ref=e254]: Quantidade
+                  - generic [ref=e255]: "1"
+                - listitem [ref=e256]:
+                  - generic [ref=e257]: Prazo
+                  - generic [ref=e258]: Standard · 4 dias
+                - listitem [ref=e259]:
+                  - generic [ref=e260]: Subtotal
+                  - generic [ref=e261]: R$ 187,92
+                - listitem [ref=e262]:
+                  - generic [ref=e263]: Desconto PIX (10%)
+                  - generic [ref=e264]: âˆ’ R$ 18,79
+              - generic [ref=e265]:
+                - paragraph [ref=e266]: Total no PIX
+                - paragraph [ref=e267]: R$ 169,13
+              - generic [ref=e268]:
+                - img [ref=e269]
+                - paragraph [ref=e272]:
+                  - text: VocÃª economiza
+                  - strong [ref=e273]: R$ 18,79
+                  - text: pagando no PIX.
+              - list [ref=e274]:
+                - listitem [ref=e275]:
+                  - img [ref=e276]
+                  - generic [ref=e278]: ProduÃ§Ã£o prÃ³pria Prismarq
+                - listitem [ref=e279]:
+                  - img [ref=e280]
+                  - generic [ref=e282]: +1.500 pedidos produzidos
+                - listitem [ref=e283]:
+                  - img [ref=e284]
+                  - generic [ref=e286]: Entrega no prazo
+                - listitem [ref=e287]:
+                  - img [ref=e288]
+                  - generic [ref=e290]: Atendimento direto
+              - button "Finalizar aqui" [ref=e291] [cursor=pointer]:
+                - text: Finalizar aqui
+                - img [ref=e292]
+              - paragraph [ref=e294]:
+                - img [ref=e295]
+                - text: Ambiente 100% seguro
+    - contentinfo [ref=e298]:
+      - generic [ref=e299]:
+        - generic [ref=e300]:
+          - generic [ref=e301]:
+            - link "Ir para a página inicial da Prismarq Comunicação Visual" [ref=e303] [cursor=pointer]:
+              - /url: /
+              - img "Prismarq Comunicação Visual" [ref=e304]
+            - paragraph [ref=e305]: Comunicação visual
+            - heading "PRISMARQ COMUNICAÇÃO VISUAL LTDA" [level=2] [ref=e306]
+            - paragraph [ref=e307]: Produção própria, atendimento direto e impressão profissional.
+            - paragraph [ref=e308]: Pedido online, sinalização, grandes formatos e comunicação visual com operação comercial real.
+          - generic [ref=e309]:
+            - paragraph [ref=e310]: Contato
+            - generic [ref=e311]:
+              - link "WhatsApp (11) 97410-0193 Atendimento direto para orçamento e pedido online." [ref=e312] [cursor=pointer]:
+                - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+                - paragraph [ref=e313]: WhatsApp
+                - paragraph [ref=e314]: (11) 97410-0193
+                - paragraph [ref=e315]: Atendimento direto para orçamento e pedido online.
+              - link "E-mail contato@prismarqcomunicacao.com Canal institucional e comercial da Prismarq." [ref=e316] [cursor=pointer]:
+                - /url: mailto:contato@prismarqcomunicacao.com
+                - paragraph [ref=e317]: E-mail
+                - paragraph [ref=e318]: contato@prismarqcomunicacao.com
+                - paragraph [ref=e319]: Canal institucional e comercial da Prismarq.
+              - link "Endereço Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP CEP 16430-057" [ref=e320] [cursor=pointer]:
+                - /url: https://www.google.com/maps/search/?api=1&query=Rua%20Jos%C3%A9%20Bonifacio%2C%20203%20-%20Centro%2C%20S%C3%A3o%20Bernardo%20do%20Campo%20-%20SP%2C%20CEP%2016430-057
+                - paragraph [ref=e321]: Endereço
+                - paragraph [ref=e322]: Rua José Bonifacio, 203 - Centro • São Bernardo do Campo - SP
+                - paragraph [ref=e323]: CEP 16430-057
+          - generic [ref=e324]:
+            - paragraph [ref=e325]: Links úteis
+            - generic [ref=e326]:
+              - link "Produtos" [ref=e327] [cursor=pointer]:
+                - /url: /products
+                - text: Produtos
+                - img [ref=e328]
+              - link "Pedido online" [ref=e330] [cursor=pointer]:
+                - /url: /order
+                - text: Pedido online
+                - img [ref=e331]
+              - link "Contato" [ref=e333] [cursor=pointer]:
+                - /url: /contact
+                - text: Contato
+                - img [ref=e334]
+              - link "Política de Privacidade" [ref=e336] [cursor=pointer]:
+                - /url: /politica
+                - text: Política de Privacidade
+                - img [ref=e337]
+        - generic [ref=e339]:
+          - paragraph [ref=e340]: © 2026 PRISMARQ COMUNICAÇÃO VISUAL LTDA. Todos os direitos reservados.
+          - paragraph [ref=e341]: São Bernardo do Campo - SP • CEP 16430-057
+  - link "Falar com a Prismarq no WhatsApp" [ref=e342] [cursor=pointer]:
+    - /url: https://wa.me/5511974100193?text=Olá%2C%20quero%20montar%20um%20pedido%20na%20Prismarq.
+    - generic [ref=e343]: WA
+    - generic [ref=e344]: WhatsApp

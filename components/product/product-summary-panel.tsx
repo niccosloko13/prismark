@@ -10,7 +10,7 @@ import { formatAddonPriceHint } from "@/components/product/product-addon-strip";
 import { buildCartItem } from "@/lib/cart";
 import { pixEconomizePagarNoPixLabel, pixOffNoPixLabel } from "@/lib/copy";
 import { applyPixDiscount } from "@/lib/pix-discount";
-import { isCustomFormatId } from "@/lib/custom-product-size";
+import { formatCustomSizeLabel, isCustomFormatId } from "@/lib/custom-product-size";
 import { buildOrderUrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL } from "@/lib/utils";
 import type { PriceBreakdown, Product } from "@/types";
@@ -100,7 +100,7 @@ export function ProductSummaryPanel({
   const pixDiscount = quote.total - pixTotal;
   const unitAverage = quote.total / Math.max(selection.quantity, 1);
   const sizePhrase = isCustomFormatId(selection.formatId)
-    ? `tamanho personalizado (${selection.width} x ${selection.height} cm)`
+    ? formatCustomSizeLabel(selection).toLowerCase()
     : `${selection.width} x ${selection.height} cm`;
   const naturalSummary = `${selection.quantity} un. em ${selection.material.toLowerCase()}, ${sizePhrase}, ${selection.finishing.toLowerCase()} e ${color?.label ?? "cor padrão"}.`;
   const previewImage = experience.gallery[0]?.src ?? "";

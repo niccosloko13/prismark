@@ -1,5 +1,10 @@
-import { getActiveProductSnapshotBySlug, type ActiveProduct } from "@/lib/active-product-snapshot";
-import { PRISMARQ_CUSTOM_FORMAT_ID } from "@/lib/custom-product-size";
+﻿import { getActiveProductSnapshotBySlug, type ActiveProduct } from "@/lib/active-product-snapshot";
+import {
+  formatCustomSizeLabel,
+  normalizeCustomSizeUnit,
+  PRISMARQ_CUSTOM_FORMAT_ID,
+  type CustomSizeUnit,
+} from "@/lib/custom-product-size";
 import { getProductConfiguration } from "@/lib/catalog";
 import { formatCurrencyBRL, roundTo } from "@/lib/utils";
 import { getDefaultMeasuresForProduct, getPreferredDeadlineLabel } from "@/lib/order-presets";
@@ -110,6 +115,7 @@ export interface ProductSelectionState {
   formatId: string;
   width: number;
   height: number;
+  customSizeUnit?: CustomSizeUnit;
   colorId: string;
   enhancementId: string;
   material: string;
@@ -130,34 +136,34 @@ const galleryCopyByKind: Record<
   Array<{ title: string; subtitle: string }>
 > = {
   large: [
-    { title: "Impacto em fachada", subtitle: "Leitura forte com presença de rua." },
-    { title: "Detalhe de acabamento", subtitle: "Ilhós, reforço e corte limpo." },
-    { title: "Aplicação coordenada", subtitle: "Visual pronto para operação." },
-    { title: "Linha de produção", subtitle: "Controle visual da peça antes do envio." },
+    { title: "Impacto em fachada", subtitle: "Leitura forte com presenÃ§a de rua." },
+    { title: "Detalhe de acabamento", subtitle: "IlhÃ³s, reforÃ§o e corte limpo." },
+    { title: "AplicaÃ§Ã£o coordenada", subtitle: "Visual pronto para operaÃ§Ã£o." },
+    { title: "Linha de produÃ§Ã£o", subtitle: "Controle visual da peÃ§a antes do envio." },
   ],
   adhesive: [
-    { title: "Vitrine de precisão", subtitle: "Adesivo com leitura limpa e recorte." },
-    { title: "Camada técnica", subtitle: "Laminação e proteção para alto uso." },
-    { title: "Aplicação em vidro", subtitle: "Encaixe visual para retail e PDV." },
-    { title: "Produção plana", subtitle: "Peça pronta para expedição." },
+    { title: "Vitrine de precisÃ£o", subtitle: "Adesivo com leitura limpa e recorte." },
+    { title: "Camada tÃ©cnica", subtitle: "LaminaÃ§Ã£o e proteÃ§Ã£o para alto uso." },
+    { title: "AplicaÃ§Ã£o em vidro", subtitle: "Encaixe visual para retail e PDV." },
+    { title: "ProduÃ§Ã£o plana", subtitle: "PeÃ§a pronta para expediÃ§Ã£o." },
   ],
   card: [
-    { title: "Frente editorial", subtitle: "Cartão com apresentação refinada." },
-    { title: "Superfície premium", subtitle: "Papel e acabamento em alto padrão." },
-    { title: "Lote organizado", subtitle: "Produção pensada para escala." },
+    { title: "Frente editorial", subtitle: "CartÃ£o com apresentaÃ§Ã£o refinada." },
+    { title: "SuperfÃ­cie premium", subtitle: "Papel e acabamento em alto padrÃ£o." },
+    { title: "Lote organizado", subtitle: "ProduÃ§Ã£o pensada para escala." },
     { title: "Fechamento institucional", subtitle: "Pronto para networking e marca." },
   ],
   rigid: [
-    { title: "Painel arquitetônico", subtitle: "Rigidez e presença para fachada." },
-    { title: "Fixação técnica", subtitle: "Detalhes para montagem precisa." },
-    { title: "Placa em escala", subtitle: "Aplicação corporativa ou comercial." },
+    { title: "Painel arquitetÃ´nico", subtitle: "Rigidez e presenÃ§a para fachada." },
+    { title: "FixaÃ§Ã£o tÃ©cnica", subtitle: "Detalhes para montagem precisa." },
+    { title: "Placa em escala", subtitle: "AplicaÃ§Ã£o corporativa ou comercial." },
     { title: "Projeto premium", subtitle: "Acabamento robusto e limpo." },
   ],
   vertical: [
-    { title: "Leitura vertical", subtitle: "Alta visibilidade em área externa." },
-    { title: "Base reforçada", subtitle: "Estrutura pronta para vento e fluxo." },
-    { title: "Ativação de evento", subtitle: "Peça pronta para instalação rápida." },
-    { title: "Conjunto de produção", subtitle: "Detalhe de costura e suporte." },
+    { title: "Leitura vertical", subtitle: "Alta visibilidade em Ã¡rea externa." },
+    { title: "Base reforÃ§ada", subtitle: "Estrutura pronta para vento e fluxo." },
+    { title: "AtivaÃ§Ã£o de evento", subtitle: "PeÃ§a pronta para instalaÃ§Ã£o rÃ¡pida." },
+    { title: "Conjunto de produÃ§Ã£o", subtitle: "Detalhe de costura e suporte." },
   ],
 };
 
@@ -279,12 +285,12 @@ function createArtworkSvg(product: Product, variant: number, kind: string) {
         <rect x="96" y="92" width="220" height="52" rx="26" fill="rgba(15,15,15,0.28)" />
         <text x="128" y="126" fill="white" font-size="24" font-weight="700" letter-spacing="4">PRISMARQ</text>
         <text x="96" y="1016" fill="white" font-size="68" font-weight="800" font-family="Aptos, Segoe UI, sans-serif">${title}</text>
-        <text x="96" y="1076" fill="rgba(255,255,255,0.78)" font-size="30" font-weight="500" font-family="Aptos, Segoe UI, sans-serif">${category} · ${escapeXml(sizeLabel)}</text>
+        <text x="96" y="1076" fill="rgba(255,255,255,0.78)" font-size="30" font-weight="500" font-family="Aptos, Segoe UI, sans-serif">${category} Â· ${escapeXml(sizeLabel)}</text>
         <text x="96" y="1130" fill="rgba(255,255,255,0.8)" font-size="24" font-weight="500" font-family="Aptos, Segoe UI, sans-serif">${lead}</text>
       </g>
       <g opacity="0.92">
         <rect x="1100" y="92" width="320" height="52" rx="26" fill="rgba(255,255,255,0.12)" />
-        <text x="1140" y="126" fill="white" font-size="22" font-weight="700" letter-spacing="2">${variant === 0 ? "VISÃO PRINCIPAL" : variant === 1 ? "DETALHE TÉCNICO" : variant === 2 ? "APLICAÇÃO REAL" : "PRÉ-IMPRESSÃO"}</text>
+        <text x="1140" y="126" fill="white" font-size="22" font-weight="700" letter-spacing="2">${variant === 0 ? "VISÃƒO PRINCIPAL" : variant === 1 ? "DETALHE TÃ‰CNICO" : variant === 2 ? "APLICAÃ‡ÃƒO REAL" : "PRÃ‰-IMPRESSÃƒO"}</text>
       </g>
     </svg>
   `)}`;
@@ -313,7 +319,7 @@ function createTemplateSvg(product: Product, formatLabel: string, kind: string) 
       <rect x="96" y="92" width="280" height="52" rx="26" fill="rgba(15,15,15,0.92)" />
       <text x="132" y="126" fill="white" font-size="24" font-weight="700" letter-spacing="4">PRISMARQ</text>
       <text x="96" y="214" fill="#0f0f0f" font-size="52" font-weight="800" font-family="Aptos, Segoe UI, sans-serif">${productTitle}</text>
-      <text x="96" y="270" fill="rgba(15,15,15,0.72)" font-size="26" font-weight="500" font-family="Aptos, Segoe UI, sans-serif">Template base para exportação e aprovação visual.</text>
+      <text x="96" y="270" fill="rgba(15,15,15,0.72)" font-size="26" font-weight="500" font-family="Aptos, Segoe UI, sans-serif">Template base para exportaÃ§Ã£o e aprovaÃ§Ã£o visual.</text>
       <g>
         <rect x="96" y="336" width="1008" height="308" rx="32" fill="white" stroke="rgba(15,15,15,0.12)" stroke-dasharray="14 14" />
         <rect x="152" y="392" width="896" height="196" rx="24" fill="rgba(255,255,255,0.92)" stroke="rgba(15,15,15,0.08)" />
@@ -321,8 +327,8 @@ function createTemplateSvg(product: Product, formatLabel: string, kind: string) 
         <path d="M246 480 H934" stroke="rgba(15,15,15,0.18)" stroke-width="10" stroke-dasharray="18 16" />
         <path d="M246 562 H934" stroke="rgba(15,15,15,0.18)" stroke-width="10" stroke-dasharray="18 16" />
       </g>
-      <text x="96" y="706" fill="rgba(15,15,15,0.8)" font-size="22" font-weight="700" font-family="Aptos, Segoe UI, sans-serif">Formato sugerido: ${dimensions} · Sangria técnica e área segura já indicadas.</text>
-      <text x="876" y="706" fill="rgba(15,15,15,0.86)" font-size="22" font-weight="700" font-family="Aptos, Segoe UI, sans-serif">${fileHint} · ${measures.width} x ${measures.height} cm</text>
+      <text x="96" y="706" fill="rgba(15,15,15,0.8)" font-size="22" font-weight="700" font-family="Aptos, Segoe UI, sans-serif">Formato sugerido: ${dimensions} Â· Sangria tÃ©cnica e Ã¡rea segura jÃ¡ indicadas.</text>
+      <text x="876" y="706" fill="rgba(15,15,15,0.86)" font-size="22" font-weight="700" font-family="Aptos, Segoe UI, sans-serif">${fileHint} Â· ${measures.width} x ${measures.height} cm</text>
       <circle cx="1036" cy="144" r="58" fill="${tertiary === "cyan" ? "#00B5FF" : tertiary === "magenta" ? "#FF2EBF" : "#FFD300"}" fill-opacity="0.18" />
     </svg>
   `)}`;
@@ -350,7 +356,7 @@ function buildFormats(product: Product) {
   };
   const standard = {
     id: "padrao",
-    label: "Padrão",
+    label: "PadrÃ£o",
     description: "Formato principal recomendado para o fluxo comercial.",
     width: base.width,
     height: base.height,
@@ -359,7 +365,7 @@ function buildFormats(product: Product) {
   const impact = {
     id: "impacto",
     label: "Impacto",
-    description: "Maior área visual para campanhas, fachadas e ativações.",
+    description: "Maior Ã¡rea visual para campanhas, fachadas e ativaÃ§Ãµes.",
     width: Math.max(1, Math.round(base.width * 1.2)),
     height: Math.max(1, Math.round(base.height * 1.2)),
   };
@@ -373,7 +379,7 @@ function buildColors(product: Product) {
     {
       id: "cmyk-full",
       label: "CMYK completo",
-      description: "Melhor leitura de cor para peças vibrantes e premium.",
+      description: "Melhor leitura de cor para peÃ§as vibrantes e premium.",
       swatch:
         palette[0] === "cyan"
           ? "linear-gradient(135deg, #00B5FF 0%, #FF2EBF 55%, #FFD300 100%)"
@@ -390,7 +396,7 @@ function buildColors(product: Product) {
     {
       id: "dupla-leitura",
       label: "Dupla leitura",
-      description: "Alto contraste para comunicação dos dois lados.",
+      description: "Alto contraste para comunicaÃ§Ã£o dos dois lados.",
       swatch: "linear-gradient(135deg, #00B5FF 0%, rgba(255,255,255,0.84) 50%, #FF2EBF 100%)",
     },
   ];
@@ -404,13 +410,13 @@ function buildEnhancements(product: Product) {
       {
         id: "sem-enobrecimento",
         label: "Sem enobrecimento",
-        description: "Produção enxuta para prazo rápido.",
+        description: "ProduÃ§Ã£o enxuta para prazo rÃ¡pido.",
         priceLabel: "Incluso",
       },
       {
         id: "laminacao-fosca",
-        label: "Laminação fosca",
-        description: "Toque premium e proteção adicional.",
+        label: "LaminaÃ§Ã£o fosca",
+        description: "Toque premium e proteÃ§Ã£o adicional.",
         priceLabel: "sob consulta",
       },
       {
@@ -426,19 +432,19 @@ function buildEnhancements(product: Product) {
     {
       id: "sem-enobrecimento",
       label: "Sem enobrecimento",
-      description: "Fluxo direto para peças comerciais e táticas.",
+      description: "Fluxo direto para peÃ§as comerciais e tÃ¡ticas.",
       priceLabel: "Incluso",
     },
     {
       id: "laminacao-fosca",
-      label: "Laminação fosca",
-      description: "Proteção e acabamento elegante.",
+      label: "LaminaÃ§Ã£o fosca",
+      description: "ProteÃ§Ã£o e acabamento elegante.",
       priceLabel: "sob consulta",
     },
     {
       id: "laminacao-brilho",
-      label: "Laminação brilho",
-      description: "Mais presença e contraste de impressão.",
+      label: "LaminaÃ§Ã£o brilho",
+      description: "Mais presenÃ§a e contraste de impressÃ£o.",
       priceLabel: "sob consulta",
     },
     {
@@ -454,7 +460,7 @@ function buildAddons() {
   return [
     {
       id: "arte",
-      label: "Criação de arte",
+      label: "CriaÃ§Ã£o de arte",
       description: "Layout profissional desenvolvido pela equipe Prismarq.",
       priceLabel: "a partir de R$ 95",
       feeBrl: 95,
@@ -463,7 +469,7 @@ function buildAddons() {
     {
       id: "checagem",
       label: "Checagem de arquivo",
-      description: "Ajuste técnico de sangria, margem e formato final.",
+      description: "Ajuste tÃ©cnico de sangria, margem e formato final.",
       priceLabel: "a partir de R$ 35",
       feeBrl: 35,
     },
@@ -489,13 +495,13 @@ function buildSpecs(product: Product) {
   const measures = getDefaultMeasuresForProduct(product);
   return [
     { label: "Categoria", value: product.category },
-    { label: "Área mínima", value: `${product.minimumArea.toFixed(2)} m²` },
-    { label: "Preço base", value: `${formatCurrencyBRL(product.basePriceM2)}/m²` },
-    { label: "Dimensão padrão", value: `${measures.width} x ${measures.height} cm` },
-    { label: "Materiais disponíveis", value: product.materials.map((item) => item.label).join(" · ") },
-    { label: "Acabamentos", value: product.finishings.map((item) => item.label).join(" · ") },
-    { label: "Prazos", value: product.deadlines.map((item) => item.label).join(" · ") },
-    { label: "Aplicações", value: product.applications.join(" · ") },
+    { label: "Ãrea mÃ­nima", value: `${product.minimumArea.toFixed(2)} mÂ²` },
+    { label: "PreÃ§o base", value: `${formatCurrencyBRL(product.basePriceM2)}/mÂ²` },
+    { label: "DimensÃ£o padrÃ£o", value: `${measures.width} x ${measures.height} cm` },
+    { label: "Materiais disponÃ­veis", value: product.materials.map((item) => item.label).join(" Â· ") },
+    { label: "Acabamentos", value: product.finishings.map((item) => item.label).join(" Â· ") },
+    { label: "Prazos", value: product.deadlines.map((item) => item.label).join(" Â· ") },
+    { label: "AplicaÃ§Ãµes", value: (product.applications ?? []).join(" Â· ") },
   ];
 }
 
@@ -506,7 +512,7 @@ function buildDownloads(product: Product) {
     {
       id: "illustrator",
       label: "Illustrator",
-      description: "Base vetorial pronta para edição no Adobe Illustrator.",
+      description: "Base vetorial pronta para ediÃ§Ã£o no Adobe Illustrator.",
       href: createTemplateSvg(product, formatLabel, "illustrator"),
       downloadName: `${product.slug}-illustrator.svg`,
       icon: "illustrator" as const,
@@ -514,7 +520,7 @@ function buildDownloads(product: Product) {
     {
       id: "corel",
       label: "Corel",
-      description: "Arquivo base para edição rápida em CorelDRAW.",
+      description: "Arquivo base para ediÃ§Ã£o rÃ¡pida em CorelDRAW.",
       href: createTemplateSvg(product, formatLabel, "corel"),
       downloadName: `${product.slug}-corel.svg`,
       icon: "corel" as const,
@@ -522,7 +528,7 @@ function buildDownloads(product: Product) {
     {
       id: "pdf",
       label: "PDF",
-      description: "Preview técnico para aprovação e alinhamento comercial.",
+      description: "Preview tÃ©cnico para aprovaÃ§Ã£o e alinhamento comercial.",
       href: createTemplateSvg(product, formatLabel, "pdf"),
       downloadName: `${product.slug}-pdf-template.svg`,
       icon: "pdf" as const,
@@ -541,9 +547,9 @@ function buildModels(product: Product, formats: ProductFormatOption[], colors: P
 
   const labelsByKind: Record<string, [string, string, string]> = {
     large: ["Essencial", "Impacto", "Fachada premium"],
-    adhesive: ["Vitrine", "Recorte premium", "Aplicação total"],
-    card: ["Clássico", "Executivo", "Cartão premium"],
-    rigid: ["Sinalização", "Corporativo", "Arquitetônico"],
+    adhesive: ["Vitrine", "Recorte premium", "AplicaÃ§Ã£o total"],
+    card: ["ClÃ¡ssico", "Executivo", "CartÃ£o premium"],
+    rigid: ["SinalizaÃ§Ã£o", "Corporativo", "ArquitetÃ´nico"],
     vertical: ["Evento", "Campo", "Estrutura completa"],
   };
 
@@ -553,7 +559,7 @@ function buildModels(product: Product, formats: ProductFormatOption[], colors: P
     {
       id: "modelo-1",
       label: first,
-      description: "Fluxo direto com foco em velocidade de produção.",
+      description: "Fluxo direto com foco em velocidade de produÃ§Ã£o.",
       recommended: true,
       formatId: formats[1]?.id ?? formats[0].id,
       material: recommendedMaterial,
@@ -564,7 +570,7 @@ function buildModels(product: Product, formats: ProductFormatOption[], colors: P
     {
       id: "modelo-2",
       label: second,
-      description: "Equilíbrio entre presença visual e custo operacional.",
+      description: "EquilÃ­brio entre presenÃ§a visual e custo operacional.",
       formatId: formats[2]?.id ?? formats[1].id,
       material: premiumMaterial,
       finishing: refinedFinishing,
@@ -574,7 +580,7 @@ function buildModels(product: Product, formats: ProductFormatOption[], colors: P
     {
       id: "modelo-3",
       label: third,
-      description: "Configuração premium para peças com mais presença.",
+      description: "ConfiguraÃ§Ã£o premium para peÃ§as com mais presenÃ§a.",
       formatId: formats[2]?.id ?? formats[1].id,
       material: topMaterial,
       finishing: premiumFinishing,
@@ -593,13 +599,13 @@ function buildQuantityTiers(product: Product) {
 function inferKindLabel(kind: string) {
   switch (kind) {
     case "adhesive":
-      return "Comunicação aplicada";
+      return "ComunicaÃ§Ã£o aplicada";
     case "card":
       return "Institucional premium";
     case "rigid":
-      return "Rígidos e fachadas";
+      return "RÃ­gidos e fachadas";
     case "vertical":
-      return "Eventos e ativações";
+      return "Eventos e ativaÃ§Ãµes";
     default:
       return "Grande formato";
   }
@@ -610,8 +616,8 @@ function isStoreBackedActiveProduct(product: Product): product is ActiveProduct 
 }
 
 /**
- * Monta a experiência do configurador. Produtos de `store_products` **sempre** usam a experiência
- * persistida no payload (mapa `storeExperienceBySlug` ou, em último caso, `storeExperience` no objeto).
+ * Monta a experiÃªncia do configurador. Produtos de `store_products` **sempre** usam a experiÃªncia
+ * persistida no payload (mapa `storeExperienceBySlug` ou, em Ãºltimo caso, `storeExperience` no objeto).
  */
 export function buildProductExperience(product: Product): ProductExperience {
   const storeKey = product.slug.trim().toLowerCase();
@@ -631,7 +637,7 @@ export function buildProductExperience(product: Product): ProductExperience {
       rating: {
         value: product.featured ? 4.9 : 4.8,
         reviews: product.featured ? 126 : 89,
-        caption: `${inferKindLabel(inferVisualKind(product))} com operação pronta para fechamento`,
+        caption: `${inferKindLabel(inferVisualKind(product))} com operaÃ§Ã£o pronta para fechamento`,
       },
       gallery: config.images,
       models: config.configurator.model,
@@ -642,8 +648,8 @@ export function buildProductExperience(product: Product): ProductExperience {
       specs: config.technicalSpecs,
       downloads: buildDownloads(product),
       shipping: {
-        placeholder: "Use o CEP do destino para estimar entrega, retirada ou logística regional.",
-        note: "A estimativa combina região do CEP e volume atual do pedido para orientar o fechamento.",
+        placeholder: "Use o CEP do destino para estimar entrega, retirada ou logÃ­stica regional.",
+        note: "A estimativa combina regiÃ£o do CEP e volume atual do pedido para orientar o fechamento.",
       },
       quantityTiers: config.priceTable.map((row) => row.quantity),
     };
@@ -659,7 +665,7 @@ export function buildProductExperience(product: Product): ProductExperience {
     rating: {
       value: product.featured ? 4.9 : 4.8,
       reviews: product.featured ? 126 : 89,
-      caption: `${inferKindLabel(kind)} com operação pronta para fechamento`,
+      caption: `${inferKindLabel(kind)} com operaÃ§Ã£o pronta para fechamento`,
     },
     gallery: galleryCopy(product, kind),
     models,
@@ -670,14 +676,14 @@ export function buildProductExperience(product: Product): ProductExperience {
     specs: buildSpecs(product),
     downloads: buildDownloads(product),
     shipping: {
-      placeholder: "Use o CEP do destino para estimar entrega, retirada ou logística regional.",
-      note: "A estimativa combina região do CEP e volume atual do pedido para orientar o fechamento.",
+      placeholder: "Use o CEP do destino para estimar entrega, retirada ou logÃ­stica regional.",
+      note: "A estimativa combina regiÃ£o do CEP e volume atual do pedido para orientar o fechamento.",
     },
     quantityTiers: buildQuantityTiers(product),
   };
 }
 
-/** Experiência para produtos cadastrados via admin (sem `productConfigurations` estático). */
+/** ExperiÃªncia para produtos cadastrados via admin (sem `productConfigurations` estÃ¡tico). */
 export function buildStoreProductExperienceFromProduct(
   product: Product,
   overrides: {
@@ -695,7 +701,7 @@ export function buildStoreProductExperienceFromProduct(
     rating: {
       value: product.featured ? 4.9 : 4.8,
       reviews: product.featured ? 126 : 89,
-      caption: `${inferKindLabel(kind)} com operação pronta para fechamento`,
+      caption: `${inferKindLabel(kind)} com operaÃ§Ã£o pronta para fechamento`,
     },
     gallery: overrides.gallery,
     models,
@@ -706,8 +712,8 @@ export function buildStoreProductExperienceFromProduct(
     specs: buildSpecs(product),
     downloads: buildDownloads(product),
     shipping: {
-      placeholder: "Use o CEP do destino para estimar entrega, retirada ou logística regional.",
-      note: "A estimativa combina região do CEP e volume atual do pedido para orientar o fechamento.",
+      placeholder: "Use o CEP do destino para estimar entrega, retirada ou logÃ­stica regional.",
+      note: "A estimativa combina regiÃ£o do CEP e volume atual do pedido para orientar o fechamento.",
     },
     quantityTiers: buildQuantityTiers(product),
   };
@@ -731,6 +737,7 @@ export function getDefaultSelection(product: Product, experience: ProductExperie
     formatId: format?.id ?? "",
     width: format?.width ?? getDefaultMeasuresForProduct(product).width,
     height: format?.height ?? getDefaultMeasuresForProduct(product).height,
+    customSizeUnit: "cm",
     colorId: model?.colorId ?? experience.colors[0]?.id ?? "",
     enhancementId: model?.enhancementId ?? experience.enhancements[0]?.id ?? "",
     material: model?.material ?? product.materials[0]?.label ?? "",
@@ -779,7 +786,7 @@ export function buildSelectionNotes(product: Product, experience: ProductExperie
 
   const formatLine =
     selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID
-      ? `Tamanho personalizado: ${selection.width} x ${selection.height} cm`
+      ? formatCustomSizeLabel(selection)
       : `Formato: ${format.label} (${selection.width} x ${selection.height} cm)`;
 
   return [
@@ -790,7 +797,7 @@ export function buildSelectionNotes(product: Product, experience: ProductExperie
     `Material: ${selection.material}`,
     `Acabamento: ${selection.finishing}`,
     `Prazo: ${selection.deadline}`,
-    addons.length > 0 ? `Serviços adicionais: ${addons.map((item) => item.label).join(", ")}` : null,
+    addons.length > 0 ? `ServiÃ§os adicionais: ${addons.map((item) => item.label).join(", ")}` : null,
   ]
     .filter(Boolean)
     .join("\n");
@@ -801,6 +808,10 @@ export function buildOrderUrl(product: Product, experience: ProductExperience, s
   params.set("product", product.slug);
   params.set("width", String(selection.width));
   params.set("height", String(selection.height));
+  if (selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID) {
+    params.set("formatId", PRISMARQ_CUSTOM_FORMAT_ID);
+    params.set("customSizeUnit", normalizeCustomSizeUnit(selection.customSizeUnit));
+  }
   params.set("quantity", String(selection.quantity));
   params.set("material", selection.material);
   params.set("finishing", selection.finishing);
@@ -817,7 +828,7 @@ export function formatSelectionLabel(experience: ProductExperience, selection: P
 
   const formatSummary =
     selection.formatId === PRISMARQ_CUSTOM_FORMAT_ID
-      ? `Tamanho personalizado · ${selection.width} x ${selection.height} cm`
+      ? formatCustomSizeLabel(selection)
       : `${format.label} · ${selection.width} x ${selection.height} cm`;
 
   return {
@@ -827,3 +838,5 @@ export function formatSelectionLabel(experience: ProductExperience, selection: P
     enhancement: enhancement.label,
   };
 }
+
+
