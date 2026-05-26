@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export const size = {
   width: 64,
   height: 64,
@@ -11,11 +9,6 @@ export const size = {
 export const contentType = "image/png";
 
 export default function Icon() {
-  const baseUrl =
-    process.env.APP_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  const logoUrl = new URL("/prismarq-header-logo.png", baseUrl).href;
-
   return new ImageResponse(
     (
       <div
@@ -25,21 +18,29 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(180deg, rgb(255, 255, 255) 0%, #f7f8fa 100%)",
-          border: "1px solid rgba(15, 15, 15, 0.12)",
+          background: "linear-gradient(135deg, #05070d 0%, #111827 48%, #0f172a 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
           borderRadius: "18px",
           overflow: "hidden",
         }}
       >
-        <img
-          src={logoUrl}
-          alt="Prismarq Comunicacao Visual"
+        <div
           style={{
-            width: "54px",
-            height: "32px",
-            objectFit: "contain",
+            width: "44px",
+            height: "44px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "14px",
+            background: "linear-gradient(135deg, #06b6d4 0%, #ec4899 52%, #facc15 100%)",
+            color: "#05070d",
+            fontSize: "30px",
+            fontWeight: 900,
+            letterSpacing: "-0.08em",
           }}
-        />
+        >
+          P
+        </div>
       </div>
     ),
     size,
