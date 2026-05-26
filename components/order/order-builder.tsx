@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -18,6 +18,15 @@ import {
   type ActiveProduct,
 } from "@/lib/active-product-snapshot";
 import { COPY, pixEconomizePagarNoPixLabel } from "@/lib/copy";
+import {
+  cmToCustomUnit,
+  customUnitToCm,
+  formatCustomSizeLabel,
+  normalizeCustomSizeUnit,
+  parseCustomSizeText,
+  PRISMARQ_CUSTOM_FORMAT_ID,
+  type CustomSizeUnit,
+} from "@/lib/custom-product-size";
 import { getDefaultSelection, buildProductExperience } from "@/lib/product-experience";
 import { resolveOrderDraft, type OrderDraftValues } from "@/lib/order-presets";
 import { applyPixDiscount, PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
@@ -38,6 +47,15 @@ type CheckoutField =
   | "addressCity"
   | "addressState";
 type CheckoutErrors = Partial<Record<CheckoutField, string>>;
+type OrderApiErrorPayload = {
+  message?: string;
+  code?: string;
+  invalidFields?: string[];
+  details?: {
+    fieldErrors?: Record<string, string[] | undefined>;
+    formErrors?: string[];
+  };
+};
 
 function ArrowRight() {
   return (
@@ -238,32 +256,32 @@ function validateCheckoutFields({
   if (!customerEmail.trim()) {
     errors.customerEmail = "Informe o e-mail.";
   } else if (!isValidEmail(customerEmail.trim())) {
-    errors.customerEmail = "E-mail inválido.";
+    errors.customerEmail = "E-mail invÃ¡lido.";
   }
 
   const phoneDigits = customerPhone.replace(/\D/g, "");
   if (!phoneDigits) {
     errors.customerPhone = "Informe o WhatsApp com DDD.";
   } else if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-    errors.customerPhone = "WhatsApp deve ter 10 ou 11 dígitos com DDD.";
+    errors.customerPhone = "WhatsApp deve ter 10 ou 11 dÃ­gitos com DDD.";
   }
 
   const cpfD = cpfDigits(customerCpf);
   if (cpfD.length !== 11) {
-    errors.customerCpf = "Informe um CPF com 11 dígitos.";
+    errors.customerCpf = "Informe um CPF com 11 dÃ­gitos.";
   } else if (!isValidCpf(cpfD)) {
-    errors.customerCpf = "CPF inválido.";
+    errors.customerCpf = "CPF invÃ¡lido.";
   }
 
   if (deliveryMode === "delivery") {
     if (cep.replace(/\D/g, "").length !== 8) {
-      errors.cep = "CEP deve ter 8 dígitos.";
+      errors.cep = "CEP deve ter 8 dÃ­gitos.";
     }
     if (!addressStreet.trim()) {
       errors.addressStreet = "Informe o logradouro (rua).";
     }
     if (!addressNumber.trim()) {
-      errors.addressNumber = "Informe o número.";
+      errors.addressNumber = "Informe o nÃºmero.";
     }
     if (!addressNeighborhood.trim()) {
       errors.addressNeighborhood = "Informe o bairro.";
@@ -277,6 +295,29 @@ function validateCheckoutFields({
   }
 
   return errors;
+}
+
+function resolveOrderApiError(data: OrderApiErrorPayload): string {
+  const fallback = "Revise CPF, telefone, endereco e tamanho do produto.";
+
+  if (data.code !== "validation_error") {
+    return data.message ?? "Nao foi possivel finalizar o pedido.";
+  }
+
+  const fieldErrors = data.details?.fieldErrors ?? {};
+  const firstFieldError = Object.entries(fieldErrors).find(([, messages]) => messages?.[0]);
+  const invalidFields = data.invalidFields?.length ? data.invalidFields : Object.keys(fieldErrors);
+
+  if (process.env.NODE_ENV !== "production" && firstFieldError) {
+    const [field, messages] = firstFieldError;
+    return `${fallback} Campo com erro: ${field} (${messages?.[0]}).`;
+  }
+
+  if (process.env.NODE_ENV !== "production" && invalidFields.length > 0) {
+    return `${fallback} Campos com erro: ${invalidFields.join(", ")}.`;
+  }
+
+  return data.message ?? fallback;
 }
 
 function buildCheckoutNotes({
@@ -348,7 +389,7 @@ export function OrderBuilder({
     customerPhone?: string;
     customerCpf?: string;
     cep?: string;
-    /** Legado: linha única; mapeado para logradouro quando não há addressStreet. */
+    /** Legado: linha Ãºnica; mapeado para logradouro quando nÃ£o hÃ¡ addressStreet. */
     address?: string;
     addressStreet?: string;
     addressNumber?: string;
@@ -357,7 +398,8 @@ export function OrderBuilder({
     addressCity?: string;
     addressState?: string;
     deliveryMode?: "delivery" | "pickup";
-    /** @deprecated Ignorado — checkout só PIX. */
+    customSizeUnit?: CustomSizeUnit;
+    /** @deprecated Ignorado â€” checkout sÃ³ PIX. */
     paymentMethod?: "pix" | "card";
   };
 }) {
@@ -391,13 +433,16 @@ export function OrderBuilder({
   );
   const initialProduct = pickProduct(initialProductSlug ?? stableCatalog[0].slug);
   const initialDraft = resolveOrderDraft(initialProduct, initialConfig);
+  const initialCustomSizeUnit = normalizeCustomSizeUnit(initialCheckout?.customSizeUnit);
   const [productSlug, setProductSlug] = useState(initialProduct.slug);
-  // Width/height em cm: manter um "texto" controlado para permitir digitação livre (inclui "1")
-  // e só converter/validar ao sair do campo (onBlur) ou no submit.
+  // Width/height em cm: manter um "texto" controlado para permitir digitaÃ§Ã£o livre (inclui "1")
+  // e sÃ³ converter/validar ao sair do campo (onBlur) ou no submit.
   const [width, setWidth] = useState(initialDraft.width);
   const [height, setHeight] = useState(initialDraft.height);
-  const [widthText, setWidthText] = useState(String(initialDraft.width));
-  const [heightText, setHeightText] = useState(String(initialDraft.height));
+  const [widthText, setWidthText] = useState(String(cmToCustomUnit(initialDraft.width, initialCustomSizeUnit)).replace(".", ","));
+  const [heightText, setHeightText] = useState(String(cmToCustomUnit(initialDraft.height, initialCustomSizeUnit)).replace(".", ","));
+  const [customSizeUnit, setCustomSizeUnit] = useState<CustomSizeUnit>(initialCustomSizeUnit);
+  const [quickSizeText, setQuickSizeText] = useState("");
   const [quantity, setQuantity] = useState(initialDraft.quantity);
   const [material, setMaterial] = useState(initialDraft.material);
   const [finishing, setFinishing] = useState(initialDraft.finishing);
@@ -431,14 +476,22 @@ export function OrderBuilder({
 
   const currentProduct = pickProduct(productSlug);
 
-  function parseCmText(text: string, fallback: number) {
-    const n = Number(text);
+  function parsePositiveDecimalText(text: string, fallback: number) {
+    const n = Number(text.replace(",", "."));
     if (!Number.isFinite(n) || n <= 0) return fallback;
     return n;
   }
 
-  const widthForQuote = parseCmText(widthText, width);
-  const heightForQuote = parseCmText(heightText, height);
+  const widthInputValue = parsePositiveDecimalText(widthText, cmToCustomUnit(width, customSizeUnit));
+  const heightInputValue = parsePositiveDecimalText(heightText, cmToCustomUnit(height, customSizeUnit));
+  const widthForQuote = customUnitToCm(widthInputValue, customSizeUnit);
+  const heightForQuote = customUnitToCm(heightInputValue, customSizeUnit);
+  const hasValidSize = widthForQuote > 0 && heightForQuote > 0;
+  const customSizeText = formatCustomSizeLabel({
+    width: widthForQuote,
+    height: heightForQuote,
+    customSizeUnit,
+  });
 
   const [orderAuthExpanded, setOrderAuthExpanded] = useState(false);
   const [orderAuthTab, setOrderAuthTab] = useState<OrderAuthTab>("login");
@@ -500,12 +553,12 @@ export function OrderBuilder({
   ].filter(Boolean).length;
   const missingFieldCount = Math.max(requiredFieldCount - completedFieldCount, 0);
   const hasCheckoutErrors = Object.keys(checkoutErrors).length > 0;
-  const isReadyToSubmit = !hasCheckoutErrors;
+  const isReadyToSubmit = !hasCheckoutErrors && hasValidSize;
   const completionLabel =
     missingFieldCount === 0
       ? "Tudo pronto para concluir"
       : missingFieldCount === 1
-        ? "Falta só 1 dado para concluir"
+        ? "Falta sÃ³ 1 dado para concluir"
         : `Faltam ${missingFieldCount} dados para concluir`;
 
   useEffect(() => {
@@ -519,6 +572,7 @@ export function OrderBuilder({
     setHeight(nextDraft.height);
     setWidthText(String(nextDraft.width));
     setHeightText(String(nextDraft.height));
+    setCustomSizeUnit("cm");
     setMaterial(nextDraft.material);
     setFinishing(nextDraft.finishing);
     setDeadline(nextDraft.deadline);
@@ -605,6 +659,8 @@ export function OrderBuilder({
     orderParams.set("product", productSlug);
     orderParams.set("width", String(widthForQuote));
     orderParams.set("height", String(heightForQuote));
+    orderParams.set("formatId", PRISMARQ_CUSTOM_FORMAT_ID);
+    orderParams.set("customSizeUnit", customSizeUnit);
     orderParams.set("quantity", String(quantity));
     orderParams.set("material", material);
     orderParams.set("finishing", finishing);
@@ -627,6 +683,7 @@ export function OrderBuilder({
     productSlug,
     widthForQuote,
     heightForQuote,
+    customSizeUnit,
     quantity,
     material,
     finishing,
@@ -688,13 +745,18 @@ export function OrderBuilder({
             productSlug,
             width: widthForQuote,
             height: heightForQuote,
+            widthCm: widthForQuote,
+            heightCm: heightForQuote,
+            customSize: customSizeText,
+            customSizeUnit,
             quantity,
             material,
             finishing,
             deadline,
+            paymentMethod: "pix",
             cpf: normalizedCheckout.customerCpf,
             notes: buildCheckoutNotes({
-              baseNotes: notes,
+              baseNotes: [customSizeText, notes].filter(Boolean).join("\n"),
               customerName: normalizedCheckout.customerName,
               customerEmail: normalizedCheckout.customerEmail,
               customerPhone: normalizedCheckout.customerPhone,
@@ -713,13 +775,13 @@ export function OrderBuilder({
           }),
         });
 
-        const data = (await response.json()) as {
+        const data = (await response.json()) as OrderApiErrorPayload & {
           message?: string;
           order?: { id: string };
         };
 
         if (!response.ok || !data.order) {
-          throw new Error(data.message ?? "Nao foi possivel finalizar o pedido.");
+          throw new Error(resolveOrderApiError(data));
         }
 
         const pixResponse = await fetch("/api/payments/pix", {
@@ -752,9 +814,8 @@ export function OrderBuilder({
           return;
         }
 
-        setMessage(
-          `Pedido #${data.order.id} criado. O Pix nao esta disponivel no momento — acesse o painel ou fale com a Prismarq.`,
-        );
+        router.push(`/dashboard/pedidos/${data.order.id}/pagamento?pix=unavailable`);
+        router.refresh();
       } catch (submitError) {
         setError(submitError instanceof Error ? submitError.message : "Falha inesperada.");
       }
@@ -784,7 +845,7 @@ export function OrderBuilder({
       }
       submitCheckoutOrder();
     }
-    // Intencional: reagir só à transição de sessão; submitCheckoutOrder usa estado do fechamento deste render.
+    // Intencional: reagir sÃ³ Ã  transiÃ§Ã£o de sessÃ£o; submitCheckoutOrder usa estado do fechamento deste render.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- session boundary only
   }, [session]);
 
@@ -799,9 +860,11 @@ export function OrderBuilder({
     ? "Use sua conta para continuar com o mesmo pedido."
     : isPending
       ? "Aguarde um instante."
+      : !hasValidSize
+        ? "Informe largura, altura e unidade para concluir."
       : hasCheckoutErrors
         ? completionLabel
-        : `Pix com ${PIX_DISCOUNT_PERCENT}% de desconto · ambiente seguro.`;
+        : `Pix com ${PIX_DISCOUNT_PERCENT}% de desconto Â· ambiente seguro.`;
 
   function shouldShowFieldError(field: CheckoutField) {
     return submitAttempted || touchedFields[field];
@@ -830,6 +893,19 @@ export function OrderBuilder({
     }
   }
 
+  function applyQuickSizeText(value: string) {
+    const parsed = parseCustomSizeText(value);
+    if (!parsed) {
+      return;
+    }
+
+    setCustomSizeUnit(parsed.unit);
+    setWidth(parsed.widthCm);
+    setHeight(parsed.heightCm);
+    setWidthText(String(cmToCustomUnit(parsed.widthCm, parsed.unit)).replace(".", ","));
+    setHeightText(String(cmToCustomUnit(parsed.heightCm, parsed.unit)).replace(".", ","));
+  }
+
   function validateCheckout() {
     const errors = validateCheckoutFields({
       customerName,
@@ -847,6 +923,13 @@ export function OrderBuilder({
 
     setFieldErrors(errors);
 
+    if (!hasValidSize) {
+      return {
+        message: "Informe uma largura, altura e unidade vÃƒÂ¡lidas para o tamanho personalizado.",
+        errors,
+      };
+    }
+
     if (Object.keys(errors).length === 0) {
       return { message: "", errors };
     }
@@ -859,7 +942,7 @@ export function OrderBuilder({
     }
 
     return {
-      message: "Confirme o endereço de entrega.",
+      message: "Confirme o endereÃ§o de entrega.",
       errors,
     };
   }
@@ -892,8 +975,10 @@ export function OrderBuilder({
       experience,
       selection: {
         ...baseSelection,
+        formatId: PRISMARQ_CUSTOM_FORMAT_ID,
         width: widthForQuote,
         height: heightForQuote,
+        customSizeUnit,
         quantity,
         material,
         finishing,
@@ -901,7 +986,7 @@ export function OrderBuilder({
       },
       image: experience.gallery[0]?.src,
       notes: buildCheckoutNotes({
-        baseNotes: notes,
+        baseNotes: [customSizeText, notes].filter(Boolean).join("\n"),
         customerName: normalizedCheckout.customerName,
         customerEmail: normalizedCheckout.customerEmail,
         customerPhone: normalizedCheckout.customerPhone,
@@ -963,7 +1048,7 @@ export function OrderBuilder({
               </div>
             ) : (
               <p className="text-sm text-white/75">
-                Olá, <strong className="text-white">{session.name}</strong>
+                OlÃ¡, <strong className="text-white">{session.name}</strong>
               </p>
             )}
           </div>
@@ -985,8 +1070,8 @@ export function OrderBuilder({
 
           <div className="grid min-w-0 gap-5 sm:gap-6">
             <FieldGroup
-              title="Configuração do pedido"
-              description="Produto, medidas e opções de produção."
+              title="ConfiguraÃ§Ã£o do pedido"
+              description="Produto, medidas e opÃ§Ãµes de produÃ§Ã£o."
               className="checkout-section"
             >
             <div className="grid gap-4 sm:grid-cols-2">
@@ -1009,36 +1094,68 @@ export function OrderBuilder({
               ) : null}
 
               <label className="space-y-2">
-                <FieldLabel>Largura (cm)</FieldLabel>
+                <FieldLabel>Largura ({customSizeUnit})</FieldLabel>
                 <input
                   type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
+                  inputMode="decimal"
                   value={widthText}
-                  onChange={(event) => setWidthText(event.target.value.replace(/[^\d]/g, "").slice(0, 5))}
+                  onChange={(event) => setWidthText(event.target.value.replace(/[^\d,.]/g, "").slice(0, 8))}
                   onBlur={() => {
-                    const next = parseCmText(widthText, width);
-                    setWidth(next);
-                    setWidthText(String(next));
+                    const next = parsePositiveDecimalText(widthText, cmToCustomUnit(width, customSizeUnit));
+                    setWidth(customUnitToCm(next, customSizeUnit));
+                    setWidthText(String(next).replace(".", ","));
                   }}
                   className="field min-h-[48px]"
                 />
               </label>
               <label className="space-y-2">
-                <FieldLabel>Altura (cm)</FieldLabel>
+                <FieldLabel>Altura ({customSizeUnit})</FieldLabel>
                 <input
                   type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
+                  inputMode="decimal"
                   value={heightText}
-                  onChange={(event) => setHeightText(event.target.value.replace(/[^\d]/g, "").slice(0, 5))}
+                  onChange={(event) => setHeightText(event.target.value.replace(/[^\d,.]/g, "").slice(0, 8))}
                   onBlur={() => {
-                    const next = parseCmText(heightText, height);
-                    setHeight(next);
-                    setHeightText(String(next));
+                    const next = parsePositiveDecimalText(heightText, cmToCustomUnit(height, customSizeUnit));
+                    setHeight(customUnitToCm(next, customSizeUnit));
+                    setHeightText(String(next).replace(".", ","));
                   }}
                   className="field min-h-[48px]"
                 />
+              </label>
+              <label className="space-y-2">
+                <FieldLabel>Unidade</FieldLabel>
+                <select
+                  value={customSizeUnit}
+                  onChange={(event) => {
+                    const nextUnit = normalizeCustomSizeUnit(event.target.value);
+                    setWidthText(String(cmToCustomUnit(widthForQuote, nextUnit)).replace(".", ","));
+                    setHeightText(String(cmToCustomUnit(heightForQuote, nextUnit)).replace(".", ","));
+                    setCustomSizeUnit(nextUnit);
+                  }}
+                  className="field min-h-[48px]"
+                >
+                  <option value="cm">cm</option>
+                  <option value="m">m</option>
+                </select>
+              </label>
+              <label className="space-y-2 sm:col-span-2">
+                <FieldLabel>Medida rapida</FieldLabel>
+                <input
+                  type="text"
+                  value={quickSizeText}
+                  onChange={(event) => {
+                    const next = event.target.value.slice(0, 40);
+                    setQuickSizeText(next);
+                    applyQuickSizeText(next);
+                  }}
+                  onBlur={() => applyQuickSizeText(quickSizeText)}
+                  className="field min-h-[48px]"
+                  placeholder="Ex.: 10x20cm, 50x70, 1,20x2,00m"
+                />
+                <FieldHint>
+                  Opcional. Se nao informar unidade, consideramos cm; tambem aceitamos m e mm.
+                </FieldHint>
               </label>
               <label className="space-y-2">
                 <FieldLabel>Quantidade</FieldLabel>
@@ -1128,7 +1245,7 @@ export function OrderBuilder({
                 >
                   {shouldShowFieldError("customerName") && fieldErrors.customerName
                     ? fieldErrors.customerName
-                    : "Como você quer ser chamado na confirmação do pedido."}
+                    : "Como vocÃª quer ser chamado na confirmaÃ§Ã£o do pedido."}
                 </FieldHint>
               </label>
               <label className="space-y-2">
@@ -1157,7 +1274,7 @@ export function OrderBuilder({
                 >
                   {shouldShowFieldError("customerEmail") && fieldErrors.customerEmail
                     ? fieldErrors.customerEmail
-                    : "Enviamos a confirmação e o acompanhamento do pedido por aqui."}
+                    : "Enviamos a confirmaÃ§Ã£o e o acompanhamento do pedido por aqui."}
                 </FieldHint>
               </label>
               <label className="space-y-2">
@@ -1191,7 +1308,7 @@ export function OrderBuilder({
                 >
                   {shouldShowFieldError("customerPhone") && fieldErrors.customerPhone
                     ? fieldErrors.customerPhone
-                    : "DDD + número com 8 ou 9 dígitos."}
+                    : "DDD + nÃºmero com 8 ou 9 dÃ­gitos."}
                 </FieldHint>
               </label>
               <label className="space-y-2 sm:col-span-2">
@@ -1220,7 +1337,7 @@ export function OrderBuilder({
                 >
                   {shouldShowFieldError("customerCpf") && fieldErrors.customerCpf
                     ? fieldErrors.customerCpf
-                    : "Obrigatório para emissão e conferência do pedido."}
+                    : "ObrigatÃ³rio para emissÃ£o e conferÃªncia do pedido."}
                 </FieldHint>
               </label>
             </div>
@@ -1230,14 +1347,14 @@ export function OrderBuilder({
             <div className="grid gap-4">
               <div className="grid min-w-0 gap-3 sm:grid-cols-2">
                 <ChoiceCard
-                  title="Receber em endereço"
-                  description="Envio para o endereço informado abaixo."
+                  title="Receber em endereÃ§o"
+                  description="Envio para o endereÃ§o informado abaixo."
                   selected={deliveryMode === "delivery"}
                   onClick={() => setDeliveryMode("delivery")}
                 />
                 <ChoiceCard
                   title="Retirar na Prismarq"
-                  description="Sem custo de envio — retirada com nossa equipe."
+                  description="Sem custo de envio â€” retirada com nossa equipe."
                   selected={deliveryMode === "pickup"}
                   onClick={() => setDeliveryMode("pickup")}
                 />
@@ -1277,7 +1394,7 @@ export function OrderBuilder({
                       <FieldHint id="cep-hint" tone={shouldShowFieldError("cep") && fieldErrors.cep ? "error" : "neutral"}>
                         {shouldShowFieldError("cep") && fieldErrors.cep
                           ? fieldErrors.cep
-                          : "Com 8 dígitos buscamos o endereço automaticamente (ViaCEP)."}
+                          : "Com 8 dÃ­gitos buscamos o endereÃ§o automaticamente (ViaCEP)."}
                       </FieldHint>
                     </label>
                     <label className="space-y-2 sm:col-span-2">
@@ -1305,7 +1422,7 @@ export function OrderBuilder({
                   </div>
                   <div className="grid gap-4 sm:grid-cols-3">
                     <label className="space-y-2">
-                      <FieldLabel>Número</FieldLabel>
+                      <FieldLabel>NÃºmero</FieldLabel>
                       <input
                         type="text"
                         inputMode="numeric"
@@ -1407,7 +1524,7 @@ export function OrderBuilder({
                 </div>
               ) : (
                 <div className="rounded-[20px] border border-white/10 bg-white/[0.04] p-4 text-sm text-white/70">
-                  Retirada na Prismarq. Detalhes no e-mail de confirmação.
+                  Retirada na Prismarq. Detalhes no e-mail de confirmaÃ§Ã£o.
                 </div>
               )}
             </div>
@@ -1424,7 +1541,7 @@ export function OrderBuilder({
                     {file ? file.name : "Clique para enviar ou arraste seu arquivo"}
                   </strong>
                   <p className="mt-2 text-sm leading-relaxed text-white/60">
-                    PDF, PNG, JPG, SVG, AI, CDR, ZIP (máx. 15 MB nesta instalação). Você também pode enviar sua arte depois pelo
+                    PDF, PNG, JPG, SVG, AI, CDR, ZIP (mÃ¡x. 15 MB nesta instalaÃ§Ã£o). VocÃª tambÃ©m pode enviar sua arte depois pelo
                     atendimento.
                   </p>
                   <input
@@ -1438,14 +1555,14 @@ export function OrderBuilder({
                       <path d="M7 11V8a5 5 0 0 1 10 0v3" strokeWidth="1.5" strokeLinecap="round" />
                       <rect x="5" y="11" width="14" height="10" rx="2" strokeWidth="1.5" />
                     </svg>
-                    Seus arquivos são confidenciais e usados apenas para produção do pedido.
+                    Seus arquivos sÃ£o confidenciais e usados apenas para produÃ§Ã£o do pedido.
                   </p>
                 </div>
               </div>
             </div>
           </FieldGroup>
 
-          <FieldGroup title="Pagamento" description="Pix ativo com desconto. Cartão em manutenção." className="checkout-section">
+          <FieldGroup title="Pagamento" description="Pix ativo com desconto. CartÃ£o em manutenÃ§Ã£o." className="checkout-section">
             <div className="grid min-w-0 gap-3 sm:grid-cols-2">
               <div
                 className="rounded-[22px] border border-teal-400/35 bg-gradient-to-br from-teal-500/15 to-emerald-500/10 p-4 text-left shadow-[0_16px_40px_rgba(0,0,0,0.25)]"
@@ -1469,18 +1586,18 @@ export function OrderBuilder({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <strong className="block text-sm font-semibold text-white/80">Cartão (em manutenção)</strong>
+                    <strong className="block text-sm font-semibold text-white/80">CartÃ£o (em manutenÃ§Ã£o)</strong>
                     <p className="mt-2 text-sm leading-6 text-white/45">{COPY.cardMaintenanceHint}</p>
                   </div>
                   <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/40">
-                    Indisponível
+                    IndisponÃ­vel
                   </span>
                 </div>
               </div>
             </div>
           </FieldGroup>
 
-          <FieldGroup title="Observações" description="Opcional — instruções extras para produção." className="checkout-section">
+          <FieldGroup title="ObservaÃ§Ãµes" description="Opcional â€” instruÃ§Ãµes extras para produÃ§Ã£o." className="checkout-section">
             <label className="space-y-2">
               <FieldLabel>Notas</FieldLabel>
               <textarea
@@ -1527,7 +1644,7 @@ export function OrderBuilder({
             <div className="min-w-0 flex-1">
               <h3 className="truncate text-base font-semibold text-white">{currentProduct.name}</h3>
               <p className="mt-1 line-clamp-2 text-xs leading-snug text-white/68">
-                {material} · {finishing}
+                {material} Â· {finishing}
               </p>
             </div>
           </div>
@@ -1536,7 +1653,7 @@ export function OrderBuilder({
             <li className="flex justify-between gap-2">
               <span className="text-white/62">Medidas</span>
               <span className="min-w-0 text-right font-medium text-white">
-                {widthForQuote} × {heightForQuote} cm
+                {customSizeText}
               </span>
             </li>
             <li className="flex justify-between gap-2">
@@ -1553,7 +1670,7 @@ export function OrderBuilder({
             </li>
             <li className="flex justify-between gap-2 text-emerald-300/95">
               <span>Desconto PIX ({PIX_DISCOUNT_PERCENT}%)</span>
-              <span className="font-semibold tabular-nums">− {formatCurrencyBRL(pixSavingsBrl)}</span>
+              <span className="font-semibold tabular-nums">âˆ’ {formatCurrencyBRL(pixSavingsBrl)}</span>
             </li>
           </ul>
 
@@ -1567,14 +1684,14 @@ export function OrderBuilder({
           <div className="mt-4 flex items-start gap-3 rounded-[18px] border border-emerald-400/25 bg-emerald-500/10 px-3 py-3">
             <PixMark className="h-9 w-9 shrink-0 text-teal-300" />
             <p className="text-sm leading-snug text-emerald-50/95">
-              Você economiza <strong className="text-white">{formatCurrencyBRL(pixSavingsBrl)}</strong> pagando no PIX.
+              VocÃª economiza <strong className="text-white">{formatCurrencyBRL(pixSavingsBrl)}</strong> pagando no PIX.
             </p>
           </div>
 
           <ul className="mt-5 space-y-2 text-xs text-white/72">
             <li className="flex gap-2">
               <CheckIcon />
-              <span>Produção própria Prismarq</span>
+              <span>ProduÃ§Ã£o prÃ³pria Prismarq</span>
             </li>
             <li className="flex gap-2">
               <CheckIcon />

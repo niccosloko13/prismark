@@ -14,11 +14,13 @@ export async function withController<T>(handler: () => Promise<T>) {
 
 function toErrorResponse(error: unknown) {
   if (error instanceof ZodError) {
+    const details = error.flatten();
     return NextResponse.json(
       {
-        message: "Dados inválidos.",
+        message: "Revise CPF, telefone, endereco e tamanho do produto.",
         code: "validation_error",
-        details: error.flatten(),
+        details,
+        invalidFields: Object.keys(details.fieldErrors),
       },
       { status: 400 },
     );
@@ -35,7 +37,7 @@ function toErrorResponse(error: unknown) {
     );
   }
 
-  logger.error("Erro não tratado no controller", {
+  logger.error("Erro nao tratado no controller", {
     error: error instanceof Error ? error.message : String(error),
   });
 

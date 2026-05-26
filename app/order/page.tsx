@@ -1,6 +1,7 @@
 import { OrderBuilder } from "@/components/order/order-builder";
 import { getActiveProducts } from "@/lib/active-products";
 import { getSession } from "@/lib/auth";
+import { parseCustomSizeText } from "@/lib/custom-product-size";
 
 export default async function OrderPage({
   searchParams,
@@ -14,6 +15,7 @@ export default async function OrderPage({
     finishing?: string;
     deadline?: string;
     notes?: string;
+    customSize?: string;
     customerName?: string;
     customerEmail?: string;
     customerPhone?: string;
@@ -28,6 +30,7 @@ export default async function OrderPage({
     addressState?: string;
     deliveryMode?: "delivery" | "pickup";
     paymentMethod?: "pix" | "card";
+    customSizeUnit?: "cm" | "m";
   }>;
 }) {
   const [session, catalogProducts] = await Promise.all([getSession(), getActiveProducts()]);
@@ -36,10 +39,11 @@ export default async function OrderPage({
     const parsed = Number(value);
     return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
   };
+  const parsedCustomSize = parseCustomSizeText(resolvedSearchParams.customSize);
 
   const initialConfig = {
-    width: parsePositiveNumber(resolvedSearchParams.width),
-    height: parsePositiveNumber(resolvedSearchParams.height),
+    width: parsePositiveNumber(resolvedSearchParams.width) ?? parsedCustomSize?.widthCm,
+    height: parsePositiveNumber(resolvedSearchParams.height) ?? parsedCustomSize?.heightCm,
     quantity: parsePositiveNumber(resolvedSearchParams.quantity),
     material: resolvedSearchParams.material,
     finishing: resolvedSearchParams.finishing,
@@ -62,6 +66,7 @@ export default async function OrderPage({
     addressState: resolvedSearchParams.addressState,
     deliveryMode: resolvedSearchParams.deliveryMode,
     paymentMethod: resolvedSearchParams.paymentMethod,
+    customSizeUnit: resolvedSearchParams.customSizeUnit ?? parsedCustomSize?.unit,
   };
 
   return (

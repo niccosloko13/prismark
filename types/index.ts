@@ -114,6 +114,7 @@ export interface CartItemSelection {
   formatId: string;
   width: number;
   height: number;
+  customSizeUnit?: "cm" | "m";
   colorId: string;
   enhancementId: string;
   material: string;
@@ -315,8 +316,12 @@ export interface RegisterInput {
 
 export interface CreateOrderInput {
   productSlug: string;
-  width: number;
-  height: number;
+  width?: number | string;
+  height?: number | string;
+  widthCm?: number | string;
+  heightCm?: number | string;
+  customSize?: string;
+  customSizeUnit?: "cm" | "m";
   quantity: number;
   material: string;
   finishing: string;

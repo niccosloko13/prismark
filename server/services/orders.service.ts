@@ -32,7 +32,22 @@ export const ordersService = {
   },
 
   async create(rawInput: CreateOrderInput, user: SessionUser) {
-    const input = createOrderSchema.parse(rawInput);
+    const parsed = createOrderSchema.safeParse(rawInput);
+
+    if (!parsed.success) {
+      logger.error("Validacao de pedido falhou", {
+        payload: rawInput,
+        invalidFields: Object.keys(parsed.error.flatten().fieldErrors),
+        issues: parsed.error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          message: issue.message,
+          code: issue.code,
+        })),
+      });
+      throw parsed.error;
+    }
+
+    const input = parsed.data;
     const active = await getActiveProductBySlug(input.productSlug);
 
     if (!active) {

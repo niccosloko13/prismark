@@ -28,8 +28,12 @@ export async function createOrderController(request: NextRequest) {
 
     const body = (await request.json()) as {
       productSlug?: string;
-      width?: number;
-      height?: number;
+      width?: number | string;
+      height?: number | string;
+      widthCm?: number | string;
+      heightCm?: number | string;
+      customSize?: string;
+      customSizeUnit?: "cm" | "m";
       quantity?: number;
       material?: string;
       finishing?: string;
@@ -45,8 +49,12 @@ export async function createOrderController(request: NextRequest) {
     const order = await ordersService.create(
       {
         productSlug: body.productSlug ?? "",
-        width: Number(body.width ?? 0),
-        height: Number(body.height ?? 0),
+        width: body.width,
+        height: body.height,
+        widthCm: body.widthCm,
+        heightCm: body.heightCm,
+        customSize: body.customSize,
+        customSizeUnit: body.customSizeUnit,
         quantity: Number(body.quantity ?? 0),
         material: body.material ?? "",
         finishing: body.finishing ?? "",

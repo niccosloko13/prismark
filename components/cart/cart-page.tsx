@@ -15,7 +15,7 @@ import { applyPixDiscount, PIX_DISCOUNT_PERCENT } from "@/lib/pix-discount";
 import { calculateQuoteForProduct } from "@/lib/pricing";
 import { buildProductExperience, getAddonsFeeTotalBrl } from "@/lib/product-experience";
 import { cn, formatCurrencyBRL, roundTo } from "@/lib/utils";
-import type { SessionUser } from "@/types";
+import type { CartItem, SessionUser } from "@/types";
 
 function CartGlyph() {
   return (
@@ -67,6 +67,22 @@ function CartSpecCard({
   );
 }
 
+function buildCartCheckoutUrl(item: CartItem) {
+  const params = new URLSearchParams();
+  params.set("product", item.productSlug);
+  params.set("width", String(item.selection.width));
+  params.set("height", String(item.selection.height));
+  params.set("quantity", String(item.selection.quantity));
+  params.set("material", item.selection.material);
+  params.set("finishing", item.selection.finishing);
+  params.set("deadline", item.selection.deadline);
+  params.set("notes", buildCartOrderNotes(item));
+  if (item.selection.customSizeUnit) {
+    params.set("customSizeUnit", item.selection.customSizeUnit);
+  }
+  return `/order?${params.toString()}`;
+}
+
 export function CartPage({ session }: { session: SessionUser | null }) {
   const router = useRouter();
   const { items, itemCount, subtotal, upsertItem, removeItem, clearCart } = useCart();
@@ -114,13 +130,19 @@ export function CartPage({ session }: { session: SessionUser | null }) {
   }
 
   function handleFinalize() {
-    if (!session) {
-      router.push("/cadastro?returnTo=/cart");
+    if (items.length === 0) {
+      setError("Adicione pelo menos um item ao carrinho para finalizar.");
       return;
     }
 
-    if (items.length === 0) {
-      setError("Adicione pelo menos um item ao carrinho para finalizar.");
+    const firstItem = items[0];
+    if (firstItem) {
+      router.push(buildCartCheckoutUrl(firstItem));
+      return;
+    }
+
+    if (!session) {
+      router.push("/cadastro?returnTo=/cart");
       return;
     }
 
@@ -170,6 +192,8 @@ export function CartPage({ session }: { session: SessionUser | null }) {
           createdIds.push(data.order.id);
         }
 
+        let pixUnavailable = false;
+
         for (const orderId of createdIds) {
           const pixResponse = await fetch("/api/payments/pix", {
             method: "POST",
@@ -177,22 +201,26 @@ export function CartPage({ session }: { session: SessionUser | null }) {
             body: JSON.stringify({ orderId }),
           });
           const pixJson = (await pixResponse.json()) as { available?: boolean; message?: string };
-          if (!pixResponse.ok || !pixJson.available) {
+          if (!pixResponse.ok) {
             throw new Error(
               pixJson.message ??
                 `Pix nao disponivel para o pedido ${orderId}. Abra o painel ou fale com a Prismarq.`,
             );
+          }
+
+          if (!pixJson.available) {
+            pixUnavailable = true;
           }
         }
 
         clearCart();
         const firstId = createdIds[0];
         const mais = createdIds.length - 1;
-        router.push(
-          mais > 0
-            ? `/dashboard/pedidos/${firstId}/pagamento?outros=${mais}`
-            : `/dashboard/pedidos/${firstId}/pagamento`,
-        );
+        const params = new URLSearchParams();
+        if (mais > 0) params.set("outros", String(mais));
+        if (pixUnavailable) params.set("pix", "unavailable");
+        const query = params.toString();
+        router.push(`/dashboard/pedidos/${firstId}/pagamento${query ? `?${query}` : ""}`);
         router.refresh();
       } catch (submitError) {
         setError(submitError instanceof Error ? submitError.message : "Falha inesperada ao finalizar o carrinho.");
